@@ -15,4 +15,4 @@ ProtectSystem=full
 ProtectHome=false
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
