@@ -31,6 +31,6 @@ Rooms and identities are intentionally lost on restart. Public transport is plai
 
 `deploy/xingyistarry-mp-relay.service` is the optional systemd user-service
 definition used on the gateway. It expects this repository at
-`~/code/annw-mp/xingyistarry-mp-relay`, the binary at
+`~/code/annw-relay`, the binary at
 `~/.local/bin/xingyistarry-mp-relay`, and configuration in the repository's
 ignored `relay.json`.

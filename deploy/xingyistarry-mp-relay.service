@@ -5,8 +5,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=%h/code/annw-mp/xingyistarry-mp-relay
-ExecStart=%h/.local/bin/xingyistarry-mp-relay -config %h/code/annw-mp/xingyistarry-mp-relay/relay.json
+WorkingDirectory=%h/code/annw-relay
+ExecStart=%h/.local/bin/xingyistarry-mp-relay -config %h/code/annw-relay/relay.json
 Restart=on-failure
 RestartSec=3
 NoNewPrivileges=true
