@@ -1,0 +1,372 @@
+package server
+
+import (
+	"bytes"
+	"encoding/binary"
+	"io"
+	"log"
+	"net"
+	"strings"
+	"testing"
+	"time"
+
+	"google.golang.org/protobuf/proto"
+	"mprelay/internal/wire"
+)
+
+type testPeer struct {
+	t    *testing.T
+	conn net.Conn
+}
+
+func startTestServer(t *testing.T) (string, *Server) {
+	t.Helper()
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	config := DefaultConfig()
+	config.HeartbeatInterval = time.Hour
+	config.HeartbeatIntervalMS = 0
+	config.HeartbeatTimeout = 5 * time.Second
+	config.HeartbeatTimeoutMS = 0
+	relay := New(config, log.New(io.Discard, "", 0))
+	go func() { _ = relay.Serve(listener) }()
+	t.Cleanup(func() { _ = relay.Close() })
+	return listener.Addr().String(), relay
+}
+
+func connectPeer(t *testing.T, address string) *testPeer {
+	t.Helper()
+	conn, err := net.Dial("tcp", address)
+	if err != nil {
+		t.Fatal(err)
+	}
+	peer := &testPeer{t: t, conn: conn}
+	t.Cleanup(func() { _ = conn.Close() })
+	return peer
+}
+
+func (p *testPeer) send(envelope *wire.WireEnvelope) {
+	p.t.Helper()
+	framed, err := marshalEnvelope(envelope, 16*1024*1024)
+	if err != nil {
+		p.t.Fatal(err)
+	}
+	if _, err := p.conn.Write(framed); err != nil {
+		p.t.Fatal(err)
+	}
+}
+
+func (p *testPeer) control(messageType uint32, payload proto.Message, roomID, clientID []byte) {
+	p.t.Helper()
+	data, err := proto.Marshal(payload)
+	if err != nil {
+		p.t.Fatal(err)
+	}
+	p.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: messageType, Payload: data, RoomId: cloneBytes(roomID), ClientId: cloneBytes(clientID), Delivery: wire.Delivery_RELAY_CONTROL})
+}
+
+func (p *testPeer) receiveType(messageType uint32) *wire.WireEnvelope {
+	p.t.Helper()
+	_ = p.conn.SetReadDeadline(time.Now().Add(3 * time.Second))
+	for {
+		envelope, err := readEnvelope(p.conn, 16*1024*1024)
+		if err != nil {
+			p.t.Fatalf("receive message %d: %v", messageType, err)
+		}
+		if envelope.MessageType == messageType {
+			return envelope
+		}
+	}
+}
+
+func responseFrom(t *testing.T, envelope *wire.WireEnvelope) *wire.RelayControlResponse {
+	t.Helper()
+	response := new(wire.RelayControlResponse)
+	if err := proto.Unmarshal(envelope.Payload, response); err != nil {
+		t.Fatal(err)
+	}
+	return response
+}
+
+func registerHost(t *testing.T, peer *testPeer, roomID []byte, password string) []byte {
+	t.Helper()
+	peer.control(MessageRelayRegisterRoom, &wire.RelayRegisterRoomRequest{RequestId: 1, RoomId: roomID, RoomName: "Test room", HostName: "Host", Password: password, PluginVersion: "test", GameFingerprint: "game", ContentFingerprint: "content"}, nil, nil)
+	response := responseFrom(t, peer.receiveType(MessageRelayControlResponse))
+	if !response.Success || len(response.ClientId) != 16 {
+		t.Fatalf("register failed: %+v", response)
+	}
+	return response.ClientId
+}
+
+func joinClient(t *testing.T, peer *testPeer, roomID []byte, password string, requestID uint64) *wire.RelayControlResponse {
+	t.Helper()
+	peer.control(MessageRelayJoinRoom, &wire.RelayJoinRoomRequest{RequestId: requestID, RoomId: roomID, Password: password}, nil, nil)
+	return responseFrom(t, peer.receiveType(MessageRelayControlResponse))
+}
+
+func TestRoomLifecycleAndRouting(t *testing.T) {
+	address, _ := startTestServer(t)
+	roomID := bytes.Repeat([]byte{0x11}, 16)
+	host := connectPeer(t, address)
+	hostID := registerHost(t, host, roomID, "secret")
+
+	browser := connectPeer(t, address)
+	browser.control(MessageRelayListRooms, &wire.RelayListRoomsRequest{RequestId: 2}, nil, nil)
+	listEnvelope := browser.receiveType(MessageRelayRoomList)
+	list := new(wire.RelayListRoomsResponse)
+	if err := proto.Unmarshal(listEnvelope.Payload, list); err != nil {
+		t.Fatal(err)
+	}
+	if len(list.Rooms) != 1 || !list.Rooms[0].HasPassword || list.Rooms[0].ConnectedPlayers != 1 {
+		t.Fatalf("unexpected room list: %+v", list.Rooms)
+	}
+
+	bad := connectPeer(t, address)
+	if response := joinClient(t, bad, roomID, "wrong", 3); response.Success || response.Reason != "invalid password" {
+		t.Fatalf("unexpected password response: %+v", response)
+	}
+
+	client := connectPeer(t, address)
+	joined := joinClient(t, client, roomID, "secret", 4)
+	if !joined.Success || len(joined.ClientId) != 16 {
+		t.Fatalf("join failed: %+v", joined)
+	}
+	joinNotice := host.receiveType(MessageRelayPeerJoined)
+	peerNotice := new(wire.RelayPeerNotice)
+	if err := proto.Unmarshal(joinNotice.Payload, peerNotice); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(peerNotice.ClientId, joined.ClientId) {
+		t.Fatal("host received wrong joined client id")
+	}
+
+	toHost := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHello, Payload: []byte("opaque"), RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
+	client.send(toHost)
+	forwarded := host.receiveType(MessageHello)
+	if !proto.Equal(toHost, forwarded) {
+		t.Fatalf("TO_HOST envelope changed: %v", forwarded)
+	}
+
+	toClient := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageWelcome, Payload: []byte("reply"), RoomId: roomID, ClientId: hostID, TargetClientId: joined.ClientId, Delivery: wire.Delivery_TO_CLIENT}
+	host.send(toClient)
+	if forwarded := client.receiveType(MessageWelcome); !proto.Equal(toClient, forwarded) {
+		t.Fatalf("TO_CLIENT envelope changed: %v", forwarded)
+	}
+	logicalHeartbeat := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHeartbeat, RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
+	client.send(logicalHeartbeat)
+	if forwarded := host.receiveType(MessageHeartbeat); !proto.Equal(logicalHeartbeat, forwarded) {
+		t.Fatalf("TO_HOST heartbeat changed: %v", forwarded)
+	}
+
+	client2 := connectPeer(t, address)
+	joined2 := joinClient(t, client2, roomID, "secret", 5)
+	if !joined2.Success {
+		t.Fatalf("second join failed: %+v", joined2)
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+	host.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageWelcome, RoomId: roomID, ClientId: hostID, TargetClientId: joined2.ClientId, Delivery: wire.Delivery_TO_CLIENT})
+	_ = client2.receiveType(MessageWelcome)
+	broadcast := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageRoomState, Payload: []byte("all"), RoomId: roomID, ClientId: hostID, Delivery: wire.Delivery_BROADCAST}
+	host.send(broadcast)
+	if !proto.Equal(broadcast, client.receiveType(MessageRoomState)) || !proto.Equal(broadcast, client2.receiveType(MessageRoomState)) {
+		t.Fatal("broadcast was not preserved")
+	}
+
+	host.control(MessageRelayCloseJoining, &wire.RelayRoomRequest{RequestId: 6, RoomId: roomID}, roomID, hostID)
+	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); !response.Success {
+		t.Fatalf("close joining failed: %+v", response)
+	}
+	host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: 61, RoomId: roomID, Status: wire.RelayRoomStatus_RELAY_ROOM_WAITING}, roomID, hostID)
+	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); response.Success {
+		t.Fatal("room update reopened a closed room")
+	}
+	browser.control(MessageRelayListRooms, &wire.RelayListRoomsRequest{RequestId: 62}, nil, nil)
+	closedList := new(wire.RelayListRoomsResponse)
+	if err := proto.Unmarshal(browser.receiveType(MessageRelayRoomList).Payload, closedList); err != nil {
+		t.Fatal(err)
+	}
+	if len(closedList.Rooms) != 1 || closedList.Rooms[0].Status != wire.RelayRoomStatus_RELAY_ROOM_CLOSED {
+		t.Fatalf("room status changed after rejected reopen: %+v", closedList.Rooms)
+	}
+	late := connectPeer(t, address)
+	if response := joinClient(t, late, roomID, "secret", 7); response.Success {
+		t.Fatal("closed room accepted a player")
+	}
+
+	host.control(MessageRelayCloseRoom, &wire.RelayRoomRequest{RequestId: 8, RoomId: roomID}, roomID, hostID)
+	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); !response.Success {
+		t.Fatalf("close room failed: %+v", response)
+	}
+	for _, peer := range []*testPeer{client, client2} {
+		notice := peer.receiveType(MessageRelayCloseRoom)
+		if notice.Delivery != wire.Delivery_RELAY_CONTROL || !bytes.Equal(notice.RoomId, roomID) {
+			t.Fatalf("bad close notice: %v", notice)
+		}
+	}
+}
+
+func TestRoomStatusTransitions(t *testing.T) {
+	waiting := wire.RelayRoomStatus_RELAY_ROOM_WAITING
+	closed := wire.RelayRoomStatus_RELAY_ROOM_CLOSED
+	playing := wire.RelayRoomStatus_RELAY_ROOM_PLAYING
+	tests := []struct {
+		current wire.RelayRoomStatus
+		next    wire.RelayRoomStatus
+		allowed bool
+	}{
+		{waiting, waiting, true}, {waiting, closed, false}, {waiting, playing, true},
+		{closed, waiting, false}, {closed, closed, true}, {closed, playing, true},
+		{playing, waiting, false}, {playing, closed, false}, {playing, playing, true},
+	}
+	for _, test := range tests {
+		if actual := roomStatusTransitionAllowed(test.current, test.next); actual != test.allowed {
+			t.Fatalf("transition %s -> %s: got %v, want %v", test.current, test.next, actual, test.allowed)
+		}
+	}
+}
+
+func TestRelayControlHeartbeatKeepsUnboundConnectionUsable(t *testing.T) {
+	address, _ := startTestServer(t)
+	peer := connectPeer(t, address)
+	peer.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHeartbeat, Delivery: wire.Delivery_RELAY_CONTROL})
+	peer.control(MessageRelayListRooms, &wire.RelayListRoomsRequest{RequestId: 30}, nil, nil)
+	list := new(wire.RelayListRoomsResponse)
+	if err := proto.Unmarshal(peer.receiveType(MessageRelayRoomList).Payload, list); err != nil {
+		t.Fatal(err)
+	}
+	if list.RequestId != 30 {
+		t.Fatalf("unexpected list response request id %d", list.RequestId)
+	}
+}
+
+func TestChineseRoomMetadataCharacterLimits(t *testing.T) {
+	address, _ := startTestServer(t)
+	roomID := bytes.Repeat([]byte{0x41}, 16)
+	host := connectPeer(t, address)
+	host.control(MessageRelayRegisterRoom, &wire.RelayRegisterRoomRequest{
+		RequestId: 40,
+		RoomId:    roomID,
+		RoomName:  strings.Repeat("房", 48),
+		HostName:  strings.Repeat("主", 32),
+		Password:  strings.Repeat("😀", 64),
+	}, nil, nil)
+	registered := responseFrom(t, host.receiveType(MessageRelayControlResponse))
+	if !registered.Success {
+		t.Fatalf("Chinese boundary metadata was rejected: %+v", registered)
+	}
+
+	host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: 41, RoomId: roomID, MapTitle: strings.Repeat("图", 128), Status: wire.RelayRoomStatus_RELAY_ROOM_WAITING}, roomID, registered.ClientId)
+	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); !response.Success {
+		t.Fatalf("128-character map title was rejected: %+v", response)
+	}
+	host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: 42, RoomId: roomID, MapTitle: strings.Repeat("图", 129), Status: wire.RelayRoomStatus_RELAY_ROOM_WAITING}, roomID, registered.ClientId)
+	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); response.Success {
+		t.Fatal("129-character map title was accepted")
+	}
+
+	tests := []struct {
+		name     string
+		roomName string
+		hostName string
+		password string
+	}{
+		{name: "room name", roomName: strings.Repeat("房", 49), hostName: "主机"},
+		{name: "host name", roomName: "房间", hostName: strings.Repeat("主", 33)},
+		{name: "password bytes", roomName: "房间", hostName: "主机", password: strings.Repeat("😀", 65)},
+	}
+	for i, test := range tests {
+		peer := connectPeer(t, address)
+		peer.control(MessageRelayRegisterRoom, &wire.RelayRegisterRoomRequest{
+			RequestId: uint64(50 + i),
+			RoomId:    bytes.Repeat([]byte{byte(0x50 + i)}, 16),
+			RoomName:  test.roomName,
+			HostName:  test.hostName,
+			Password:  test.password,
+		}, nil, nil)
+		if response := responseFrom(t, peer.receiveType(MessageRelayControlResponse)); response.Success {
+			t.Fatalf("over-limit %s was accepted", test.name)
+		}
+	}
+}
+
+func TestIdentityForgeryAndRoomIsolation(t *testing.T) {
+	address, _ := startTestServer(t)
+	roomA := bytes.Repeat([]byte{0x21}, 16)
+	roomB := bytes.Repeat([]byte{0x22}, 16)
+	hostA := connectPeer(t, address)
+	_ = registerHost(t, hostA, roomA, "")
+	hostB := connectPeer(t, address)
+	_ = registerHost(t, hostB, roomB, "")
+	clientA := connectPeer(t, address)
+	joinedA := joinClient(t, clientA, roomA, "", 10)
+	_ = hostA.receiveType(MessageRelayPeerJoined)
+
+	clientA.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHello, RoomId: roomB, ClientId: joinedA.ClientId, Delivery: wire.Delivery_TO_HOST})
+	_ = clientA.conn.SetReadDeadline(time.Now().Add(3 * time.Second))
+	if _, err := readEnvelope(clientA.conn, 16*1024*1024); err == nil {
+		t.Fatal("forged cross-room envelope did not disconnect sender")
+	}
+
+	hostB.conn.SetReadDeadline(time.Now().Add(150 * time.Millisecond))
+	if envelope, err := readEnvelope(hostB.conn, 16*1024*1024); err == nil && envelope.MessageType == MessageHello {
+		t.Fatal("cross-room message reached other host")
+	}
+}
+
+func TestHostDisconnectClosesRoomAndNotifiesClients(t *testing.T) {
+	address, _ := startTestServer(t)
+	roomID := bytes.Repeat([]byte{0x31}, 16)
+	host := connectPeer(t, address)
+	_ = registerHost(t, host, roomID, "")
+	client := connectPeer(t, address)
+	if response := joinClient(t, client, roomID, "", 20); !response.Success {
+		t.Fatal("join failed")
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+	_ = host.conn.Close()
+	notice := client.receiveType(MessageRelayCloseRoom)
+	payload := new(wire.RelayPeerNotice)
+	if err := proto.Unmarshal(notice.Payload, payload); err != nil {
+		t.Fatal(err)
+	}
+	if payload.Reason != "host disconnected" {
+		t.Fatalf("unexpected reason %q", payload.Reason)
+	}
+
+	browser := connectPeer(t, address)
+	browser.control(MessageRelayListRooms, &wire.RelayListRoomsRequest{RequestId: 21}, nil, nil)
+	list := new(wire.RelayListRoomsResponse)
+	if err := proto.Unmarshal(browser.receiveType(MessageRelayRoomList).Payload, list); err != nil {
+		t.Fatal(err)
+	}
+	if len(list.Rooms) != 0 {
+		t.Fatal("host-disconnected room remained listed")
+	}
+}
+
+func TestFramingRejectsInvalidLengths(t *testing.T) {
+	for _, length := range []uint32{0, 1025} {
+		var data bytes.Buffer
+		if err := binary.Write(&data, binary.LittleEndian, length); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := readEnvelope(&data, 1024); err == nil {
+			t.Fatalf("length %d was accepted", length)
+		}
+	}
+}
+
+func TestPasswordVerifier(t *testing.T) {
+	verifier, err := derivePassword("secret")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !verifier.enabled() || !verifier.matches("secret") || verifier.matches("other") {
+		t.Fatal("password verifier mismatch")
+	}
+	if bytes.Equal(verifier.hash, []byte("secret")) {
+		t.Fatal("password was stored verbatim")
+	}
+}

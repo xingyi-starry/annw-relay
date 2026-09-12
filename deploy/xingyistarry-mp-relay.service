@@ -1,0 +1,18 @@
+[Unit]
+Description=XingyiStarry MP relay server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/code/annw-mp/xingyistarry-mp-relay
+ExecStart=%h/.local/bin/xingyistarry-mp-relay -config %h/code/annw-mp/xingyistarry-mp-relay/relay.json
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+
+[Install]
+WantedBy=multi-user.target

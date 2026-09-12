@@ -1,0 +1,10 @@
+{
+  "listen_address": ":24555",
+  "max_packet_bytes": 16777216,
+  "max_connections": 1024,
+  "max_rooms": 256,
+  "max_messages_per_second": 200,
+  "write_queue_bytes": 8388608,
+  "heartbeat_interval_ms": 2000,
+  "heartbeat_timeout_ms": 10000
+}
