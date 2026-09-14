@@ -10,51 +10,21 @@ import (
 	"mprelay/internal/wire"
 )
 
-const ProtocolVersion uint32 = 11
-
 const (
-	MessageHello uint32 = iota + 1
-	MessageWelcome
-	MessageReject
-	MessageHeartbeat
-	MessageRoomState
-	MessageClaimSeat
-	MessageSetReady
-	MessageStartMatch
-	MessageCommandRequest
-	MessageCommandAccepted
-	MessageCommandRejected
-	MessageAuthorityFrame
-	MessageHistoryRequest
-	MessageHistoryComplete
-	MessageSnapshotRequest
-	MessageSnapshotManifest
-	MessageSnapshotChunk
-	MessageSnapshotComplete
-	MessageCatchUpComplete
-	MessageSessionEnded
-	MessageLobbyDraftChange
-	MessageParticipantNotice
-	MessageRelayRegisterRoom
-	MessageRelayUpdateRoom
-	MessageRelayListRooms
-	MessageRelayRoomList
-	MessageRelayJoinRoom
-	MessageRelayControlResponse
-	MessageRelayCloseJoining
-	MessageRelayLeaveRoom
-	MessageRelayCloseRoom
-	MessageRelayPeerJoined
-	MessageRelayPeerLeft
+	MessageRelayHeartbeat       uint32 = 4
+	MessageRelayRegisterRoom    uint32 = 23
+	MessageRelayUpdateRoom      uint32 = 24
+	MessageRelayListRooms       uint32 = 25
+	MessageRelayRoomList        uint32 = 26
+	MessageRelayJoinRoom        uint32 = 27
+	MessageRelayControlResponse uint32 = 28
+	MessageRelayCloseJoining    uint32 = 29
+	MessageRelayLeaveRoom       uint32 = 30
+	MessageRelayCloseRoom       uint32 = 31
+	MessageRelayPeerJoined      uint32 = 32
+	MessageRelayPeerLeft        uint32 = 33
+	MessageRelayResumeRoom      uint32 = 41
 )
-
-func isRelayMessage(messageType uint32) bool {
-	return messageType >= MessageRelayRegisterRoom && messageType <= MessageRelayPeerLeft
-}
-
-func isGameMessage(messageType uint32) bool {
-	return messageType >= MessageHello && messageType <= MessageParticipantNotice
-}
 
 func readEnvelope(r io.Reader, maxBytes int) (*wire.WireEnvelope, error) {
 	var header [4]byte
@@ -103,11 +73,10 @@ func makeControlEnvelope(messageType uint32, payload proto.Message, roomID []byt
 		return nil, err
 	}
 	return &wire.WireEnvelope{
-		ProtocolVersion: ProtocolVersion,
-		MessageType:     messageType,
-		Payload:         data,
-		RoomId:          cloneBytes(roomID),
-		Delivery:        wire.Delivery_RELAY_CONTROL,
+		MessageType: messageType,
+		Payload:     data,
+		RoomId:      cloneBytes(roomID),
+		Delivery:    wire.Delivery_RELAY_CONTROL,
 	}, nil
 }
 

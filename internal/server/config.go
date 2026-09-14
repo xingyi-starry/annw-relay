@@ -13,6 +13,8 @@ type Config struct {
 	HeartbeatTimeout     time.Duration `json:"-"`
 	HeartbeatIntervalMS  int           `json:"heartbeat_interval_ms"`
 	HeartbeatTimeoutMS   int           `json:"heartbeat_timeout_ms"`
+	ReconnectGrace       time.Duration `json:"-"`
+	ReconnectGraceMS     int           `json:"reconnect_grace_ms"`
 }
 
 func DefaultConfig() Config {
@@ -27,6 +29,8 @@ func DefaultConfig() Config {
 		HeartbeatTimeout:     10 * time.Second,
 		HeartbeatIntervalMS:  2000,
 		HeartbeatTimeoutMS:   10000,
+		ReconnectGrace:       15 * time.Second,
+		ReconnectGraceMS:     15000,
 	}
 }
 
@@ -56,10 +60,16 @@ func (c *Config) normalize() {
 	if c.HeartbeatTimeoutMS > 0 {
 		c.HeartbeatTimeout = time.Duration(c.HeartbeatTimeoutMS) * time.Millisecond
 	}
+	if c.ReconnectGraceMS > 0 {
+		c.ReconnectGrace = time.Duration(c.ReconnectGraceMS) * time.Millisecond
+	}
 	if c.HeartbeatInterval <= 0 {
 		c.HeartbeatInterval = defaults.HeartbeatInterval
 	}
 	if c.HeartbeatTimeout <= 0 {
 		c.HeartbeatTimeout = defaults.HeartbeatTimeout
+	}
+	if c.ReconnectGrace <= 0 {
+		c.ReconnectGrace = defaults.ReconnectGrace
 	}
 }

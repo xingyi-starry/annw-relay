@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 	"unicode/utf8"
 
 	"google.golang.org/protobuf/proto"
@@ -17,12 +18,14 @@ import (
 )
 
 type room struct {
-	id       []byte
-	hostID   []byte
-	host     *connection
-	clients  map[string]*connection
-	password passwordVerifier
-	info     wire.RelayRoomInfo
+	id           []byte
+	hostID       []byte
+	host         *connection
+	clients      map[string]*connection
+	reservations map[string]time.Time
+	matchID      []byte
+	password     passwordVerifier
+	info         wire.RelayRoomInfo
 }
 
 type Server struct {
@@ -107,20 +110,11 @@ func (s *Server) Close() error {
 }
 
 func (s *Server) handleEnvelope(c *connection, envelope *wire.WireEnvelope) error {
-	if envelope.ProtocolVersion != ProtocolVersion {
-		return fmt.Errorf("protocol version %d is unsupported", envelope.ProtocolVersion)
-	}
-	if envelope.MessageType == MessageHeartbeat && envelope.Delivery == wire.Delivery_RELAY_CONTROL {
+	if envelope.MessageType == MessageRelayHeartbeat && envelope.Delivery == wire.Delivery_RELAY_CONTROL {
 		return nil
 	}
 	if envelope.Delivery == wire.Delivery_RELAY_CONTROL {
 		return s.handleControl(c, envelope)
-	}
-	if isRelayMessage(envelope.MessageType) {
-		return errors.New("relay control message has routed delivery")
-	}
-	if !isGameMessage(envelope.MessageType) {
-		return fmt.Errorf("unknown game message type %d", envelope.MessageType)
 	}
 	return s.routeGameMessage(c, envelope)
 }
@@ -135,6 +129,8 @@ func (s *Server) handleControl(c *connection, envelope *wire.WireEnvelope) error
 		return s.listRooms(c, envelope)
 	case MessageRelayJoinRoom:
 		return s.joinRoom(c, envelope)
+	case MessageRelayResumeRoom:
+		return s.resumeRoom(c, envelope)
 	case MessageRelayCloseJoining:
 		return s.closeJoining(c, envelope)
 	case MessageRelayLeaveRoom:
@@ -183,7 +179,7 @@ func (s *Server) registerRoom(c *connection, envelope *wire.WireEnvelope) error 
 		s.mu.Unlock()
 		return s.controlFailure(c, req.RequestId, "room id already exists", nil)
 	}
-	r := &room{id: cloneBytes(req.RoomId), hostID: hostID, host: c, clients: make(map[string]*connection), password: verifier}
+	r := &room{id: cloneBytes(req.RoomId), hostID: hostID, host: c, clients: make(map[string]*connection), reservations: make(map[string]time.Time), password: verifier}
 	r.info = wire.RelayRoomInfo{RoomId: cloneBytes(req.RoomId), RoomName: roomName, HostName: hostName, ConnectedPlayers: 1, HasPassword: verifier.enabled(), Status: wire.RelayRoomStatus_RELAY_ROOM_WAITING, PluginVersion: req.PluginVersion, GameFingerprint: req.GameFingerprint, ContentFingerprint: req.ContentFingerprint}
 	s.rooms[key] = r
 	c.bind(roleHost, hostID, req.RoomId)
@@ -200,7 +196,7 @@ func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	if err != nil {
 		return err
 	}
-	if utf8.RuneCountInString(req.MapTitle) > maxMapTitleRunes || req.HumanSeats < 0 {
+	if utf8.RuneCountInString(req.MapTitle) > maxMapTitleRunes || req.HumanSeats < 0 || req.AvailableSeats < 0 || len(req.MatchId) != 0 && len(req.MatchId) != 16 {
 		return s.controlFailure(c, req.RequestId, "invalid room update", r.id)
 	}
 	if req.Status < wire.RelayRoomStatus_RELAY_ROOM_WAITING || req.Status > wire.RelayRoomStatus_RELAY_ROOM_PLAYING {
@@ -217,7 +213,11 @@ func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	r.info.MapTitle = req.MapTitle
 	r.info.HumanSeats = req.HumanSeats
+	r.info.AvailableSeats = req.AvailableSeats
 	r.info.Status = req.Status
+	if len(req.MatchId) != 0 {
+		r.matchID = cloneBytes(req.MatchId)
+	}
 	r.info.ConnectedPlayers = int32(1 + len(r.clients))
 	s.mu.Unlock()
 	return s.controlSuccess(c, req.RequestId, nil, r.id)
@@ -287,10 +287,11 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 		return s.controlFailure(c, req.RequestId, "room not found", nil)
 	}
 	status := r.info.Status
+	availableSeats := r.info.AvailableSeats
 	verifier := r.password
 	roomID := cloneBytes(r.id)
 	s.mu.RUnlock()
-	if status != wire.RelayRoomStatus_RELAY_ROOM_WAITING {
+	if status != wire.RelayRoomStatus_RELAY_ROOM_WAITING && (status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING || availableSeats <= 0) {
 		return s.controlFailure(c, req.RequestId, "room is not accepting players", roomID)
 	}
 	if !verifier.matches(req.Password) {
@@ -298,7 +299,7 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	s.mu.Lock()
 	r = s.rooms[string(req.RoomId)]
-	if r == nil || r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_WAITING {
+	if r == nil || (r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_WAITING && (r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING || r.info.AvailableSeats <= 0)) {
 		s.mu.Unlock()
 		return s.controlFailure(c, req.RequestId, "room is not accepting players", roomID)
 	}
@@ -313,6 +314,53 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	notice := &wire.RelayPeerNotice{ClientId: cloneBytes(clientID), Reason: "joined"}
 	return s.sendControl(host, MessageRelayPeerJoined, notice, roomID)
+}
+
+func (s *Server) resumeRoom(c *connection, envelope *wire.WireEnvelope) error {
+	if role, _, _ := c.binding(); role != roleUnbound {
+		return errors.New("connection is already bound")
+	}
+	if len(envelope.RoomId) != 0 || len(envelope.ClientId) != 0 || len(envelope.TargetClientId) != 0 {
+		return errors.New("unbound resume envelope contains identity")
+	}
+	req := new(wire.RelayResumeRoomRequest)
+	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+		return err
+	}
+	if err := validateID(req.RoomId, "room id"); err != nil {
+		return s.controlFailure(c, req.RequestId, err.Error(), nil)
+	}
+	if err := validateID(req.ClientId, "client id"); err != nil {
+		return s.controlFailure(c, req.RequestId, err.Error(), req.RoomId)
+	}
+	if err := validateID(req.MatchId, "match id"); err != nil {
+		return s.controlFailure(c, req.RequestId, err.Error(), req.RoomId)
+	}
+
+	now := time.Now()
+	s.mu.Lock()
+	r := s.rooms[string(req.RoomId)]
+	if r == nil || r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING || !bytes.Equal(r.matchID, req.MatchId) {
+		s.mu.Unlock()
+		return s.controlFailure(c, req.RequestId, "room or match is not resumable", req.RoomId)
+	}
+	key := string(req.ClientId)
+	deadline, reserved := r.reservations[key]
+	if !reserved || !now.Before(deadline) || r.clients[key] != nil {
+		s.mu.Unlock()
+		return s.controlFailure(c, req.RequestId, "reconnect reservation is unavailable", req.RoomId)
+	}
+	delete(r.reservations, key)
+	r.clients[key] = c
+	r.info.ConnectedPlayers = int32(1 + len(r.clients))
+	c.bind(roleClient, req.ClientId, r.id)
+	host := r.host
+	roomID := cloneBytes(r.id)
+	s.mu.Unlock()
+	if err := s.controlSuccess(c, req.RequestId, req.ClientId, roomID); err != nil {
+		return err
+	}
+	return s.sendControl(host, MessageRelayPeerJoined, &wire.RelayPeerNotice{ClientId: cloneBytes(req.ClientId), Reason: "resumed"}, roomID)
 }
 
 func (s *Server) closeJoining(c *connection, envelope *wire.WireEnvelope) error {
@@ -343,6 +391,23 @@ func (s *Server) leaveRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	if role == roleHost {
 		return s.closeRoom(c, req.RequestId, "host closed room")
+	}
+	s.mu.Lock()
+	r := s.rooms[string(roomID)]
+	_, id, _ := c.binding()
+	if r != nil && r.clients[string(id)] == c {
+		delete(r.clients, string(id))
+		delete(r.reservations, string(id))
+		r.info.ConnectedPlayers = int32(1 + len(r.clients))
+	}
+	host := (*connection)(nil)
+	if r != nil {
+		host = r.host
+	}
+	c.unbind()
+	s.mu.Unlock()
+	if host != nil {
+		_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "left"}, roomID)
 	}
 	response, err := makeControlResponse(req.RequestId, true, "", nil, roomID)
 	if err != nil {
@@ -407,10 +472,6 @@ func (s *Server) routeGameMessage(c *connection, envelope *wire.WireEnvelope) er
 			s.mu.RUnlock()
 			return errors.New("client may only send TO_HOST")
 		}
-		if !c.isGameReady() && envelope.MessageType != MessageHello {
-			s.mu.RUnlock()
-			return errors.New("client game handshake is incomplete")
-		}
 		host := r.host
 		s.mu.RUnlock()
 		if !host.enqueue(envelope) {
@@ -431,9 +492,6 @@ func (s *Server) routeGameMessage(c *connection, envelope *wire.WireEnvelope) er
 			if !target.enqueue(envelope) {
 				return errors.New("target write queue unavailable")
 			}
-			if envelope.MessageType == MessageWelcome {
-				target.markGameReady()
-			}
 			return nil
 		}
 		if envelope.Delivery == wire.Delivery_BROADCAST {
@@ -443,9 +501,7 @@ func (s *Server) routeGameMessage(c *connection, envelope *wire.WireEnvelope) er
 			}
 			targets := make([]*connection, 0, len(r.clients))
 			for _, target := range r.clients {
-				if target.isGameReady() {
-					targets = append(targets, target)
-				}
+				targets = append(targets, target)
 			}
 			s.mu.RUnlock()
 			for _, target := range targets {
@@ -504,13 +560,34 @@ func (s *Server) onDisconnect(c *connection) {
 	if role == roleClient && r.clients[string(id)] == c {
 		delete(r.clients, string(id))
 		r.info.ConnectedPlayers = int32(1 + len(r.clients))
+		if r.info.Status == wire.RelayRoomStatus_RELAY_ROOM_PLAYING && len(r.matchID) == 16 {
+			deadline := time.Now().Add(s.config.ReconnectGrace)
+			r.reservations[string(id)] = deadline
+			host := r.host
+			s.mu.Unlock()
+			_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "reconnecting"}, roomID)
+			time.AfterFunc(s.config.ReconnectGrace, func() { s.expireReservation(roomID, id, deadline) })
+			return
+		}
 		host := r.host
 		s.mu.Unlock()
-		notice := &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "disconnected"}
-		_ = s.sendControl(host, MessageRelayPeerLeft, notice, roomID)
+		_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "disconnected"}, roomID)
 		return
 	}
 	s.mu.Unlock()
+}
+
+func (s *Server) expireReservation(roomID, clientID []byte, deadline time.Time) {
+	s.mu.Lock()
+	r := s.rooms[string(roomID)]
+	if r == nil || !r.reservations[string(clientID)].Equal(deadline) {
+		s.mu.Unlock()
+		return
+	}
+	delete(r.reservations, string(clientID))
+	host := r.host
+	s.mu.Unlock()
+	_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(clientID), Reason: "reconnect timeout"}, roomID)
 }
 
 func (s *Server) notifyRoomClosed(client *connection, reason string, roomID []byte) {

@@ -2,6 +2,17 @@
 
 TCP relay and public room directory for XingyiStarry MP. The relay keeps rooms in memory and forwards protobuf envelopes; it does not simulate games or retain authority logs and snapshots.
 
+Protocol v12 deliberately keeps the relay outside the game protocol. The relay
+parses only `RELAY_CONTROL` messages. Every other envelope is validated only for
+connection identity, room, and delivery direction, then forwarded with an opaque
+payload. The game protocol version lives in `Hello.protocol_version` and is
+checked by the host, not by the relay.
+
+Playing rooms may remain joinable while they report available seats. A dropped
+client identity can be rebound to a new physical connection for 15 seconds when
+the room and match IDs agree; active connections cannot be replaced. Explicit
+leave skips this grace period.
+
 ## Build and test
 
 ```powershell

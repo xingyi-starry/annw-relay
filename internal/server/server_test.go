@@ -14,6 +14,13 @@ import (
 	"mprelay/internal/wire"
 )
 
+const (
+	opaqueGameHello     uint32 = 1
+	opaqueGameWelcome   uint32 = 2
+	opaqueGameHeartbeat uint32 = 4
+	opaqueGameRoomState uint32 = 5
+)
+
 type testPeer struct {
 	t    *testing.T
 	conn net.Conn
@@ -64,7 +71,7 @@ func (p *testPeer) control(messageType uint32, payload proto.Message, roomID, cl
 	if err != nil {
 		p.t.Fatal(err)
 	}
-	p.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: messageType, Payload: data, RoomId: cloneBytes(roomID), ClientId: cloneBytes(clientID), Delivery: wire.Delivery_RELAY_CONTROL})
+	p.send(&wire.WireEnvelope{MessageType: messageType, Payload: data, RoomId: cloneBytes(roomID), ClientId: cloneBytes(clientID), Delivery: wire.Delivery_RELAY_CONTROL})
 }
 
 func (p *testPeer) receiveType(messageType uint32) *wire.WireEnvelope {
@@ -142,21 +149,21 @@ func TestRoomLifecycleAndRouting(t *testing.T) {
 		t.Fatal("host received wrong joined client id")
 	}
 
-	toHost := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHello, Payload: []byte("opaque"), RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
+	toHost := &wire.WireEnvelope{MessageType: opaqueGameHello, Payload: []byte("opaque"), RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
 	client.send(toHost)
-	forwarded := host.receiveType(MessageHello)
+	forwarded := host.receiveType(opaqueGameHello)
 	if !proto.Equal(toHost, forwarded) {
 		t.Fatalf("TO_HOST envelope changed: %v", forwarded)
 	}
 
-	toClient := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageWelcome, Payload: []byte("reply"), RoomId: roomID, ClientId: hostID, TargetClientId: joined.ClientId, Delivery: wire.Delivery_TO_CLIENT}
+	toClient := &wire.WireEnvelope{MessageType: opaqueGameWelcome, Payload: []byte("reply"), RoomId: roomID, ClientId: hostID, TargetClientId: joined.ClientId, Delivery: wire.Delivery_TO_CLIENT}
 	host.send(toClient)
-	if forwarded := client.receiveType(MessageWelcome); !proto.Equal(toClient, forwarded) {
+	if forwarded := client.receiveType(opaqueGameWelcome); !proto.Equal(toClient, forwarded) {
 		t.Fatalf("TO_CLIENT envelope changed: %v", forwarded)
 	}
-	logicalHeartbeat := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHeartbeat, RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
+	logicalHeartbeat := &wire.WireEnvelope{MessageType: opaqueGameHeartbeat, RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
 	client.send(logicalHeartbeat)
-	if forwarded := host.receiveType(MessageHeartbeat); !proto.Equal(logicalHeartbeat, forwarded) {
+	if forwarded := host.receiveType(opaqueGameHeartbeat); !proto.Equal(logicalHeartbeat, forwarded) {
 		t.Fatalf("TO_HOST heartbeat changed: %v", forwarded)
 	}
 
@@ -166,11 +173,11 @@ func TestRoomLifecycleAndRouting(t *testing.T) {
 		t.Fatalf("second join failed: %+v", joined2)
 	}
 	_ = host.receiveType(MessageRelayPeerJoined)
-	host.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageWelcome, RoomId: roomID, ClientId: hostID, TargetClientId: joined2.ClientId, Delivery: wire.Delivery_TO_CLIENT})
-	_ = client2.receiveType(MessageWelcome)
-	broadcast := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageRoomState, Payload: []byte("all"), RoomId: roomID, ClientId: hostID, Delivery: wire.Delivery_BROADCAST}
+	host.send(&wire.WireEnvelope{MessageType: opaqueGameWelcome, RoomId: roomID, ClientId: hostID, TargetClientId: joined2.ClientId, Delivery: wire.Delivery_TO_CLIENT})
+	_ = client2.receiveType(opaqueGameWelcome)
+	broadcast := &wire.WireEnvelope{MessageType: opaqueGameRoomState, Payload: []byte("all"), RoomId: roomID, ClientId: hostID, Delivery: wire.Delivery_BROADCAST}
 	host.send(broadcast)
-	if !proto.Equal(broadcast, client.receiveType(MessageRoomState)) || !proto.Equal(broadcast, client2.receiveType(MessageRoomState)) {
+	if !proto.Equal(broadcast, client.receiveType(opaqueGameRoomState)) || !proto.Equal(broadcast, client2.receiveType(opaqueGameRoomState)) {
 		t.Fatal("broadcast was not preserved")
 	}
 
@@ -230,7 +237,7 @@ func TestRoomStatusTransitions(t *testing.T) {
 func TestRelayControlHeartbeatKeepsUnboundConnectionUsable(t *testing.T) {
 	address, _ := startTestServer(t)
 	peer := connectPeer(t, address)
-	peer.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHeartbeat, Delivery: wire.Delivery_RELAY_CONTROL})
+	peer.send(&wire.WireEnvelope{MessageType: MessageRelayHeartbeat, Delivery: wire.Delivery_RELAY_CONTROL})
 	peer.control(MessageRelayListRooms, &wire.RelayListRoomsRequest{RequestId: 30}, nil, nil)
 	list := new(wire.RelayListRoomsResponse)
 	if err := proto.Unmarshal(peer.receiveType(MessageRelayRoomList).Payload, list); err != nil {
@@ -238,6 +245,92 @@ func TestRelayControlHeartbeatKeepsUnboundConnectionUsable(t *testing.T) {
 	}
 	if list.RequestId != 30 {
 		t.Fatalf("unexpected list response request id %d", list.RequestId)
+	}
+}
+
+func TestPlayingJoinTransparentRoutingAndFastReconnect(t *testing.T) {
+	address, relay := startTestServer(t)
+	relay.config.ReconnectGrace = 120 * time.Millisecond
+	roomID := bytes.Repeat([]byte{0x71}, 16)
+	matchID := bytes.Repeat([]byte{0x72}, 16)
+	host := connectPeer(t, address)
+	hostID := registerHost(t, host, roomID, "")
+	host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: 70, RoomId: roomID, Status: wire.RelayRoomStatus_RELAY_ROOM_PLAYING, AvailableSeats: 2, MatchId: matchID}, roomID, hostID)
+	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); !response.Success {
+		t.Fatalf("playing update failed: %+v", response)
+	}
+
+	client := connectPeer(t, address)
+	joined := joinClient(t, client, roomID, "", 71)
+	if !joined.Success {
+		t.Fatalf("playing room rejected join: %+v", joined)
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+	unknown := &wire.WireEnvelope{MessageType: 60000, Payload: []byte("future-game-message"), RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}
+	client.send(unknown)
+	if forwarded := host.receiveType(60000); !proto.Equal(unknown, forwarded) {
+		t.Fatal("unknown game message was not forwarded opaquely")
+	}
+
+	_ = client.conn.Close()
+	disconnected := new(wire.RelayPeerNotice)
+	if err := proto.Unmarshal(host.receiveType(MessageRelayPeerLeft).Payload, disconnected); err != nil {
+		t.Fatal(err)
+	}
+	if disconnected.Reason != "reconnecting" {
+		t.Fatalf("unexpected initial disconnect reason %q", disconnected.Reason)
+	}
+
+	resumed := connectPeer(t, address)
+	resumed.control(MessageRelayResumeRoom, &wire.RelayResumeRoomRequest{RequestId: 72, RoomId: roomID, ClientId: joined.ClientId, MatchId: matchID}, nil, nil)
+	if response := responseFrom(t, resumed.receiveType(MessageRelayControlResponse)); !response.Success || !bytes.Equal(response.ClientId, joined.ClientId) {
+		t.Fatalf("resume failed: %+v", response)
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+
+	hijacker := connectPeer(t, address)
+	hijacker.control(MessageRelayResumeRoom, &wire.RelayResumeRoomRequest{RequestId: 73, RoomId: roomID, ClientId: joined.ClientId, MatchId: matchID}, nil, nil)
+	if response := responseFrom(t, hijacker.receiveType(MessageRelayControlResponse)); response.Success {
+		t.Fatal("active connection was hijacked")
+	}
+
+	_ = resumed.conn.Close()
+	if notice := host.receiveType(MessageRelayPeerLeft); func() string {
+		value := new(wire.RelayPeerNotice)
+		_ = proto.Unmarshal(notice.Payload, value)
+		return value.Reason
+	}() != "reconnecting" {
+		t.Fatal("resumed disconnect did not enter grace")
+	}
+	timedOut := new(wire.RelayPeerNotice)
+	if err := proto.Unmarshal(host.receiveType(MessageRelayPeerLeft).Payload, timedOut); err != nil {
+		t.Fatal(err)
+	}
+	if timedOut.Reason != "reconnect timeout" {
+		t.Fatalf("unexpected expiry reason %q", timedOut.Reason)
+	}
+	expired := connectPeer(t, address)
+	expired.control(MessageRelayResumeRoom, &wire.RelayResumeRoomRequest{RequestId: 74, RoomId: roomID, ClientId: joined.ClientId, MatchId: matchID}, nil, nil)
+	if response := responseFrom(t, expired.receiveType(MessageRelayControlResponse)); response.Success {
+		t.Fatal("expired reservation resumed")
+	}
+
+	leaver := connectPeer(t, address)
+	leftJoin := joinClient(t, leaver, roomID, "", 75)
+	if !leftJoin.Success {
+		t.Fatal("leave-test join failed")
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+	leaver.control(MessageRelayLeaveRoom, &wire.RelayRoomRequest{RequestId: 76, RoomId: roomID}, roomID, leftJoin.ClientId)
+	if response := responseFrom(t, leaver.receiveType(MessageRelayControlResponse)); !response.Success {
+		t.Fatal("explicit leave failed")
+	}
+	left := new(wire.RelayPeerNotice)
+	if err := proto.Unmarshal(host.receiveType(MessageRelayPeerLeft).Payload, left); err != nil {
+		t.Fatal(err)
+	}
+	if left.Reason != "left" {
+		t.Fatalf("explicit leave was not immediate: %q", left.Reason)
 	}
 }
 
@@ -303,14 +396,14 @@ func TestIdentityForgeryAndRoomIsolation(t *testing.T) {
 	joinedA := joinClient(t, clientA, roomA, "", 10)
 	_ = hostA.receiveType(MessageRelayPeerJoined)
 
-	clientA.send(&wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHello, RoomId: roomB, ClientId: joinedA.ClientId, Delivery: wire.Delivery_TO_HOST})
+	clientA.send(&wire.WireEnvelope{MessageType: opaqueGameHello, RoomId: roomB, ClientId: joinedA.ClientId, Delivery: wire.Delivery_TO_HOST})
 	_ = clientA.conn.SetReadDeadline(time.Now().Add(3 * time.Second))
 	if _, err := readEnvelope(clientA.conn, 16*1024*1024); err == nil {
 		t.Fatal("forged cross-room envelope did not disconnect sender")
 	}
 
 	hostB.conn.SetReadDeadline(time.Now().Add(150 * time.Millisecond))
-	if envelope, err := readEnvelope(hostB.conn, 16*1024*1024); err == nil && envelope.MessageType == MessageHello {
+	if envelope, err := readEnvelope(hostB.conn, 16*1024*1024); err == nil && envelope.MessageType == opaqueGameHello {
 		t.Fatal("cross-room message reached other host")
 	}
 }

@@ -34,7 +34,6 @@ type connection struct {
 	role        connectionRole
 	id          []byte
 	roomID      []byte
-	gameReady   bool
 	send        chan sendItem
 	closed      chan struct{}
 	closeOnce   sync.Once
@@ -78,20 +77,7 @@ func (c *connection) binding() (connectionRole, []byte, []byte) {
 func (c *connection) bind(role connectionRole, id, roomID []byte) {
 	c.mu.Lock()
 	c.role, c.id, c.roomID = role, cloneBytes(id), cloneBytes(roomID)
-	c.gameReady = role == roleHost
 	c.mu.Unlock()
-}
-
-func (c *connection) markGameReady() {
-	c.mu.Lock()
-	c.gameReady = true
-	c.mu.Unlock()
-}
-
-func (c *connection) isGameReady() bool {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.gameReady
 }
 
 func (c *connection) unbind() {
@@ -188,7 +174,7 @@ func (c *connection) writeLoop() {
 				return
 			}
 		case <-ticker.C:
-			heartbeat := &wire.WireEnvelope{ProtocolVersion: ProtocolVersion, MessageType: MessageHeartbeat, Delivery: wire.Delivery_RELAY_CONTROL}
+			heartbeat := &wire.WireEnvelope{MessageType: MessageRelayHeartbeat, Delivery: wire.Delivery_RELAY_CONTROL}
 			framed, err := marshalEnvelope(heartbeat, c.server.config.MaxPacketBytes)
 			if err != nil || c.write(framed) != nil {
 				c.close()
