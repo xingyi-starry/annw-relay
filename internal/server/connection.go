@@ -3,7 +3,6 @@ package server
 import (
 	"errors"
 	"io"
-	"log"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -28,7 +27,7 @@ type sendItem struct {
 type connection struct {
 	server *Server
 	conn   net.Conn
-	logger *log.Logger
+	connID uint64
 
 	mu          sync.RWMutex
 	role        connectionRole
@@ -58,7 +57,7 @@ func (c *connection) allowPasswordAttempt() bool {
 
 func newConnection(server *Server, conn net.Conn) *connection {
 	return &connection{
-		server: server, conn: conn, logger: server.logger,
+		server: server, conn: conn, connID: server.nextConnID.Add(1),
 		send: make(chan sendItem, 128), closed: make(chan struct{}),
 	}
 }
@@ -114,6 +113,7 @@ func (c *connection) enqueueMode(envelope *wire.WireEnvelope, closeAfter bool) b
 	for {
 		current := c.queuedBytes.Load()
 		if current+size > c.server.config.WriteQueueBytes {
+			c.server.logFor(c).WithField("event", "write_queue_overflow").Warn("connection write queue exhausted")
 			go c.close()
 			return false
 		}
@@ -129,6 +129,7 @@ func (c *connection) enqueueMode(envelope *wire.WireEnvelope, closeAfter bool) b
 		return false
 	default:
 		c.queuedBytes.Add(-size)
+		c.server.logFor(c).WithField("event", "write_queue_overflow").Warn("connection write queue exhausted")
 		go c.close()
 		return false
 	}
@@ -143,16 +144,16 @@ func (c *connection) readLoop() {
 		envelope, err := readEnvelope(c.conn, c.server.config.MaxPacketBytes)
 		if err != nil {
 			if !errors.Is(err, io.EOF) && !errors.Is(err, net.ErrClosed) {
-				c.logger.Printf("read %s: %v", c.conn.RemoteAddr(), err)
+				c.server.logFor(c).WithField("event", "read_failed").WithError(err).Warn("connection read failed")
 			}
 			return
 		}
 		if !c.allowMessage() {
-			c.logger.Printf("rate limit exceeded by %s", c.conn.RemoteAddr())
+			c.server.logFor(c).WithField("event", "rate_limit_exceeded").Warn("message rate limit exceeded")
 			return
 		}
 		if err := c.server.handleEnvelope(c, envelope); err != nil {
-			c.logger.Printf("protocol violation from %s: %v", c.conn.RemoteAddr(), err)
+			c.server.logFor(c).WithField("event", "protocol_violation").WithError(err).Warn("invalid protocol message")
 			return
 		}
 	}
@@ -165,6 +166,7 @@ func (c *connection) writeLoop() {
 		select {
 		case item := <-c.send:
 			if err := c.write(item.data); err != nil {
+				c.server.logFor(c).WithField("event", "write_failed").WithError(err).Warn("connection write failed")
 				c.close()
 				return
 			}

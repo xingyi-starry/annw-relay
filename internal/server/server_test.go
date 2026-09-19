@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"io"
-	"log"
 	"net"
 	"strings"
 	"testing"
@@ -37,7 +36,7 @@ func startTestServer(t *testing.T) (string, *Server) {
 	config.HeartbeatIntervalMS = 0
 	config.HeartbeatTimeout = 5 * time.Second
 	config.HeartbeatTimeoutMS = 0
-	relay := New(config, log.New(io.Discard, "", 0))
+	relay := New(config, NewLogger(io.Discard))
 	go func() { _ = relay.Serve(listener) }()
 	t.Cleanup(func() { _ = relay.Close() })
 	return listener.Addr().String(), relay

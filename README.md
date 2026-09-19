@@ -23,6 +23,12 @@ go vet ./...
 The server is built from source on its target machine with `go build`. No local
 cross-build script or `dist` output is maintained.
 
+The v0.7.0 development relay uses logrus v1.10.2. It writes single-line UTC
+events to standard output with connection, room, client, match, and request IDs
+when available. Heartbeats and forwarded game payloads are not logged at Info;
+passwords and payload bytes are never included. Use `go test -race ./...` on a
+platform with a working race-enabled Go toolchain before release.
+
 `generate.ps1` reads the canonical protocol directly from the sibling plugin
 project at `../xingyistarry-mp/src/XingyiStarry.Mp.Protocol/Protos/multiplayer.proto`
 and regenerates `internal/wire/multiplayer.pb.go`. The relay repository does not

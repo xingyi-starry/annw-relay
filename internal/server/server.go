@@ -5,13 +5,16 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"log"
+	"io"
 	"net"
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unicode/utf8"
+
+	"github.com/sirupsen/logrus"
 
 	"google.golang.org/protobuf/proto"
 	"mprelay/internal/wire"
@@ -29,13 +32,14 @@ type room struct {
 }
 
 type Server struct {
-	config   Config
-	logger   *log.Logger
-	mu       sync.RWMutex
-	rooms    map[string]*room
-	conns    map[*connection]struct{}
-	listener net.Listener
-	closed   bool
+	config     Config
+	logger     *logrus.Logger
+	nextConnID atomic.Uint64
+	mu         sync.RWMutex
+	rooms      map[string]*room
+	conns      map[*connection]struct{}
+	listener   net.Listener
+	closed     bool
 }
 
 const (
@@ -47,10 +51,10 @@ const (
 	maxPasswordBytes    = 256
 )
 
-func New(config Config, logger *log.Logger) *Server {
+func New(config Config, logger *logrus.Logger) *Server {
 	config.normalize()
 	if logger == nil {
-		logger = log.Default()
+		logger = NewLogger(io.Discard)
 	}
 	return &Server{config: config, logger: logger, rooms: make(map[string]*room), conns: make(map[*connection]struct{})}
 }
@@ -83,6 +87,7 @@ func (s *Server) Serve(listener net.Listener) error {
 		}
 		s.conns[peer] = struct{}{}
 		s.mu.Unlock()
+		s.logFor(peer).WithField("event", "connection_opened").Info("connection accepted")
 		peer.start()
 	}
 }
@@ -184,6 +189,7 @@ func (s *Server) registerRoom(c *connection, envelope *wire.WireEnvelope) error 
 	s.rooms[key] = r
 	c.bind(roleHost, hostID, req.RoomId)
 	s.mu.Unlock()
+	s.logFor(c).WithFields(logrus.Fields{"event": "room_created", "request_id": req.RequestId}).Info("room registered")
 	return s.controlSuccess(c, req.RequestId, hostID, req.RoomId)
 }
 
@@ -220,6 +226,7 @@ func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	r.info.ConnectedPlayers = int32(1 + len(r.clients))
 	s.mu.Unlock()
+	s.logFor(c).WithFields(logrus.Fields{"event": "room_updated", "request_id": req.RequestId, "match_id": formatID(req.MatchId), "status": req.Status.String(), "available_seats": req.AvailableSeats}).Info("room metadata updated")
 	return s.controlSuccess(c, req.RequestId, nil, r.id)
 }
 
@@ -309,6 +316,7 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 	host := r.host
 	roomID = cloneBytes(r.id)
 	s.mu.Unlock()
+	s.logFor(c).WithFields(logrus.Fields{"event": "client_joined", "request_id": req.RequestId}).Info("client joined room")
 	if err := s.controlSuccess(c, req.RequestId, clientID, roomID); err != nil {
 		return err
 	}
@@ -357,6 +365,7 @@ func (s *Server) resumeRoom(c *connection, envelope *wire.WireEnvelope) error {
 	host := r.host
 	roomID := cloneBytes(r.id)
 	s.mu.Unlock()
+	s.logFor(c).WithFields(logrus.Fields{"event": "client_resumed", "request_id": req.RequestId, "match_id": formatID(req.MatchId)}).Info("client resumed room")
 	if err := s.controlSuccess(c, req.RequestId, req.ClientId, roomID); err != nil {
 		return err
 	}
@@ -377,6 +386,7 @@ func (s *Server) closeJoining(c *connection, envelope *wire.WireEnvelope) error 
 		r.info.Status = wire.RelayRoomStatus_RELAY_ROOM_CLOSED
 	}
 	s.mu.Unlock()
+	s.logFor(c).WithFields(logrus.Fields{"event": "joining_closed", "request_id": req.RequestId}).Info("room joining closed")
 	return s.controlSuccess(c, req.RequestId, nil, r.id)
 }
 
@@ -406,6 +416,7 @@ func (s *Server) leaveRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	c.unbind()
 	s.mu.Unlock()
+	s.logger.WithFields(logrus.Fields{"event": "client_left", "room_id": formatID(roomID), "client_id": formatID(id), "request_id": req.RequestId, "conn_id": c.connID}).Info("client left room")
 	if host != nil {
 		_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "left"}, roomID)
 	}
@@ -446,6 +457,7 @@ func (s *Server) closeRoom(host *connection, requestID uint64, reason string) er
 	}
 	host.unbind()
 	s.mu.Unlock()
+	s.logger.WithFields(logrus.Fields{"event": "room_closed", "room_id": formatID(roomID), "client_id": formatID(r.hostID), "match_id": formatID(r.matchID), "request_id": requestID, "reason": reason}).Info("room closed")
 	if err := s.controlSuccess(host, requestID, nil, roomID); err != nil {
 		return err
 	}
@@ -552,6 +564,7 @@ func (s *Server) onDisconnect(c *connection) {
 			clients = append(clients, client)
 		}
 		s.mu.Unlock()
+		s.logger.WithFields(logrus.Fields{"event": "host_disconnected", "room_id": formatID(roomID), "client_id": formatID(id), "match_id": formatID(r.matchID), "conn_id": c.connID}).Info("host disconnected; room closed")
 		for _, client := range clients {
 			s.notifyRoomClosed(client, "host disconnected", roomID)
 		}
@@ -565,12 +578,14 @@ func (s *Server) onDisconnect(c *connection) {
 			r.reservations[string(id)] = deadline
 			host := r.host
 			s.mu.Unlock()
+			s.logger.WithFields(logrus.Fields{"event": "reconnect_reserved", "room_id": formatID(roomID), "client_id": formatID(id), "match_id": formatID(r.matchID), "conn_id": c.connID, "grace_seconds": s.config.ReconnectGrace.Seconds()}).Info("client connection reserved")
 			_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "reconnecting"}, roomID)
 			time.AfterFunc(s.config.ReconnectGrace, func() { s.expireReservation(roomID, id, deadline) })
 			return
 		}
 		host := r.host
 		s.mu.Unlock()
+		s.logger.WithFields(logrus.Fields{"event": "client_disconnected", "room_id": formatID(roomID), "client_id": formatID(id), "conn_id": c.connID}).Info("client disconnected")
 		_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "disconnected"}, roomID)
 		return
 	}
@@ -587,6 +602,7 @@ func (s *Server) expireReservation(roomID, clientID []byte, deadline time.Time) 
 	delete(r.reservations, string(clientID))
 	host := r.host
 	s.mu.Unlock()
+	s.logger.WithFields(logrus.Fields{"event": "reconnect_expired", "room_id": formatID(roomID), "client_id": formatID(clientID), "match_id": formatID(r.matchID)}).Info("client reconnect reservation expired")
 	_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(clientID), Reason: "reconnect timeout"}, roomID)
 }
 
@@ -605,6 +621,11 @@ func (s *Server) controlSuccess(c *connection, requestID uint64, clientID, roomI
 }
 
 func (s *Server) controlFailure(c *connection, requestID uint64, reason string, roomID []byte) error {
+	fields := logrus.Fields{"event": "control_rejected", "request_id": requestID, "reason": reason}
+	if value := formatID(roomID); value != "" {
+		fields["room_id"] = value
+	}
+	s.logFor(c).WithFields(fields).Warn("control request rejected")
 	return s.controlResponse(c, requestID, false, reason, nil, roomID)
 }
 

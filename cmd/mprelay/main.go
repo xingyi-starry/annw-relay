@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -17,13 +16,13 @@ func main() {
 	configPath := flag.String("config", "relay.json", "path to JSON configuration")
 	flag.Parse()
 
-	logger := log.New(os.Stdout, "mprelay ", log.LstdFlags|log.LUTC)
+	logger := server.NewLogger(os.Stdout)
 	config := server.DefaultConfig()
 	if err := loadConfig(*configPath, &config); err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
 			logger.Fatalf("load config: %v", err)
 		}
-		logger.Printf("config %s not found; using defaults", *configPath)
+		logger.WithField("event", "config_defaulted").Infof("config %s not found; using defaults", *configPath)
 	}
 
 	listener, err := net.Listen("tcp", config.ListenAddress)
@@ -31,7 +30,7 @@ func main() {
 		logger.Fatalf("listen on %s: %v", config.ListenAddress, err)
 	}
 	relay := server.New(config, logger)
-	logger.Printf("listening on %s", listener.Addr())
+	logger.WithField("event", "listening").Infof("listening on %s", listener.Addr())
 
 	stopped := make(chan os.Signal, 1)
 	signal.Notify(stopped, os.Interrupt, syscall.SIGTERM)
