@@ -29,6 +29,18 @@ when available. Heartbeats and forwarded game payloads are not logged at Info;
 passwords and payload bytes are never included. Use `go test -race ./...` on a
 platform with a working race-enabled Go toolchain before release.
 
+Each connection has a bounded Go channel send queue, configured by
+`write_queue_messages`. Its payload remains a `WireEnvelope`; the small queue
+item wrapper only marks an optional graceful close after that envelope. A full
+queue applies normal channel backpressure. The relay does not pre-encode
+messages, maintain a second byte counter, or turn a temporary full queue into a
+protocol error. Encoding happens in the connection's single writer goroutine.
+
+Transport state is explicit (`Open`, `Draining`, `Closed`). Connection contexts
+stop blocked producers and I/O loops; graceful close lets the writer flush its
+final envelope, while server shutdown cancels transports without creating
+reconnect reservations or normal runtime peer notifications.
+
 `generate.ps1` reads the canonical protocol directly from the sibling plugin
 project at `../xingyistarry-mp/src/XingyiStarry.Mp.Protocol/Protos/multiplayer.proto`
 and regenerates `internal/wire/multiplayer.pb.go`. The relay repository does not

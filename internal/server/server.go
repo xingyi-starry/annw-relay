@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"errors"
 	"fmt"
@@ -35,6 +36,11 @@ type Server struct {
 	config     Config
 	logger     *logrus.Logger
 	nextConnID atomic.Uint64
+	ctx        context.Context
+	cancel     context.CancelFunc
+	closeOnce  sync.Once
+	closedDone chan struct{}
+	background sync.WaitGroup
 	mu         sync.RWMutex
 	rooms      map[string]*room
 	conns      map[*connection]struct{}
@@ -56,7 +62,8 @@ func New(config Config, logger *logrus.Logger) *Server {
 	if logger == nil {
 		logger = NewLogger(io.Discard)
 	}
-	return &Server{config: config, logger: logger, rooms: make(map[string]*room), conns: make(map[*connection]struct{})}
+	ctx, cancel := context.WithCancel(context.Background())
+	return &Server{config: config, logger: logger, ctx: ctx, cancel: cancel, closedDone: make(chan struct{}), rooms: make(map[string]*room), conns: make(map[*connection]struct{})}
 }
 
 func (s *Server) Serve(listener net.Listener) error {
@@ -86,31 +93,37 @@ func (s *Server) Serve(listener net.Listener) error {
 			continue
 		}
 		s.conns[peer] = struct{}{}
+		peer.start()
 		s.mu.Unlock()
 		s.logFor(peer).WithField("event", "connection_opened").Info("connection accepted")
-		peer.start()
 	}
 }
 
 func (s *Server) Close() error {
-	s.mu.Lock()
-	if s.closed {
+	s.closeOnce.Do(func() {
+		s.mu.Lock()
+		s.closed = true
+		listener := s.listener
+		peers := make([]*connection, 0, len(s.conns))
+		for peer := range s.conns {
+			peers = append(peers, peer)
+		}
+		s.rooms = make(map[string]*room)
 		s.mu.Unlock()
-		return nil
-	}
-	s.closed = true
-	listener := s.listener
-	peers := make([]*connection, 0, len(s.conns))
-	for peer := range s.conns {
-		peers = append(peers, peer)
-	}
-	s.mu.Unlock()
-	if listener != nil {
-		_ = listener.Close()
-	}
-	for _, peer := range peers {
-		peer.close()
-	}
+		s.cancel()
+		if listener != nil {
+			_ = listener.Close()
+		}
+		for _, peer := range peers {
+			peer.abort(disconnectServerShutdown)
+		}
+		for _, peer := range peers {
+			peer.wait()
+		}
+		s.background.Wait()
+		close(s.closedDone)
+	})
+	<-s.closedDone
 	return nil
 }
 
@@ -424,7 +437,7 @@ func (s *Server) leaveRoom(c *connection, envelope *wire.WireEnvelope) error {
 	if err != nil {
 		return err
 	}
-	c.sendAndClose(response)
+	c.drainAndClose(response, disconnectExplicitLeave)
 	return nil
 }
 
@@ -486,9 +499,7 @@ func (s *Server) routeGameMessage(c *connection, envelope *wire.WireEnvelope) er
 		}
 		host := r.host
 		s.mu.RUnlock()
-		if !host.enqueue(envelope) {
-			return errors.New("host write queue unavailable")
-		}
+		host.enqueue(envelope)
 		return nil
 	case roleHost:
 		if envelope.Delivery == wire.Delivery_TO_CLIENT {
@@ -501,9 +512,7 @@ func (s *Server) routeGameMessage(c *connection, envelope *wire.WireEnvelope) er
 			if target == nil {
 				return errors.New("target client is not in room")
 			}
-			if !target.enqueue(envelope) {
-				return errors.New("target write queue unavailable")
-			}
+			target.enqueue(envelope)
 			return nil
 		}
 		if envelope.Delivery == wire.Delivery_BROADCAST {
@@ -548,10 +557,14 @@ func validBoundEnvelope(envelope *wire.WireEnvelope, roomID []byte, c *connectio
 	return bytes.Equal(envelope.RoomId, roomID) && bytes.Equal(envelope.ClientId, id) && len(envelope.TargetClientId) == 0
 }
 
-func (s *Server) onDisconnect(c *connection) {
+func (s *Server) onConnectionClosed(c *connection, cause disconnectCause) {
 	role, id, roomID := c.binding()
 	s.mu.Lock()
 	delete(s.conns, c)
+	if s.closed || cause == disconnectServerShutdown || cause == disconnectExplicitLeave || cause == disconnectRoomClosed {
+		s.mu.Unlock()
+		return
+	}
 	r := s.rooms[string(roomID)]
 	if r == nil {
 		s.mu.Unlock()
@@ -573,14 +586,14 @@ func (s *Server) onDisconnect(c *connection) {
 	if role == roleClient && r.clients[string(id)] == c {
 		delete(r.clients, string(id))
 		r.info.ConnectedPlayers = int32(1 + len(r.clients))
-		if r.info.Status == wire.RelayRoomStatus_RELAY_ROOM_PLAYING && len(r.matchID) == 16 {
+		if reconnectableDisconnect(cause) && r.info.Status == wire.RelayRoomStatus_RELAY_ROOM_PLAYING && len(r.matchID) == 16 {
 			deadline := time.Now().Add(s.config.ReconnectGrace)
 			r.reservations[string(id)] = deadline
 			host := r.host
 			s.mu.Unlock()
 			s.logger.WithFields(logrus.Fields{"event": "reconnect_reserved", "room_id": formatID(roomID), "client_id": formatID(id), "match_id": formatID(r.matchID), "conn_id": c.connID, "grace_seconds": s.config.ReconnectGrace.Seconds()}).Info("client connection reserved")
 			_ = s.sendControl(host, MessageRelayPeerLeft, &wire.RelayPeerNotice{ClientId: cloneBytes(id), Reason: "reconnecting"}, roomID)
-			time.AfterFunc(s.config.ReconnectGrace, func() { s.expireReservation(roomID, id, deadline) })
+			s.scheduleReservationExpiry(roomID, id, deadline)
 			return
 		}
 		host := r.host
@@ -592,10 +605,34 @@ func (s *Server) onDisconnect(c *connection) {
 	s.mu.Unlock()
 }
 
+func reconnectableDisconnect(cause disconnectCause) bool {
+	return cause == disconnectRemote || cause == disconnectTimeout || cause == disconnectWriteFailure
+}
+
+func (s *Server) scheduleReservationExpiry(roomID, clientID []byte, deadline time.Time) {
+	s.mu.Lock()
+	if s.closed {
+		s.mu.Unlock()
+		return
+	}
+	s.background.Add(1)
+	s.mu.Unlock()
+	timer := time.NewTimer(time.Until(deadline))
+	go func() {
+		defer s.background.Done()
+		defer timer.Stop()
+		select {
+		case <-timer.C:
+			s.expireReservation(roomID, clientID, deadline)
+		case <-s.ctx.Done():
+		}
+	}()
+}
+
 func (s *Server) expireReservation(roomID, clientID []byte, deadline time.Time) {
 	s.mu.Lock()
 	r := s.rooms[string(roomID)]
-	if r == nil || !r.reservations[string(clientID)].Equal(deadline) {
+	if s.closed || r == nil || !r.reservations[string(clientID)].Equal(deadline) {
 		s.mu.Unlock()
 		return
 	}
@@ -610,10 +647,10 @@ func (s *Server) notifyRoomClosed(client *connection, reason string, roomID []by
 	notice := &wire.RelayPeerNotice{Reason: reason}
 	envelope, err := makeControlEnvelope(MessageRelayCloseRoom, notice, roomID)
 	if err != nil {
-		client.close()
+		client.abort(disconnectRoomClosed)
 		return
 	}
-	client.sendAndClose(envelope)
+	client.drainAndClose(envelope, disconnectRoomClosed)
 }
 
 func (s *Server) controlSuccess(c *connection, requestID uint64, clientID, roomID []byte) error {
@@ -634,9 +671,7 @@ func (s *Server) controlResponse(c *connection, requestID uint64, success bool, 
 	if err != nil {
 		return err
 	}
-	if !c.enqueue(envelope) {
-		return errors.New("control response write queue unavailable")
-	}
+	c.enqueue(envelope)
 	return nil
 }
 
@@ -650,9 +685,7 @@ func (s *Server) sendControl(c *connection, messageType uint32, payload proto.Me
 	if err != nil {
 		return err
 	}
-	if !c.enqueue(envelope) {
-		return errors.New("control write queue unavailable")
-	}
+	c.enqueue(envelope)
 	return nil
 }
 

@@ -8,7 +8,7 @@ type Config struct {
 	MaxConnections       int           `json:"max_connections"`
 	MaxRooms             int           `json:"max_rooms"`
 	MaxMessagesPerSecond int           `json:"max_messages_per_second"`
-	WriteQueueBytes      int64         `json:"write_queue_bytes"`
+	WriteQueueMessages   int           `json:"write_queue_messages"`
 	HeartbeatInterval    time.Duration `json:"-"`
 	HeartbeatTimeout     time.Duration `json:"-"`
 	HeartbeatIntervalMS  int           `json:"heartbeat_interval_ms"`
@@ -24,7 +24,7 @@ func DefaultConfig() Config {
 		MaxConnections:       1024,
 		MaxRooms:             256,
 		MaxMessagesPerSecond: 200,
-		WriteQueueBytes:      8 * 1024 * 1024,
+		WriteQueueMessages:   128,
 		HeartbeatInterval:    2 * time.Second,
 		HeartbeatTimeout:     10 * time.Second,
 		HeartbeatIntervalMS:  2000,
@@ -51,8 +51,8 @@ func (c *Config) normalize() {
 	if c.MaxMessagesPerSecond <= 0 {
 		c.MaxMessagesPerSecond = defaults.MaxMessagesPerSecond
 	}
-	if c.WriteQueueBytes <= 0 {
-		c.WriteQueueBytes = defaults.WriteQueueBytes
+	if c.WriteQueueMessages <= 0 {
+		c.WriteQueueMessages = defaults.WriteQueueMessages
 	}
 	if c.HeartbeatIntervalMS > 0 {
 		c.HeartbeatInterval = time.Duration(c.HeartbeatIntervalMS) * time.Millisecond
