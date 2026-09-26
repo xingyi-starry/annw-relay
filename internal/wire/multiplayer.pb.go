@@ -766,6 +766,7 @@ type Room struct {
 	SavedGame     bool                   `protobuf:"varint,11,opt,name=saved_game,json=savedGame,proto3" json:"saved_game,omitempty"`
 	UserMap       bool                   `protobuf:"varint,12,opt,name=user_map,json=userMap,proto3" json:"user_map,omitempty"`
 	MapPreview    []byte                 `protobuf:"bytes,13,opt,name=map_preview,json=mapPreview,proto3" json:"map_preview,omitempty"`
+	Difficulty    int32                  `protobuf:"varint,14,opt,name=difficulty,proto3" json:"difficulty,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -889,6 +890,13 @@ func (x *Room) GetMapPreview() []byte {
 		return x.MapPreview
 	}
 	return nil
+}
+
+func (x *Room) GetDifficulty() int32 {
+	if x != nil {
+		return x.Difficulty
+	}
+	return 0
 }
 
 type GameCommandMessage struct {
@@ -2868,7 +2876,7 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\bdefeated\x18\x15 \x01(\bR\bdefeated\x12-\n" +
 	"\x12pending_activation\x18\x16 \x01(\bR\x11pendingActivationB\f\n" +
 	"\n" +
-	"_client_id\"\xb8\x03\n" +
+	"_client_id\"\xd8\x03\n" +
 	"\x04Room\x12\x17\n" +
 	"\aroom_id\x18\x01 \x01(\fR\x06roomId\x12\x1e\n" +
 	"\bmatch_id\x18\x02 \x01(\fH\x00R\amatchId\x88\x01\x01\x12#\n" +
@@ -2886,7 +2894,10 @@ const file_multiplayer_proto_rawDesc = "" +
 	"saved_game\x18\v \x01(\bR\tsavedGame\x12\x19\n" +
 	"\buser_map\x18\f \x01(\bR\auserMap\x12\x1f\n" +
 	"\vmap_preview\x18\r \x01(\fR\n" +
-	"mapPreviewB\v\n" +
+	"mapPreview\x12\x1e\n" +
+	"\n" +
+	"difficulty\x18\x0e \x01(\x05R\n" +
+	"difficultyB\v\n" +
 	"\t_match_id\"\xb6\x04\n" +
 	"\x12GameCommandMessage\x12\x12\n" +
 	"\x04kind\x18\x01 \x01(\rR\x04kind\x12\x19\n" +

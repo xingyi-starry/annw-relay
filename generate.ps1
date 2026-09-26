@@ -1,5 +1,5 @@
 param(
-    [string]$SourceProto = "..\xingyistarry-mp\src\XingyiStarry.Mp.Protocol\Protos\multiplayer.proto"
+    [string]$SourceProto = "..\annw-mp\src\XingyiStarry.Mp.Protocol\Protos\multiplayer.proto"
 )
 
 $ErrorActionPreference = "Stop"

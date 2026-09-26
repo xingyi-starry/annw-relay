@@ -42,7 +42,7 @@ final envelope, while server shutdown cancels transports without creating
 reconnect reservations or normal runtime peer notifications.
 
 `generate.ps1` reads the canonical protocol directly from the sibling plugin
-project at `../xingyistarry-mp/src/XingyiStarry.Mp.Protocol/Protos/multiplayer.proto`
+project at `../annw-mp/src/XingyiStarry.Mp.Protocol/Protos/multiplayer.proto`
 and regenerates `internal/wire/multiplayer.pb.go`. The relay repository does not
 keep a second `.proto` copy. Generated Go code is committed so a standalone
 server clone does not need the plugin repository or `protoc` to build.
