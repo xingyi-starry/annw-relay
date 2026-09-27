@@ -98,7 +98,7 @@ func responseFrom(t *testing.T, envelope *wire.WireEnvelope) *wire.RelayControlR
 
 func registerHost(t *testing.T, peer *testPeer, roomID []byte, password string) []byte {
 	t.Helper()
-	peer.control(MessageRelayRegisterRoom, &wire.RelayRegisterRoomRequest{RequestId: 1, RoomId: roomID, RoomName: "Test room", HostName: "Host", Password: password, PluginVersion: "test", GameFingerprint: "game", ContentFingerprint: "content"}, nil, nil)
+	peer.control(MessageRelayRegisterRoom, &wire.RelayRegisterRoomRequest{RequestId: 1, RoomId: roomID, RoomName: "Test room", HostName: "Host", Password: password, PluginVersion: "test", GameFingerprint: "game", ContentFingerprint: "content", MaxParticipants: 4}, nil, nil)
 	response := responseFrom(t, peer.receiveType(MessageRelayControlResponse))
 	if !response.Success || len(response.ClientId) != 16 {
 		t.Fatalf("register failed: %+v", response)
@@ -125,7 +125,7 @@ func TestRoomLifecycleAndRouting(t *testing.T) {
 	if err := proto.Unmarshal(listEnvelope.Payload, list); err != nil {
 		t.Fatal(err)
 	}
-	if len(list.Rooms) != 1 || !list.Rooms[0].HasPassword || list.Rooms[0].ConnectedPlayers != 1 {
+	if len(list.Rooms) != 1 || !list.Rooms[0].HasPassword || list.Rooms[0].ConnectedPlayers != 1 || list.Rooms[0].MaxParticipants != 4 {
 		t.Fatalf("unexpected room list: %+v", list.Rooms)
 	}
 
@@ -254,7 +254,7 @@ func TestPlayingJoinTransparentRoutingAndFastReconnect(t *testing.T) {
 	matchID := bytes.Repeat([]byte{0x72}, 16)
 	host := connectPeer(t, address)
 	hostID := registerHost(t, host, roomID, "")
-	host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: 70, RoomId: roomID, Status: wire.RelayRoomStatus_RELAY_ROOM_PLAYING, AvailableSeats: 2, MatchId: matchID}, roomID, hostID)
+	host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: 70, RoomId: roomID, Status: wire.RelayRoomStatus_RELAY_ROOM_PLAYING, AvailableSeats: 0, MaxParticipants: 4, MatchId: matchID}, roomID, hostID)
 	if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); !response.Success {
 		t.Fatalf("playing update failed: %+v", response)
 	}
@@ -262,7 +262,7 @@ func TestPlayingJoinTransparentRoutingAndFastReconnect(t *testing.T) {
 	client := connectPeer(t, address)
 	joined := joinClient(t, client, roomID, "", 71)
 	if !joined.Success {
-		t.Fatalf("playing room rejected join: %+v", joined)
+		t.Fatalf("playing room rejected spectator join when no seat was available: %+v", joined)
 	}
 	_ = host.receiveType(MessageRelayPeerJoined)
 	unknown := &wire.WireEnvelope{MessageType: 60000, Payload: []byte("future-game-message"), RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST}

@@ -176,7 +176,7 @@ func (s *Server) registerRoom(c *connection, envelope *wire.WireEnvelope) error 
 	}
 	roomName := strings.TrimSpace(req.RoomName)
 	hostName := strings.TrimSpace(req.HostName)
-	if roomName == "" || utf8.RuneCountInString(roomName) > maxRoomNameRunes || hostName == "" || utf8.RuneCountInString(hostName) > maxHostNameRunes || len(req.Password) > maxPasswordBytes || len(req.PluginVersion) > maxVersionBytes || len(req.GameFingerprint) > maxFingerprintBytes || len(req.ContentFingerprint) > maxFingerprintBytes {
+	if roomName == "" || utf8.RuneCountInString(roomName) > maxRoomNameRunes || hostName == "" || utf8.RuneCountInString(hostName) > maxHostNameRunes || len(req.Password) > maxPasswordBytes || len(req.PluginVersion) > maxVersionBytes || len(req.GameFingerprint) > maxFingerprintBytes || len(req.ContentFingerprint) > maxFingerprintBytes || req.MaxParticipants < 0 || req.MaxParticipants > 8 {
 		return s.controlFailure(c, req.RequestId, "invalid room or host name", nil)
 	}
 	verifier, err := derivePassword(req.Password)
@@ -198,7 +198,7 @@ func (s *Server) registerRoom(c *connection, envelope *wire.WireEnvelope) error 
 		return s.controlFailure(c, req.RequestId, "room id already exists", nil)
 	}
 	r := &room{id: cloneBytes(req.RoomId), hostID: hostID, host: c, clients: make(map[string]*connection), reservations: make(map[string]time.Time), password: verifier}
-	r.info = wire.RelayRoomInfo{RoomId: cloneBytes(req.RoomId), RoomName: roomName, HostName: hostName, ConnectedPlayers: 1, HasPassword: verifier.enabled(), Status: wire.RelayRoomStatus_RELAY_ROOM_WAITING, PluginVersion: req.PluginVersion, GameFingerprint: req.GameFingerprint, ContentFingerprint: req.ContentFingerprint}
+	r.info = wire.RelayRoomInfo{RoomId: cloneBytes(req.RoomId), RoomName: roomName, HostName: hostName, ConnectedPlayers: 1, HasPassword: verifier.enabled(), Status: wire.RelayRoomStatus_RELAY_ROOM_WAITING, PluginVersion: req.PluginVersion, GameFingerprint: req.GameFingerprint, ContentFingerprint: req.ContentFingerprint, MaxParticipants: req.MaxParticipants}
 	s.rooms[key] = r
 	c.bind(roleHost, hostID, req.RoomId)
 	s.mu.Unlock()
@@ -215,7 +215,7 @@ func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	if err != nil {
 		return err
 	}
-	if utf8.RuneCountInString(req.MapTitle) > maxMapTitleRunes || req.HumanSeats < 0 || req.AvailableSeats < 0 || len(req.MatchId) != 0 && len(req.MatchId) != 16 {
+	if utf8.RuneCountInString(req.MapTitle) > maxMapTitleRunes || req.HumanSeats < 0 || req.AvailableSeats < 0 || req.MaxParticipants < 0 || req.MaxParticipants > 8 || len(req.MatchId) != 0 && len(req.MatchId) != 16 {
 		return s.controlFailure(c, req.RequestId, "invalid room update", r.id)
 	}
 	if req.Status < wire.RelayRoomStatus_RELAY_ROOM_WAITING || req.Status > wire.RelayRoomStatus_RELAY_ROOM_PLAYING {
@@ -233,6 +233,7 @@ func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	r.info.MapTitle = req.MapTitle
 	r.info.HumanSeats = req.HumanSeats
 	r.info.AvailableSeats = req.AvailableSeats
+	r.info.MaxParticipants = req.MaxParticipants
 	r.info.Status = req.Status
 	if len(req.MatchId) != 0 {
 		r.matchID = cloneBytes(req.MatchId)
@@ -307,11 +308,10 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 		return s.controlFailure(c, req.RequestId, "room not found", nil)
 	}
 	status := r.info.Status
-	availableSeats := r.info.AvailableSeats
 	verifier := r.password
 	roomID := cloneBytes(r.id)
 	s.mu.RUnlock()
-	if status != wire.RelayRoomStatus_RELAY_ROOM_WAITING && (status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING || availableSeats <= 0) {
+	if status != wire.RelayRoomStatus_RELAY_ROOM_WAITING && status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING {
 		return s.controlFailure(c, req.RequestId, "room is not accepting players", roomID)
 	}
 	if !verifier.matches(req.Password) {
@@ -319,7 +319,7 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 	}
 	s.mu.Lock()
 	r = s.rooms[string(req.RoomId)]
-	if r == nil || (r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_WAITING && (r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING || r.info.AvailableSeats <= 0)) {
+	if r == nil || (r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_WAITING && r.info.Status != wire.RelayRoomStatus_RELAY_ROOM_PLAYING) {
 		s.mu.Unlock()
 		return s.controlFailure(c, req.RequestId, "room is not accepting players", roomID)
 	}
