@@ -1264,6 +1264,7 @@ type GameCommandMessage struct {
 	DebugMetalDelta    int32                  `protobuf:"zigzag32,13,opt,name=debug_metal_delta,json=debugMetalDelta,proto3" json:"debug_metal_delta,omitempty"`
 	DebugPowerDelta    int32                  `protobuf:"zigzag32,14,opt,name=debug_power_delta,json=debugPowerDelta,proto3" json:"debug_power_delta,omitempty"`
 	AiActionType       int32                  `protobuf:"varint,15,opt,name=ai_action_type,json=aiActionType,proto3" json:"ai_action_type,omitempty"`
+	ResolvedActions    []*ResolvedUnitAction  `protobuf:"bytes,16,rep,name=resolved_actions,json=resolvedActions,proto3" json:"resolved_actions,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -1403,6 +1404,130 @@ func (x *GameCommandMessage) GetAiActionType() int32 {
 	return 0
 }
 
+func (x *GameCommandMessage) GetResolvedActions() []*ResolvedUnitAction {
+	if x != nil {
+		return x.ResolvedActions
+	}
+	return nil
+}
+
+// Host-resolved native auto-guide batch. Clients execute these actions without planning.
+type ResolvedUnitAction struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	UnitId          int64                  `protobuf:"varint,1,opt,name=unit_id,json=unitId,proto3" json:"unit_id,omitempty"`
+	ActionType      int32                  `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
+	MoveX           int32                  `protobuf:"zigzag32,3,opt,name=move_x,json=moveX,proto3" json:"move_x,omitempty"`
+	MoveY           int32                  `protobuf:"zigzag32,4,opt,name=move_y,json=moveY,proto3" json:"move_y,omitempty"`
+	TargetX         int32                  `protobuf:"zigzag32,5,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY         int32                  `protobuf:"zigzag32,6,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory  int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	TemplateId      string                 `protobuf:"bytes,8,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	PassengerUnitId int64                  `protobuf:"varint,9,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
+	SkipAnimations  bool                   `protobuf:"varint,10,opt,name=skip_animations,json=skipAnimations,proto3" json:"skip_animations,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ResolvedUnitAction) Reset() {
+	*x = ResolvedUnitAction{}
+	mi := &file_multiplayer_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolvedUnitAction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolvedUnitAction) ProtoMessage() {}
+
+func (x *ResolvedUnitAction) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolvedUnitAction.ProtoReflect.Descriptor instead.
+func (*ResolvedUnitAction) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ResolvedUnitAction) GetUnitId() int64 {
+	if x != nil {
+		return x.UnitId
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetMoveX() int32 {
+	if x != nil {
+		return x.MoveX
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetMoveY() int32 {
+	if x != nil {
+		return x.MoveY
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *ResolvedUnitAction) GetPassengerUnitId() int64 {
+	if x != nil {
+		return x.PassengerUnitId
+	}
+	return 0
+}
+
+func (x *ResolvedUnitAction) GetSkipAnimations() bool {
+	if x != nil {
+		return x.SkipAnimations
+	}
+	return false
+}
+
 type CommandRequestMessage struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	RequestId      uint64                 `protobuf:"varint,2,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
@@ -1416,7 +1541,7 @@ type CommandRequestMessage struct {
 
 func (x *CommandRequestMessage) Reset() {
 	*x = CommandRequestMessage{}
-	mi := &file_multiplayer_proto_msgTypes[10]
+	mi := &file_multiplayer_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1428,7 +1553,7 @@ func (x *CommandRequestMessage) String() string {
 func (*CommandRequestMessage) ProtoMessage() {}
 
 func (x *CommandRequestMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[10]
+	mi := &file_multiplayer_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1441,7 +1566,7 @@ func (x *CommandRequestMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommandRequestMessage.ProtoReflect.Descriptor instead.
 func (*CommandRequestMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{10}
+	return file_multiplayer_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *CommandRequestMessage) GetRequestId() uint64 {
@@ -1500,7 +1625,7 @@ type RelayRoomInfo struct {
 
 func (x *RelayRoomInfo) Reset() {
 	*x = RelayRoomInfo{}
-	mi := &file_multiplayer_proto_msgTypes[11]
+	mi := &file_multiplayer_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1512,7 +1637,7 @@ func (x *RelayRoomInfo) String() string {
 func (*RelayRoomInfo) ProtoMessage() {}
 
 func (x *RelayRoomInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[11]
+	mi := &file_multiplayer_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1525,7 +1650,7 @@ func (x *RelayRoomInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayRoomInfo.ProtoReflect.Descriptor instead.
 func (*RelayRoomInfo) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{11}
+	return file_multiplayer_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *RelayRoomInfo) GetRoomId() []byte {
@@ -1636,7 +1761,7 @@ type RelayRegisterRoomRequest struct {
 
 func (x *RelayRegisterRoomRequest) Reset() {
 	*x = RelayRegisterRoomRequest{}
-	mi := &file_multiplayer_proto_msgTypes[12]
+	mi := &file_multiplayer_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1648,7 +1773,7 @@ func (x *RelayRegisterRoomRequest) String() string {
 func (*RelayRegisterRoomRequest) ProtoMessage() {}
 
 func (x *RelayRegisterRoomRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[12]
+	mi := &file_multiplayer_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1661,7 +1786,7 @@ func (x *RelayRegisterRoomRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayRegisterRoomRequest.ProtoReflect.Descriptor instead.
 func (*RelayRegisterRoomRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{12}
+	return file_multiplayer_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RelayRegisterRoomRequest) GetRequestId() uint64 {
@@ -1744,7 +1869,7 @@ type RelayUpdateRoomRequest struct {
 
 func (x *RelayUpdateRoomRequest) Reset() {
 	*x = RelayUpdateRoomRequest{}
-	mi := &file_multiplayer_proto_msgTypes[13]
+	mi := &file_multiplayer_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1756,7 +1881,7 @@ func (x *RelayUpdateRoomRequest) String() string {
 func (*RelayUpdateRoomRequest) ProtoMessage() {}
 
 func (x *RelayUpdateRoomRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[13]
+	mi := &file_multiplayer_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1769,7 +1894,7 @@ func (x *RelayUpdateRoomRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayUpdateRoomRequest.ProtoReflect.Descriptor instead.
 func (*RelayUpdateRoomRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{13}
+	return file_multiplayer_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RelayUpdateRoomRequest) GetRequestId() uint64 {
@@ -1844,7 +1969,7 @@ type RelayListRoomsRequest struct {
 
 func (x *RelayListRoomsRequest) Reset() {
 	*x = RelayListRoomsRequest{}
-	mi := &file_multiplayer_proto_msgTypes[14]
+	mi := &file_multiplayer_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1856,7 +1981,7 @@ func (x *RelayListRoomsRequest) String() string {
 func (*RelayListRoomsRequest) ProtoMessage() {}
 
 func (x *RelayListRoomsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[14]
+	mi := &file_multiplayer_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1869,7 +1994,7 @@ func (x *RelayListRoomsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayListRoomsRequest.ProtoReflect.Descriptor instead.
 func (*RelayListRoomsRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{14}
+	return file_multiplayer_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *RelayListRoomsRequest) GetRequestId() uint64 {
@@ -1889,7 +2014,7 @@ type RelayListRoomsResponse struct {
 
 func (x *RelayListRoomsResponse) Reset() {
 	*x = RelayListRoomsResponse{}
-	mi := &file_multiplayer_proto_msgTypes[15]
+	mi := &file_multiplayer_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1901,7 +2026,7 @@ func (x *RelayListRoomsResponse) String() string {
 func (*RelayListRoomsResponse) ProtoMessage() {}
 
 func (x *RelayListRoomsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[15]
+	mi := &file_multiplayer_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1914,7 +2039,7 @@ func (x *RelayListRoomsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayListRoomsResponse.ProtoReflect.Descriptor instead.
 func (*RelayListRoomsResponse) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{15}
+	return file_multiplayer_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *RelayListRoomsResponse) GetRequestId() uint64 {
@@ -1942,7 +2067,7 @@ type RelayJoinRoomRequest struct {
 
 func (x *RelayJoinRoomRequest) Reset() {
 	*x = RelayJoinRoomRequest{}
-	mi := &file_multiplayer_proto_msgTypes[16]
+	mi := &file_multiplayer_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1954,7 +2079,7 @@ func (x *RelayJoinRoomRequest) String() string {
 func (*RelayJoinRoomRequest) ProtoMessage() {}
 
 func (x *RelayJoinRoomRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[16]
+	mi := &file_multiplayer_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1967,7 +2092,7 @@ func (x *RelayJoinRoomRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayJoinRoomRequest.ProtoReflect.Descriptor instead.
 func (*RelayJoinRoomRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{16}
+	return file_multiplayer_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *RelayJoinRoomRequest) GetRequestId() uint64 {
@@ -2003,7 +2128,7 @@ type RelayResumeRoomRequest struct {
 
 func (x *RelayResumeRoomRequest) Reset() {
 	*x = RelayResumeRoomRequest{}
-	mi := &file_multiplayer_proto_msgTypes[17]
+	mi := &file_multiplayer_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2015,7 +2140,7 @@ func (x *RelayResumeRoomRequest) String() string {
 func (*RelayResumeRoomRequest) ProtoMessage() {}
 
 func (x *RelayResumeRoomRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[17]
+	mi := &file_multiplayer_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2028,7 +2153,7 @@ func (x *RelayResumeRoomRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayResumeRoomRequest.ProtoReflect.Descriptor instead.
 func (*RelayResumeRoomRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{17}
+	return file_multiplayer_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *RelayResumeRoomRequest) GetRequestId() uint64 {
@@ -2071,7 +2196,7 @@ type RelayControlResponse struct {
 
 func (x *RelayControlResponse) Reset() {
 	*x = RelayControlResponse{}
-	mi := &file_multiplayer_proto_msgTypes[18]
+	mi := &file_multiplayer_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2083,7 +2208,7 @@ func (x *RelayControlResponse) String() string {
 func (*RelayControlResponse) ProtoMessage() {}
 
 func (x *RelayControlResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[18]
+	mi := &file_multiplayer_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2096,7 +2221,7 @@ func (x *RelayControlResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayControlResponse.ProtoReflect.Descriptor instead.
 func (*RelayControlResponse) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{18}
+	return file_multiplayer_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *RelayControlResponse) GetRequestId() uint64 {
@@ -2137,7 +2262,7 @@ type RelayRoomRequest struct {
 
 func (x *RelayRoomRequest) Reset() {
 	*x = RelayRoomRequest{}
-	mi := &file_multiplayer_proto_msgTypes[19]
+	mi := &file_multiplayer_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2149,7 +2274,7 @@ func (x *RelayRoomRequest) String() string {
 func (*RelayRoomRequest) ProtoMessage() {}
 
 func (x *RelayRoomRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[19]
+	mi := &file_multiplayer_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2162,7 +2287,7 @@ func (x *RelayRoomRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayRoomRequest.ProtoReflect.Descriptor instead.
 func (*RelayRoomRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{19}
+	return file_multiplayer_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *RelayRoomRequest) GetRequestId() uint64 {
@@ -2189,7 +2314,7 @@ type RelayPeerNotice struct {
 
 func (x *RelayPeerNotice) Reset() {
 	*x = RelayPeerNotice{}
-	mi := &file_multiplayer_proto_msgTypes[20]
+	mi := &file_multiplayer_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2201,7 +2326,7 @@ func (x *RelayPeerNotice) String() string {
 func (*RelayPeerNotice) ProtoMessage() {}
 
 func (x *RelayPeerNotice) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[20]
+	mi := &file_multiplayer_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2214,7 +2339,7 @@ func (x *RelayPeerNotice) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RelayPeerNotice.ProtoReflect.Descriptor instead.
 func (*RelayPeerNotice) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{20}
+	return file_multiplayer_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *RelayPeerNotice) GetClientId() []byte {
@@ -2240,7 +2365,7 @@ type JoinMatchRequest struct {
 
 func (x *JoinMatchRequest) Reset() {
 	*x = JoinMatchRequest{}
-	mi := &file_multiplayer_proto_msgTypes[21]
+	mi := &file_multiplayer_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2252,7 +2377,7 @@ func (x *JoinMatchRequest) String() string {
 func (*JoinMatchRequest) ProtoMessage() {}
 
 func (x *JoinMatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[21]
+	mi := &file_multiplayer_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2265,7 +2390,7 @@ func (x *JoinMatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinMatchRequest.ProtoReflect.Descriptor instead.
 func (*JoinMatchRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{21}
+	return file_multiplayer_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *JoinMatchRequest) GetSeatId() []byte {
@@ -2285,7 +2410,7 @@ type JoinMatchAcceptedMessage struct {
 
 func (x *JoinMatchAcceptedMessage) Reset() {
 	*x = JoinMatchAcceptedMessage{}
-	mi := &file_multiplayer_proto_msgTypes[22]
+	mi := &file_multiplayer_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2297,7 +2422,7 @@ func (x *JoinMatchAcceptedMessage) String() string {
 func (*JoinMatchAcceptedMessage) ProtoMessage() {}
 
 func (x *JoinMatchAcceptedMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[22]
+	mi := &file_multiplayer_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2310,7 +2435,7 @@ func (x *JoinMatchAcceptedMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinMatchAcceptedMessage.ProtoReflect.Descriptor instead.
 func (*JoinMatchAcceptedMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{22}
+	return file_multiplayer_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *JoinMatchAcceptedMessage) GetSeatId() []byte {
@@ -2337,7 +2462,7 @@ type ChatSendMessage struct {
 
 func (x *ChatSendMessage) Reset() {
 	*x = ChatSendMessage{}
-	mi := &file_multiplayer_proto_msgTypes[23]
+	mi := &file_multiplayer_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2349,7 +2474,7 @@ func (x *ChatSendMessage) String() string {
 func (*ChatSendMessage) ProtoMessage() {}
 
 func (x *ChatSendMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[23]
+	mi := &file_multiplayer_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2362,7 +2487,7 @@ func (x *ChatSendMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatSendMessage.ProtoReflect.Descriptor instead.
 func (*ChatSendMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{23}
+	return file_multiplayer_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *ChatSendMessage) GetChannel() ChatChannel {
@@ -2398,7 +2523,7 @@ type ChatEventMessage struct {
 
 func (x *ChatEventMessage) Reset() {
 	*x = ChatEventMessage{}
-	mi := &file_multiplayer_proto_msgTypes[24]
+	mi := &file_multiplayer_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2410,7 +2535,7 @@ func (x *ChatEventMessage) String() string {
 func (*ChatEventMessage) ProtoMessage() {}
 
 func (x *ChatEventMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[24]
+	mi := &file_multiplayer_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2423,7 +2548,7 @@ func (x *ChatEventMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatEventMessage.ProtoReflect.Descriptor instead.
 func (*ChatEventMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{24}
+	return file_multiplayer_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *ChatEventMessage) GetSocialSeq() uint64 {
@@ -2513,7 +2638,7 @@ type PingSendMessage struct {
 
 func (x *PingSendMessage) Reset() {
 	*x = PingSendMessage{}
-	mi := &file_multiplayer_proto_msgTypes[25]
+	mi := &file_multiplayer_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2525,7 +2650,7 @@ func (x *PingSendMessage) String() string {
 func (*PingSendMessage) ProtoMessage() {}
 
 func (x *PingSendMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[25]
+	mi := &file_multiplayer_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2538,7 +2663,7 @@ func (x *PingSendMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingSendMessage.ProtoReflect.Descriptor instead.
 func (*PingSendMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{25}
+	return file_multiplayer_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *PingSendMessage) GetTileX() int32 {
@@ -2570,7 +2695,7 @@ type PingEventMessage struct {
 
 func (x *PingEventMessage) Reset() {
 	*x = PingEventMessage{}
-	mi := &file_multiplayer_proto_msgTypes[26]
+	mi := &file_multiplayer_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2582,7 +2707,7 @@ func (x *PingEventMessage) String() string {
 func (*PingEventMessage) ProtoMessage() {}
 
 func (x *PingEventMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[26]
+	mi := &file_multiplayer_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2595,7 +2720,7 @@ func (x *PingEventMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingEventMessage.ProtoReflect.Descriptor instead.
 func (*PingEventMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{26}
+	return file_multiplayer_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *PingEventMessage) GetSenderClientId() []byte {
@@ -2656,7 +2781,7 @@ type SocialSyncRequestMessage struct {
 
 func (x *SocialSyncRequestMessage) Reset() {
 	*x = SocialSyncRequestMessage{}
-	mi := &file_multiplayer_proto_msgTypes[27]
+	mi := &file_multiplayer_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2668,7 +2793,7 @@ func (x *SocialSyncRequestMessage) String() string {
 func (*SocialSyncRequestMessage) ProtoMessage() {}
 
 func (x *SocialSyncRequestMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[27]
+	mi := &file_multiplayer_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2681,7 +2806,7 @@ func (x *SocialSyncRequestMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SocialSyncRequestMessage.ProtoReflect.Descriptor instead.
 func (*SocialSyncRequestMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{27}
+	return file_multiplayer_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *SocialSyncRequestMessage) GetRequestId() uint64 {
@@ -2703,7 +2828,7 @@ type SocialSyncBeginMessage struct {
 
 func (x *SocialSyncBeginMessage) Reset() {
 	*x = SocialSyncBeginMessage{}
-	mi := &file_multiplayer_proto_msgTypes[28]
+	mi := &file_multiplayer_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2715,7 +2840,7 @@ func (x *SocialSyncBeginMessage) String() string {
 func (*SocialSyncBeginMessage) ProtoMessage() {}
 
 func (x *SocialSyncBeginMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[28]
+	mi := &file_multiplayer_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2728,7 +2853,7 @@ func (x *SocialSyncBeginMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SocialSyncBeginMessage.ProtoReflect.Descriptor instead.
 func (*SocialSyncBeginMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{28}
+	return file_multiplayer_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *SocialSyncBeginMessage) GetRequestId() uint64 {
@@ -2770,7 +2895,7 @@ type SocialSyncChunkMessage struct {
 
 func (x *SocialSyncChunkMessage) Reset() {
 	*x = SocialSyncChunkMessage{}
-	mi := &file_multiplayer_proto_msgTypes[29]
+	mi := &file_multiplayer_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2782,7 +2907,7 @@ func (x *SocialSyncChunkMessage) String() string {
 func (*SocialSyncChunkMessage) ProtoMessage() {}
 
 func (x *SocialSyncChunkMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[29]
+	mi := &file_multiplayer_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2795,7 +2920,7 @@ func (x *SocialSyncChunkMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SocialSyncChunkMessage.ProtoReflect.Descriptor instead.
 func (*SocialSyncChunkMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{29}
+	return file_multiplayer_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *SocialSyncChunkMessage) GetRequestId() uint64 {
@@ -2829,7 +2954,7 @@ type SocialSyncCompleteMessage struct {
 
 func (x *SocialSyncCompleteMessage) Reset() {
 	*x = SocialSyncCompleteMessage{}
-	mi := &file_multiplayer_proto_msgTypes[30]
+	mi := &file_multiplayer_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2841,7 +2966,7 @@ func (x *SocialSyncCompleteMessage) String() string {
 func (*SocialSyncCompleteMessage) ProtoMessage() {}
 
 func (x *SocialSyncCompleteMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[30]
+	mi := &file_multiplayer_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2854,7 +2979,7 @@ func (x *SocialSyncCompleteMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SocialSyncCompleteMessage.ProtoReflect.Descriptor instead.
 func (*SocialSyncCompleteMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{30}
+	return file_multiplayer_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *SocialSyncCompleteMessage) GetRequestId() uint64 {
@@ -2884,7 +3009,7 @@ type ResumeSessionRequest struct {
 
 func (x *ResumeSessionRequest) Reset() {
 	*x = ResumeSessionRequest{}
-	mi := &file_multiplayer_proto_msgTypes[31]
+	mi := &file_multiplayer_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2896,7 +3021,7 @@ func (x *ResumeSessionRequest) String() string {
 func (*ResumeSessionRequest) ProtoMessage() {}
 
 func (x *ResumeSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[31]
+	mi := &file_multiplayer_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2909,7 +3034,7 @@ func (x *ResumeSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResumeSessionRequest.ProtoReflect.Descriptor instead.
 func (*ResumeSessionRequest) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{31}
+	return file_multiplayer_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *ResumeSessionRequest) GetRoomId() []byte {
@@ -2959,7 +3084,7 @@ type ResumeSessionAccepted struct {
 
 func (x *ResumeSessionAccepted) Reset() {
 	*x = ResumeSessionAccepted{}
-	mi := &file_multiplayer_proto_msgTypes[32]
+	mi := &file_multiplayer_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2971,7 +3096,7 @@ func (x *ResumeSessionAccepted) String() string {
 func (*ResumeSessionAccepted) ProtoMessage() {}
 
 func (x *ResumeSessionAccepted) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[32]
+	mi := &file_multiplayer_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2984,7 +3109,7 @@ func (x *ResumeSessionAccepted) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ResumeSessionAccepted.ProtoReflect.Descriptor instead.
 func (*ResumeSessionAccepted) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{32}
+	return file_multiplayer_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *ResumeSessionAccepted) GetRoomId() []byte {
@@ -3027,7 +3152,7 @@ type SeatControlChanged struct {
 
 func (x *SeatControlChanged) Reset() {
 	*x = SeatControlChanged{}
-	mi := &file_multiplayer_proto_msgTypes[33]
+	mi := &file_multiplayer_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3039,7 +3164,7 @@ func (x *SeatControlChanged) String() string {
 func (*SeatControlChanged) ProtoMessage() {}
 
 func (x *SeatControlChanged) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[33]
+	mi := &file_multiplayer_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3052,7 +3177,7 @@ func (x *SeatControlChanged) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SeatControlChanged.ProtoReflect.Descriptor instead.
 func (*SeatControlChanged) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{33}
+	return file_multiplayer_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *SeatControlChanged) GetSeatId() []byte {
@@ -3094,7 +3219,7 @@ type CommandResponseMessage struct {
 
 func (x *CommandResponseMessage) Reset() {
 	*x = CommandResponseMessage{}
-	mi := &file_multiplayer_proto_msgTypes[34]
+	mi := &file_multiplayer_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3106,7 +3231,7 @@ func (x *CommandResponseMessage) String() string {
 func (*CommandResponseMessage) ProtoMessage() {}
 
 func (x *CommandResponseMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[34]
+	mi := &file_multiplayer_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3119,7 +3244,7 @@ func (x *CommandResponseMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommandResponseMessage.ProtoReflect.Descriptor instead.
 func (*CommandResponseMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{34}
+	return file_multiplayer_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *CommandResponseMessage) GetRequestId() uint64 {
@@ -3156,7 +3281,7 @@ type RandomRecordMessage struct {
 
 func (x *RandomRecordMessage) Reset() {
 	*x = RandomRecordMessage{}
-	mi := &file_multiplayer_proto_msgTypes[35]
+	mi := &file_multiplayer_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3168,7 +3293,7 @@ func (x *RandomRecordMessage) String() string {
 func (*RandomRecordMessage) ProtoMessage() {}
 
 func (x *RandomRecordMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[35]
+	mi := &file_multiplayer_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3181,7 +3306,7 @@ func (x *RandomRecordMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RandomRecordMessage.ProtoReflect.Descriptor instead.
 func (*RandomRecordMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{35}
+	return file_multiplayer_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *RandomRecordMessage) GetCallSite() string {
@@ -3231,7 +3356,7 @@ type Resolution struct {
 
 func (x *Resolution) Reset() {
 	*x = Resolution{}
-	mi := &file_multiplayer_proto_msgTypes[36]
+	mi := &file_multiplayer_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3243,7 +3368,7 @@ func (x *Resolution) String() string {
 func (*Resolution) ProtoMessage() {}
 
 func (x *Resolution) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[36]
+	mi := &file_multiplayer_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3256,7 +3381,7 @@ func (x *Resolution) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resolution.ProtoReflect.Descriptor instead.
 func (*Resolution) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{36}
+	return file_multiplayer_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *Resolution) GetOperationId() []byte {
@@ -3300,7 +3425,7 @@ type OperationBegin struct {
 
 func (x *OperationBegin) Reset() {
 	*x = OperationBegin{}
-	mi := &file_multiplayer_proto_msgTypes[37]
+	mi := &file_multiplayer_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3312,7 +3437,7 @@ func (x *OperationBegin) String() string {
 func (*OperationBegin) ProtoMessage() {}
 
 func (x *OperationBegin) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[37]
+	mi := &file_multiplayer_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3325,7 +3450,7 @@ func (x *OperationBegin) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationBegin.ProtoReflect.Descriptor instead.
 func (*OperationBegin) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{37}
+	return file_multiplayer_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *OperationBegin) GetOperationId() []byte {
@@ -3372,7 +3497,7 @@ type OperationEnd struct {
 
 func (x *OperationEnd) Reset() {
 	*x = OperationEnd{}
-	mi := &file_multiplayer_proto_msgTypes[38]
+	mi := &file_multiplayer_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3384,7 +3509,7 @@ func (x *OperationEnd) String() string {
 func (*OperationEnd) ProtoMessage() {}
 
 func (x *OperationEnd) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[38]
+	mi := &file_multiplayer_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3397,7 +3522,7 @@ func (x *OperationEnd) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationEnd.ProtoReflect.Descriptor instead.
 func (*OperationEnd) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{38}
+	return file_multiplayer_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *OperationEnd) GetOperationId() []byte {
@@ -3417,7 +3542,7 @@ type OperationFailed struct {
 
 func (x *OperationFailed) Reset() {
 	*x = OperationFailed{}
-	mi := &file_multiplayer_proto_msgTypes[39]
+	mi := &file_multiplayer_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3429,7 +3554,7 @@ func (x *OperationFailed) String() string {
 func (*OperationFailed) ProtoMessage() {}
 
 func (x *OperationFailed) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[39]
+	mi := &file_multiplayer_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3442,7 +3567,7 @@ func (x *OperationFailed) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationFailed.ProtoReflect.Descriptor instead.
 func (*OperationFailed) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{39}
+	return file_multiplayer_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *OperationFailed) GetOperationId() []byte {
@@ -3473,7 +3598,7 @@ type AuthorityFrameMessage struct {
 
 func (x *AuthorityFrameMessage) Reset() {
 	*x = AuthorityFrameMessage{}
-	mi := &file_multiplayer_proto_msgTypes[40]
+	mi := &file_multiplayer_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3485,7 +3610,7 @@ func (x *AuthorityFrameMessage) String() string {
 func (*AuthorityFrameMessage) ProtoMessage() {}
 
 func (x *AuthorityFrameMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[40]
+	mi := &file_multiplayer_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3498,7 +3623,7 @@ func (x *AuthorityFrameMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthorityFrameMessage.ProtoReflect.Descriptor instead.
 func (*AuthorityFrameMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{40}
+	return file_multiplayer_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *AuthorityFrameMessage) GetMatchId() []byte {
@@ -3557,7 +3682,7 @@ type AuthorityHashInput struct {
 
 func (x *AuthorityHashInput) Reset() {
 	*x = AuthorityHashInput{}
-	mi := &file_multiplayer_proto_msgTypes[41]
+	mi := &file_multiplayer_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3569,7 +3694,7 @@ func (x *AuthorityHashInput) String() string {
 func (*AuthorityHashInput) ProtoMessage() {}
 
 func (x *AuthorityHashInput) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[41]
+	mi := &file_multiplayer_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3582,7 +3707,7 @@ func (x *AuthorityHashInput) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthorityHashInput.ProtoReflect.Descriptor instead.
 func (*AuthorityHashInput) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{41}
+	return file_multiplayer_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *AuthorityHashInput) GetDomain() string {
@@ -3642,7 +3767,7 @@ type SnapshotManifestMessage struct {
 
 func (x *SnapshotManifestMessage) Reset() {
 	*x = SnapshotManifestMessage{}
-	mi := &file_multiplayer_proto_msgTypes[42]
+	mi := &file_multiplayer_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3654,7 +3779,7 @@ func (x *SnapshotManifestMessage) String() string {
 func (*SnapshotManifestMessage) ProtoMessage() {}
 
 func (x *SnapshotManifestMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[42]
+	mi := &file_multiplayer_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3667,7 +3792,7 @@ func (x *SnapshotManifestMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SnapshotManifestMessage.ProtoReflect.Descriptor instead.
 func (*SnapshotManifestMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{42}
+	return file_multiplayer_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *SnapshotManifestMessage) GetSnapshotId() []byte {
@@ -3730,7 +3855,7 @@ type SnapshotChunkMessage struct {
 
 func (x *SnapshotChunkMessage) Reset() {
 	*x = SnapshotChunkMessage{}
-	mi := &file_multiplayer_proto_msgTypes[43]
+	mi := &file_multiplayer_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3742,7 +3867,7 @@ func (x *SnapshotChunkMessage) String() string {
 func (*SnapshotChunkMessage) ProtoMessage() {}
 
 func (x *SnapshotChunkMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[43]
+	mi := &file_multiplayer_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3755,7 +3880,7 @@ func (x *SnapshotChunkMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SnapshotChunkMessage.ProtoReflect.Descriptor instead.
 func (*SnapshotChunkMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{43}
+	return file_multiplayer_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *SnapshotChunkMessage) GetSnapshotId() []byte {
@@ -3882,7 +4007,7 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x10max_participants\x18\x0f \x01(\x05R\x0fmaxParticipants\x12C\n" +
 	"\fparticipants\x18\x10 \x03(\v2\x1f.xingyistarry.mp.v1.ParticipantR\fparticipants\x121\n" +
 	"\x14participant_revision\x18\x11 \x01(\rR\x13participantRevisionB\v\n" +
-	"\t_match_id\"\xb6\x04\n" +
+	"\t_match_id\"\x89\x05\n" +
 	"\x12GameCommandMessage\x12\x12\n" +
 	"\x04kind\x18\x01 \x01(\rR\x04kind\x12\x19\n" +
 	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
@@ -3900,7 +4025,22 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x12debug_player_index\x18\f \x01(\x05R\x10debugPlayerIndex\x12*\n" +
 	"\x11debug_metal_delta\x18\r \x01(\x11R\x0fdebugMetalDelta\x12*\n" +
 	"\x11debug_power_delta\x18\x0e \x01(\x11R\x0fdebugPowerDelta\x12$\n" +
-	"\x0eai_action_type\x18\x0f \x01(\x05R\faiActionType\"\xe2\x01\n" +
+	"\x0eai_action_type\x18\x0f \x01(\x05R\faiActionType\x12Q\n" +
+	"\x10resolved_actions\x18\x10 \x03(\v2&.xingyistarry.mp.v1.ResolvedUnitActionR\x0fresolvedActions\"\xd1\x02\n" +
+	"\x12ResolvedUnitAction\x12\x17\n" +
+	"\aunit_id\x18\x01 \x01(\x03R\x06unitId\x12\x1f\n" +
+	"\vaction_type\x18\x02 \x01(\x05R\n" +
+	"actionType\x12\x15\n" +
+	"\x06move_x\x18\x03 \x01(\x11R\x05moveX\x12\x15\n" +
+	"\x06move_y\x18\x04 \x01(\x11R\x05moveY\x12\x19\n" +
+	"\btarget_x\x18\x05 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x06 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1f\n" +
+	"\vtemplate_id\x18\b \x01(\tR\n" +
+	"templateId\x12*\n" +
+	"\x11passenger_unit_id\x18\t \x01(\x03R\x0fpassengerUnitId\x12'\n" +
+	"\x0fskip_animations\x18\n" +
+	" \x01(\bR\x0eskipAnimations\"\xe2\x01\n" +
 	"\x15CommandRequestMessage\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x02 \x01(\x04R\trequestId\x12\x17\n" +
@@ -4169,7 +4309,7 @@ func file_multiplayer_proto_rawDescGZIP() []byte {
 }
 
 var file_multiplayer_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
-var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 44)
+var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 45)
 var file_multiplayer_proto_goTypes = []any{
 	(Delivery)(0),                     // 0: xingyistarry.mp.v1.Delivery
 	(WelcomeMode)(0),                  // 1: xingyistarry.mp.v1.WelcomeMode
@@ -4188,40 +4328,41 @@ var file_multiplayer_proto_goTypes = []any{
 	(*Seat)(nil),                      // 14: xingyistarry.mp.v1.Seat
 	(*Room)(nil),                      // 15: xingyistarry.mp.v1.Room
 	(*GameCommandMessage)(nil),        // 16: xingyistarry.mp.v1.GameCommandMessage
-	(*CommandRequestMessage)(nil),     // 17: xingyistarry.mp.v1.CommandRequestMessage
-	(*RelayRoomInfo)(nil),             // 18: xingyistarry.mp.v1.RelayRoomInfo
-	(*RelayRegisterRoomRequest)(nil),  // 19: xingyistarry.mp.v1.RelayRegisterRoomRequest
-	(*RelayUpdateRoomRequest)(nil),    // 20: xingyistarry.mp.v1.RelayUpdateRoomRequest
-	(*RelayListRoomsRequest)(nil),     // 21: xingyistarry.mp.v1.RelayListRoomsRequest
-	(*RelayListRoomsResponse)(nil),    // 22: xingyistarry.mp.v1.RelayListRoomsResponse
-	(*RelayJoinRoomRequest)(nil),      // 23: xingyistarry.mp.v1.RelayJoinRoomRequest
-	(*RelayResumeRoomRequest)(nil),    // 24: xingyistarry.mp.v1.RelayResumeRoomRequest
-	(*RelayControlResponse)(nil),      // 25: xingyistarry.mp.v1.RelayControlResponse
-	(*RelayRoomRequest)(nil),          // 26: xingyistarry.mp.v1.RelayRoomRequest
-	(*RelayPeerNotice)(nil),           // 27: xingyistarry.mp.v1.RelayPeerNotice
-	(*JoinMatchRequest)(nil),          // 28: xingyistarry.mp.v1.JoinMatchRequest
-	(*JoinMatchAcceptedMessage)(nil),  // 29: xingyistarry.mp.v1.JoinMatchAcceptedMessage
-	(*ChatSendMessage)(nil),           // 30: xingyistarry.mp.v1.ChatSendMessage
-	(*ChatEventMessage)(nil),          // 31: xingyistarry.mp.v1.ChatEventMessage
-	(*PingSendMessage)(nil),           // 32: xingyistarry.mp.v1.PingSendMessage
-	(*PingEventMessage)(nil),          // 33: xingyistarry.mp.v1.PingEventMessage
-	(*SocialSyncRequestMessage)(nil),  // 34: xingyistarry.mp.v1.SocialSyncRequestMessage
-	(*SocialSyncBeginMessage)(nil),    // 35: xingyistarry.mp.v1.SocialSyncBeginMessage
-	(*SocialSyncChunkMessage)(nil),    // 36: xingyistarry.mp.v1.SocialSyncChunkMessage
-	(*SocialSyncCompleteMessage)(nil), // 37: xingyistarry.mp.v1.SocialSyncCompleteMessage
-	(*ResumeSessionRequest)(nil),      // 38: xingyistarry.mp.v1.ResumeSessionRequest
-	(*ResumeSessionAccepted)(nil),     // 39: xingyistarry.mp.v1.ResumeSessionAccepted
-	(*SeatControlChanged)(nil),        // 40: xingyistarry.mp.v1.SeatControlChanged
-	(*CommandResponseMessage)(nil),    // 41: xingyistarry.mp.v1.CommandResponseMessage
-	(*RandomRecordMessage)(nil),       // 42: xingyistarry.mp.v1.RandomRecordMessage
-	(*Resolution)(nil),                // 43: xingyistarry.mp.v1.Resolution
-	(*OperationBegin)(nil),            // 44: xingyistarry.mp.v1.OperationBegin
-	(*OperationEnd)(nil),              // 45: xingyistarry.mp.v1.OperationEnd
-	(*OperationFailed)(nil),           // 46: xingyistarry.mp.v1.OperationFailed
-	(*AuthorityFrameMessage)(nil),     // 47: xingyistarry.mp.v1.AuthorityFrameMessage
-	(*AuthorityHashInput)(nil),        // 48: xingyistarry.mp.v1.AuthorityHashInput
-	(*SnapshotManifestMessage)(nil),   // 49: xingyistarry.mp.v1.SnapshotManifestMessage
-	(*SnapshotChunkMessage)(nil),      // 50: xingyistarry.mp.v1.SnapshotChunkMessage
+	(*ResolvedUnitAction)(nil),        // 17: xingyistarry.mp.v1.ResolvedUnitAction
+	(*CommandRequestMessage)(nil),     // 18: xingyistarry.mp.v1.CommandRequestMessage
+	(*RelayRoomInfo)(nil),             // 19: xingyistarry.mp.v1.RelayRoomInfo
+	(*RelayRegisterRoomRequest)(nil),  // 20: xingyistarry.mp.v1.RelayRegisterRoomRequest
+	(*RelayUpdateRoomRequest)(nil),    // 21: xingyistarry.mp.v1.RelayUpdateRoomRequest
+	(*RelayListRoomsRequest)(nil),     // 22: xingyistarry.mp.v1.RelayListRoomsRequest
+	(*RelayListRoomsResponse)(nil),    // 23: xingyistarry.mp.v1.RelayListRoomsResponse
+	(*RelayJoinRoomRequest)(nil),      // 24: xingyistarry.mp.v1.RelayJoinRoomRequest
+	(*RelayResumeRoomRequest)(nil),    // 25: xingyistarry.mp.v1.RelayResumeRoomRequest
+	(*RelayControlResponse)(nil),      // 26: xingyistarry.mp.v1.RelayControlResponse
+	(*RelayRoomRequest)(nil),          // 27: xingyistarry.mp.v1.RelayRoomRequest
+	(*RelayPeerNotice)(nil),           // 28: xingyistarry.mp.v1.RelayPeerNotice
+	(*JoinMatchRequest)(nil),          // 29: xingyistarry.mp.v1.JoinMatchRequest
+	(*JoinMatchAcceptedMessage)(nil),  // 30: xingyistarry.mp.v1.JoinMatchAcceptedMessage
+	(*ChatSendMessage)(nil),           // 31: xingyistarry.mp.v1.ChatSendMessage
+	(*ChatEventMessage)(nil),          // 32: xingyistarry.mp.v1.ChatEventMessage
+	(*PingSendMessage)(nil),           // 33: xingyistarry.mp.v1.PingSendMessage
+	(*PingEventMessage)(nil),          // 34: xingyistarry.mp.v1.PingEventMessage
+	(*SocialSyncRequestMessage)(nil),  // 35: xingyistarry.mp.v1.SocialSyncRequestMessage
+	(*SocialSyncBeginMessage)(nil),    // 36: xingyistarry.mp.v1.SocialSyncBeginMessage
+	(*SocialSyncChunkMessage)(nil),    // 37: xingyistarry.mp.v1.SocialSyncChunkMessage
+	(*SocialSyncCompleteMessage)(nil), // 38: xingyistarry.mp.v1.SocialSyncCompleteMessage
+	(*ResumeSessionRequest)(nil),      // 39: xingyistarry.mp.v1.ResumeSessionRequest
+	(*ResumeSessionAccepted)(nil),     // 40: xingyistarry.mp.v1.ResumeSessionAccepted
+	(*SeatControlChanged)(nil),        // 41: xingyistarry.mp.v1.SeatControlChanged
+	(*CommandResponseMessage)(nil),    // 42: xingyistarry.mp.v1.CommandResponseMessage
+	(*RandomRecordMessage)(nil),       // 43: xingyistarry.mp.v1.RandomRecordMessage
+	(*Resolution)(nil),                // 44: xingyistarry.mp.v1.Resolution
+	(*OperationBegin)(nil),            // 45: xingyistarry.mp.v1.OperationBegin
+	(*OperationEnd)(nil),              // 46: xingyistarry.mp.v1.OperationEnd
+	(*OperationFailed)(nil),           // 47: xingyistarry.mp.v1.OperationFailed
+	(*AuthorityFrameMessage)(nil),     // 48: xingyistarry.mp.v1.AuthorityFrameMessage
+	(*AuthorityHashInput)(nil),        // 49: xingyistarry.mp.v1.AuthorityHashInput
+	(*SnapshotManifestMessage)(nil),   // 50: xingyistarry.mp.v1.SnapshotManifestMessage
+	(*SnapshotChunkMessage)(nil),      // 51: xingyistarry.mp.v1.SnapshotChunkMessage
 }
 var file_multiplayer_proto_depIdxs = []int32{
 	0,  // 0: xingyistarry.mp.v1.WireEnvelope.delivery:type_name -> xingyistarry.mp.v1.Delivery
@@ -4229,23 +4370,24 @@ var file_multiplayer_proto_depIdxs = []int32{
 	2,  // 2: xingyistarry.mp.v1.Participant.admission:type_name -> xingyistarry.mp.v1.ParticipantAdmission
 	14, // 3: xingyistarry.mp.v1.Room.seats:type_name -> xingyistarry.mp.v1.Seat
 	13, // 4: xingyistarry.mp.v1.Room.participants:type_name -> xingyistarry.mp.v1.Participant
-	16, // 5: xingyistarry.mp.v1.CommandRequestMessage.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
-	3,  // 6: xingyistarry.mp.v1.RelayRoomInfo.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
-	3,  // 7: xingyistarry.mp.v1.RelayUpdateRoomRequest.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
-	18, // 8: xingyistarry.mp.v1.RelayListRoomsResponse.rooms:type_name -> xingyistarry.mp.v1.RelayRoomInfo
-	4,  // 9: xingyistarry.mp.v1.ChatSendMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
-	4,  // 10: xingyistarry.mp.v1.ChatEventMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
-	5,  // 11: xingyistarry.mp.v1.ChatEventMessage.kind:type_name -> xingyistarry.mp.v1.ChatKind
-	6,  // 12: xingyistarry.mp.v1.ChatEventMessage.system_kind:type_name -> xingyistarry.mp.v1.SystemEventKind
-	13, // 13: xingyistarry.mp.v1.SocialSyncBeginMessage.participants:type_name -> xingyistarry.mp.v1.Participant
-	31, // 14: xingyistarry.mp.v1.SocialSyncChunkMessage.messages:type_name -> xingyistarry.mp.v1.ChatEventMessage
-	42, // 15: xingyistarry.mp.v1.Resolution.random_records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	16, // 16: xingyistarry.mp.v1.OperationBegin.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	17, // 5: xingyistarry.mp.v1.GameCommandMessage.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
+	16, // 6: xingyistarry.mp.v1.CommandRequestMessage.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
+	3,  // 7: xingyistarry.mp.v1.RelayRoomInfo.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
+	3,  // 8: xingyistarry.mp.v1.RelayUpdateRoomRequest.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
+	19, // 9: xingyistarry.mp.v1.RelayListRoomsResponse.rooms:type_name -> xingyistarry.mp.v1.RelayRoomInfo
+	4,  // 10: xingyistarry.mp.v1.ChatSendMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
+	4,  // 11: xingyistarry.mp.v1.ChatEventMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
+	5,  // 12: xingyistarry.mp.v1.ChatEventMessage.kind:type_name -> xingyistarry.mp.v1.ChatKind
+	6,  // 13: xingyistarry.mp.v1.ChatEventMessage.system_kind:type_name -> xingyistarry.mp.v1.SystemEventKind
+	13, // 14: xingyistarry.mp.v1.SocialSyncBeginMessage.participants:type_name -> xingyistarry.mp.v1.Participant
+	32, // 15: xingyistarry.mp.v1.SocialSyncChunkMessage.messages:type_name -> xingyistarry.mp.v1.ChatEventMessage
+	43, // 16: xingyistarry.mp.v1.Resolution.random_records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	16, // 17: xingyistarry.mp.v1.OperationBegin.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_multiplayer_proto_init() }
@@ -4258,18 +4400,18 @@ func file_multiplayer_proto_init() {
 	file_multiplayer_proto_msgTypes[6].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[7].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[8].OneofWrappers = []any{}
-	file_multiplayer_proto_msgTypes[13].OneofWrappers = []any{}
-	file_multiplayer_proto_msgTypes[18].OneofWrappers = []any{}
-	file_multiplayer_proto_msgTypes[21].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[14].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[19].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[22].OneofWrappers = []any{}
-	file_multiplayer_proto_msgTypes[24].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[23].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[25].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_multiplayer_proto_rawDesc), len(file_multiplayer_proto_rawDesc)),
 			NumEnums:      7,
-			NumMessages:   44,
+			NumMessages:   45,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
