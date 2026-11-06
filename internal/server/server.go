@@ -235,7 +235,10 @@ func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	r.info.AvailableSeats = req.AvailableSeats
 	r.info.MaxParticipants = req.MaxParticipants
 	r.info.Status = req.Status
-	if len(req.MatchId) != 0 {
+	if req.Status == wire.RelayRoomStatus_RELAY_ROOM_WAITING {
+		r.matchID = nil
+		clear(r.reservations)
+	} else if len(req.MatchId) != 0 {
 		r.matchID = cloneBytes(req.MatchId)
 	}
 	r.info.ConnectedPlayers = int32(1 + len(r.clients))
@@ -251,7 +254,7 @@ func roomStatusTransitionAllowed(current, next wire.RelayRoomStatus) bool {
 	case wire.RelayRoomStatus_RELAY_ROOM_CLOSED:
 		return next == wire.RelayRoomStatus_RELAY_ROOM_CLOSED || next == wire.RelayRoomStatus_RELAY_ROOM_PLAYING
 	case wire.RelayRoomStatus_RELAY_ROOM_PLAYING:
-		return next == wire.RelayRoomStatus_RELAY_ROOM_PLAYING
+		return next == wire.RelayRoomStatus_RELAY_ROOM_PLAYING || next == wire.RelayRoomStatus_RELAY_ROOM_WAITING
 	default:
 		return false
 	}

@@ -224,12 +224,68 @@ func TestRoomStatusTransitions(t *testing.T) {
 	}{
 		{waiting, waiting, true}, {waiting, closed, false}, {waiting, playing, true},
 		{closed, waiting, false}, {closed, closed, true}, {closed, playing, true},
-		{playing, waiting, false}, {playing, closed, false}, {playing, playing, true},
+		{playing, waiting, true}, {playing, closed, false}, {playing, playing, true},
 	}
 	for _, test := range tests {
 		if actual := roomStatusTransitionAllowed(test.current, test.next); actual != test.allowed {
 			t.Fatalf("transition %s -> %s: got %v, want %v", test.current, test.next, actual, test.allowed)
 		}
+	}
+}
+
+func TestFinishedRoomReturnsToLobbyAndStartsAnotherMatch(t *testing.T) {
+	address, relay := startTestServer(t)
+	roomID := bytes.Repeat([]byte{0x81}, 16)
+	firstMatch := bytes.Repeat([]byte{0x82}, 16)
+	secondMatch := bytes.Repeat([]byte{0x83}, 16)
+	host := connectPeer(t, address)
+	hostID := registerHost(t, host, roomID, "")
+	client := connectPeer(t, address)
+	joined := joinClient(t, client, roomID, "", 2)
+	if !joined.Success {
+		t.Fatal("join failed")
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+	update := func(requestID uint64, status wire.RelayRoomStatus, matchID []byte) {
+		host.control(MessageRelayUpdateRoom, &wire.RelayUpdateRoomRequest{RequestId: requestID, RoomId: roomID,
+			Status: status, MatchId: matchID, MaxParticipants: 4}, roomID, hostID)
+		if response := responseFrom(t, host.receiveType(MessageRelayControlResponse)); !response.Success {
+			t.Fatalf("room update failed: %+v", response)
+		}
+	}
+	update(3, wire.RelayRoomStatus_RELAY_ROOM_PLAYING, firstMatch)
+	dropped := connectPeer(t, address)
+	droppedJoin := joinClient(t, dropped, roomID, "", 4)
+	if !droppedJoin.Success {
+		t.Fatal("second join failed")
+	}
+	_ = host.receiveType(MessageRelayPeerJoined)
+	_ = dropped.conn.Close()
+	_ = host.receiveType(MessageRelayPeerLeft)
+	update(5, wire.RelayRoomStatus_RELAY_ROOM_WAITING, nil)
+	relay.mu.RLock()
+	r := relay.rooms[string(roomID)]
+	clean := r != nil && len(r.matchID) == 0 && len(r.reservations) == 0 && len(r.clients) == 1
+	relay.mu.RUnlock()
+	if !clean {
+		t.Fatal("finished room retained its old match or reservations, or lost the active client")
+	}
+	client.send(&wire.WireEnvelope{MessageType: opaqueGameRoomState, Payload: []byte("still-here"),
+		RoomId: roomID, ClientId: joined.ClientId, Delivery: wire.Delivery_TO_HOST})
+	if got := host.receiveType(opaqueGameRoomState); string(got.Payload) != "still-here" {
+		t.Fatal("existing connection was lost")
+	}
+	update(6, wire.RelayRoomStatus_RELAY_ROOM_PLAYING, secondMatch)
+	resuming := connectPeer(t, address)
+	resuming.control(MessageRelayResumeRoom, &wire.RelayResumeRoomRequest{RequestId: 7, RoomId: roomID,
+		ClientId: droppedJoin.ClientId, MatchId: firstMatch}, nil, nil)
+	if response := responseFrom(t, resuming.receiveType(MessageRelayControlResponse)); response.Success {
+		t.Fatal("previous match was resumable after a new game started")
+	}
+	host.send(&wire.WireEnvelope{MessageType: opaqueGameWelcome, Payload: []byte("next-game"),
+		RoomId: roomID, ClientId: hostID, TargetClientId: joined.ClientId, Delivery: wire.Delivery_TO_CLIENT})
+	if got := client.receiveType(opaqueGameWelcome); string(got.Payload) != "next-game" {
+		t.Fatal("client identity changed between matches")
 	}
 }
 

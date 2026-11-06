@@ -379,6 +379,61 @@ func (SystemEventKind) EnumDescriptor() ([]byte, []int) {
 	return file_multiplayer_proto_rawDescGZIP(), []int{6}
 }
 
+type AttackSettlement_Kind int32
+
+const (
+	AttackSettlement_UNSPECIFIED   AttackSettlement_Kind = 0
+	AttackSettlement_BATCH_STARTED AttackSettlement_Kind = 1
+	AttackSettlement_CELL          AttackSettlement_Kind = 2
+	AttackSettlement_DEATH         AttackSettlement_Kind = 3
+	AttackSettlement_BATCH_ENDED   AttackSettlement_Kind = 4
+)
+
+// Enum value maps for AttackSettlement_Kind.
+var (
+	AttackSettlement_Kind_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "BATCH_STARTED",
+		2: "CELL",
+		3: "DEATH",
+		4: "BATCH_ENDED",
+	}
+	AttackSettlement_Kind_value = map[string]int32{
+		"UNSPECIFIED":   0,
+		"BATCH_STARTED": 1,
+		"CELL":          2,
+		"DEATH":         3,
+		"BATCH_ENDED":   4,
+	}
+)
+
+func (x AttackSettlement_Kind) Enum() *AttackSettlement_Kind {
+	p := new(AttackSettlement_Kind)
+	*p = x
+	return p
+}
+
+func (x AttackSettlement_Kind) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (AttackSettlement_Kind) Descriptor() protoreflect.EnumDescriptor {
+	return file_multiplayer_proto_enumTypes[7].Descriptor()
+}
+
+func (AttackSettlement_Kind) Type() protoreflect.EnumType {
+	return &file_multiplayer_proto_enumTypes[7]
+}
+
+func (x AttackSettlement_Kind) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use AttackSettlement_Kind.Descriptor instead.
+func (AttackSettlement_Kind) EnumDescriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{38, 0}
+}
+
 type WireEnvelope struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	MessageType    uint32                 `protobuf:"varint,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
@@ -3350,6 +3405,7 @@ type Resolution struct {
 	StageId           int32                  `protobuf:"varint,2,opt,name=stage_id,json=stageId,proto3" json:"stage_id,omitempty"`
 	SettlementOrdinal int32                  `protobuf:"varint,3,opt,name=settlement_ordinal,json=settlementOrdinal,proto3" json:"settlement_ordinal,omitempty"`
 	RandomRecords     []*RandomRecordMessage `protobuf:"bytes,4,rep,name=random_records,json=randomRecords,proto3" json:"random_records,omitempty"`
+	AttackSettlement  *AttackSettlement      `protobuf:"bytes,5,opt,name=attack_settlement,json=attackSettlement,proto3" json:"attack_settlement,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -3412,20 +3468,137 @@ func (x *Resolution) GetRandomRecords() []*RandomRecordMessage {
 	return nil
 }
 
-type OperationBegin struct {
+func (x *Resolution) GetAttackSettlement() *AttackSettlement {
+	if x != nil {
+		return x.AttackSettlement
+	}
+	return nil
+}
+
+// Runtime events, not predicted damage. Native animations do not authorize settlement.
+type AttackSettlement struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	OperationId   []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
-	SeatId        []byte                 `protobuf:"bytes,2,opt,name=seat_id,json=seatId,proto3" json:"seat_id,omitempty"`
-	RequestId     uint64                 `protobuf:"varint,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
-	Round         int32                  `protobuf:"varint,4,opt,name=round,proto3" json:"round,omitempty"`
-	Command       *GameCommandMessage    `protobuf:"bytes,5,opt,name=command,proto3" json:"command,omitempty"`
+	Kind          AttackSettlement_Kind  `protobuf:"varint,1,opt,name=kind,proto3,enum=xingyistarry.mp.v1.AttackSettlement_Kind" json:"kind,omitempty"`
+	BatchId       int32                  `protobuf:"varint,2,opt,name=batch_id,json=batchId,proto3" json:"batch_id,omitempty"`
+	UnitId        int64                  `protobuf:"varint,3,opt,name=unit_id,json=unitId,proto3" json:"unit_id,omitempty"`
+	ActionName    string                 `protobuf:"bytes,4,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	TargetX       int32                  `protobuf:"zigzag32,5,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY       int32                  `protobuf:"zigzag32,6,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	OriginX       int32                  `protobuf:"zigzag32,7,opt,name=origin_x,json=originX,proto3" json:"origin_x,omitempty"`
+	OriginY       int32                  `protobuf:"zigzag32,8,opt,name=origin_y,json=originY,proto3" json:"origin_y,omitempty"`
+	Data          float32                `protobuf:"fixed32,9,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
+func (x *AttackSettlement) Reset() {
+	*x = AttackSettlement{}
+	mi := &file_multiplayer_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackSettlement) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackSettlement) ProtoMessage() {}
+
+func (x *AttackSettlement) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackSettlement.ProtoReflect.Descriptor instead.
+func (*AttackSettlement) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *AttackSettlement) GetKind() AttackSettlement_Kind {
+	if x != nil {
+		return x.Kind
+	}
+	return AttackSettlement_UNSPECIFIED
+}
+
+func (x *AttackSettlement) GetBatchId() int32 {
+	if x != nil {
+		return x.BatchId
+	}
+	return 0
+}
+
+func (x *AttackSettlement) GetUnitId() int64 {
+	if x != nil {
+		return x.UnitId
+	}
+	return 0
+}
+
+func (x *AttackSettlement) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *AttackSettlement) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *AttackSettlement) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *AttackSettlement) GetOriginX() int32 {
+	if x != nil {
+		return x.OriginX
+	}
+	return 0
+}
+
+func (x *AttackSettlement) GetOriginY() int32 {
+	if x != nil {
+		return x.OriginY
+	}
+	return 0
+}
+
+func (x *AttackSettlement) GetData() float32 {
+	if x != nil {
+		return x.Data
+	}
+	return 0
+}
+
+type OperationBegin struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	OperationId     []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	SeatId          []byte                 `protobuf:"bytes,2,opt,name=seat_id,json=seatId,proto3" json:"seat_id,omitempty"`
+	RequestId       uint64                 `protobuf:"varint,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	Round           int32                  `protobuf:"varint,4,opt,name=round,proto3" json:"round,omitempty"`
+	Command         *GameCommandMessage    `protobuf:"bytes,5,opt,name=command,proto3" json:"command,omitempty"`
+	LiveSettlements bool                   `protobuf:"varint,6,opt,name=live_settlements,json=liveSettlements,proto3" json:"live_settlements,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
 func (x *OperationBegin) Reset() {
 	*x = OperationBegin{}
-	mi := &file_multiplayer_proto_msgTypes[38]
+	mi := &file_multiplayer_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3437,7 +3610,7 @@ func (x *OperationBegin) String() string {
 func (*OperationBegin) ProtoMessage() {}
 
 func (x *OperationBegin) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[38]
+	mi := &file_multiplayer_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3450,7 +3623,7 @@ func (x *OperationBegin) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationBegin.ProtoReflect.Descriptor instead.
 func (*OperationBegin) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{38}
+	return file_multiplayer_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *OperationBegin) GetOperationId() []byte {
@@ -3488,6 +3661,13 @@ func (x *OperationBegin) GetCommand() *GameCommandMessage {
 	return nil
 }
 
+func (x *OperationBegin) GetLiveSettlements() bool {
+	if x != nil {
+		return x.LiveSettlements
+	}
+	return false
+}
+
 type OperationEnd struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	OperationId   []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
@@ -3497,7 +3677,7 @@ type OperationEnd struct {
 
 func (x *OperationEnd) Reset() {
 	*x = OperationEnd{}
-	mi := &file_multiplayer_proto_msgTypes[39]
+	mi := &file_multiplayer_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3509,7 +3689,7 @@ func (x *OperationEnd) String() string {
 func (*OperationEnd) ProtoMessage() {}
 
 func (x *OperationEnd) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[39]
+	mi := &file_multiplayer_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3522,7 +3702,7 @@ func (x *OperationEnd) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationEnd.ProtoReflect.Descriptor instead.
 func (*OperationEnd) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{39}
+	return file_multiplayer_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *OperationEnd) GetOperationId() []byte {
@@ -3542,7 +3722,7 @@ type OperationFailed struct {
 
 func (x *OperationFailed) Reset() {
 	*x = OperationFailed{}
-	mi := &file_multiplayer_proto_msgTypes[40]
+	mi := &file_multiplayer_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3554,7 +3734,7 @@ func (x *OperationFailed) String() string {
 func (*OperationFailed) ProtoMessage() {}
 
 func (x *OperationFailed) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[40]
+	mi := &file_multiplayer_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3567,7 +3747,7 @@ func (x *OperationFailed) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationFailed.ProtoReflect.Descriptor instead.
 func (*OperationFailed) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{40}
+	return file_multiplayer_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *OperationFailed) GetOperationId() []byte {
@@ -3598,7 +3778,7 @@ type AuthorityFrameMessage struct {
 
 func (x *AuthorityFrameMessage) Reset() {
 	*x = AuthorityFrameMessage{}
-	mi := &file_multiplayer_proto_msgTypes[41]
+	mi := &file_multiplayer_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3610,7 +3790,7 @@ func (x *AuthorityFrameMessage) String() string {
 func (*AuthorityFrameMessage) ProtoMessage() {}
 
 func (x *AuthorityFrameMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[41]
+	mi := &file_multiplayer_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3623,7 +3803,7 @@ func (x *AuthorityFrameMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthorityFrameMessage.ProtoReflect.Descriptor instead.
 func (*AuthorityFrameMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{41}
+	return file_multiplayer_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *AuthorityFrameMessage) GetMatchId() []byte {
@@ -3682,7 +3862,7 @@ type AuthorityHashInput struct {
 
 func (x *AuthorityHashInput) Reset() {
 	*x = AuthorityHashInput{}
-	mi := &file_multiplayer_proto_msgTypes[42]
+	mi := &file_multiplayer_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3694,7 +3874,7 @@ func (x *AuthorityHashInput) String() string {
 func (*AuthorityHashInput) ProtoMessage() {}
 
 func (x *AuthorityHashInput) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[42]
+	mi := &file_multiplayer_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3707,7 +3887,7 @@ func (x *AuthorityHashInput) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthorityHashInput.ProtoReflect.Descriptor instead.
 func (*AuthorityHashInput) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{42}
+	return file_multiplayer_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *AuthorityHashInput) GetDomain() string {
@@ -3767,7 +3947,7 @@ type SnapshotManifestMessage struct {
 
 func (x *SnapshotManifestMessage) Reset() {
 	*x = SnapshotManifestMessage{}
-	mi := &file_multiplayer_proto_msgTypes[43]
+	mi := &file_multiplayer_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3779,7 +3959,7 @@ func (x *SnapshotManifestMessage) String() string {
 func (*SnapshotManifestMessage) ProtoMessage() {}
 
 func (x *SnapshotManifestMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[43]
+	mi := &file_multiplayer_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3792,7 +3972,7 @@ func (x *SnapshotManifestMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SnapshotManifestMessage.ProtoReflect.Descriptor instead.
 func (*SnapshotManifestMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{43}
+	return file_multiplayer_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *SnapshotManifestMessage) GetSnapshotId() []byte {
@@ -3855,7 +4035,7 @@ type SnapshotChunkMessage struct {
 
 func (x *SnapshotChunkMessage) Reset() {
 	*x = SnapshotChunkMessage{}
-	mi := &file_multiplayer_proto_msgTypes[44]
+	mi := &file_multiplayer_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3867,7 +4047,7 @@ func (x *SnapshotChunkMessage) String() string {
 func (*SnapshotChunkMessage) ProtoMessage() {}
 
 func (x *SnapshotChunkMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_multiplayer_proto_msgTypes[44]
+	mi := &file_multiplayer_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3880,7 +4060,7 @@ func (x *SnapshotChunkMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SnapshotChunkMessage.ProtoReflect.Descriptor instead.
 func (*SnapshotChunkMessage) Descriptor() ([]byte, []int) {
-	return file_multiplayer_proto_rawDescGZIP(), []int{44}
+	return file_multiplayer_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *SnapshotChunkMessage) GetSnapshotId() []byte {
@@ -4211,20 +4391,39 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\n" +
 	"value_kind\x18\x03 \x01(\rR\tvalueKind\x12#\n" +
 	"\rinteger_value\x18\x04 \x01(\x03R\fintegerValue\x12%\n" +
-	"\x0efloating_value\x18\x05 \x01(\x01R\rfloatingValue\"\xc9\x01\n" +
+	"\x0efloating_value\x18\x05 \x01(\x01R\rfloatingValue\"\x9c\x02\n" +
 	"\n" +
 	"Resolution\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\fR\voperationId\x12\x19\n" +
 	"\bstage_id\x18\x02 \x01(\x05R\astageId\x12-\n" +
 	"\x12settlement_ordinal\x18\x03 \x01(\x05R\x11settlementOrdinal\x12N\n" +
-	"\x0erandom_records\x18\x04 \x03(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\rrandomRecords\"\xc3\x01\n" +
+	"\x0erandom_records\x18\x04 \x03(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\rrandomRecords\x12Q\n" +
+	"\x11attack_settlement\x18\x05 \x01(\v2$.xingyistarry.mp.v1.AttackSettlementR\x10attackSettlement\"\xf8\x02\n" +
+	"\x10AttackSettlement\x12=\n" +
+	"\x04kind\x18\x01 \x01(\x0e2).xingyistarry.mp.v1.AttackSettlement.KindR\x04kind\x12\x19\n" +
+	"\bbatch_id\x18\x02 \x01(\x05R\abatchId\x12\x17\n" +
+	"\aunit_id\x18\x03 \x01(\x03R\x06unitId\x12\x1f\n" +
+	"\vaction_name\x18\x04 \x01(\tR\n" +
+	"actionName\x12\x19\n" +
+	"\btarget_x\x18\x05 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x06 \x01(\x11R\atargetY\x12\x19\n" +
+	"\borigin_x\x18\a \x01(\x11R\aoriginX\x12\x19\n" +
+	"\borigin_y\x18\b \x01(\x11R\aoriginY\x12\x12\n" +
+	"\x04data\x18\t \x01(\x02R\x04data\"P\n" +
+	"\x04Kind\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\x11\n" +
+	"\rBATCH_STARTED\x10\x01\x12\b\n" +
+	"\x04CELL\x10\x02\x12\t\n" +
+	"\x05DEATH\x10\x03\x12\x0f\n" +
+	"\vBATCH_ENDED\x10\x04\"\xee\x01\n" +
 	"\x0eOperationBegin\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\fR\voperationId\x12\x17\n" +
 	"\aseat_id\x18\x02 \x01(\fR\x06seatId\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x03 \x01(\x04R\trequestId\x12\x14\n" +
 	"\x05round\x18\x04 \x01(\x05R\x05round\x12@\n" +
-	"\acommand\x18\x05 \x01(\v2&.xingyistarry.mp.v1.GameCommandMessageR\acommand\"1\n" +
+	"\acommand\x18\x05 \x01(\v2&.xingyistarry.mp.v1.GameCommandMessageR\acommand\x12)\n" +
+	"\x10live_settlements\x18\x06 \x01(\bR\x0fliveSettlements\"1\n" +
 	"\fOperationEnd\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\fR\voperationId\"L\n" +
 	"\x0fOperationFailed\x12!\n" +
@@ -4308,8 +4507,8 @@ func file_multiplayer_proto_rawDescGZIP() []byte {
 	return file_multiplayer_proto_rawDescData
 }
 
-var file_multiplayer_proto_enumTypes = make([]protoimpl.EnumInfo, 7)
-var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 45)
+var file_multiplayer_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
+var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
 var file_multiplayer_proto_goTypes = []any{
 	(Delivery)(0),                     // 0: xingyistarry.mp.v1.Delivery
 	(WelcomeMode)(0),                  // 1: xingyistarry.mp.v1.WelcomeMode
@@ -4318,76 +4517,80 @@ var file_multiplayer_proto_goTypes = []any{
 	(ChatChannel)(0),                  // 4: xingyistarry.mp.v1.ChatChannel
 	(ChatKind)(0),                     // 5: xingyistarry.mp.v1.ChatKind
 	(SystemEventKind)(0),              // 6: xingyistarry.mp.v1.SystemEventKind
-	(*WireEnvelope)(nil),              // 7: xingyistarry.mp.v1.WireEnvelope
-	(*GuidValue)(nil),                 // 8: xingyistarry.mp.v1.GuidValue
-	(*Int64Value)(nil),                // 9: xingyistarry.mp.v1.Int64Value
-	(*StringValue)(nil),               // 10: xingyistarry.mp.v1.StringValue
-	(*Hello)(nil),                     // 11: xingyistarry.mp.v1.Hello
-	(*Welcome)(nil),                   // 12: xingyistarry.mp.v1.Welcome
-	(*Participant)(nil),               // 13: xingyistarry.mp.v1.Participant
-	(*Seat)(nil),                      // 14: xingyistarry.mp.v1.Seat
-	(*Room)(nil),                      // 15: xingyistarry.mp.v1.Room
-	(*GameCommandMessage)(nil),        // 16: xingyistarry.mp.v1.GameCommandMessage
-	(*ResolvedUnitAction)(nil),        // 17: xingyistarry.mp.v1.ResolvedUnitAction
-	(*CommandRequestMessage)(nil),     // 18: xingyistarry.mp.v1.CommandRequestMessage
-	(*RelayRoomInfo)(nil),             // 19: xingyistarry.mp.v1.RelayRoomInfo
-	(*RelayRegisterRoomRequest)(nil),  // 20: xingyistarry.mp.v1.RelayRegisterRoomRequest
-	(*RelayUpdateRoomRequest)(nil),    // 21: xingyistarry.mp.v1.RelayUpdateRoomRequest
-	(*RelayListRoomsRequest)(nil),     // 22: xingyistarry.mp.v1.RelayListRoomsRequest
-	(*RelayListRoomsResponse)(nil),    // 23: xingyistarry.mp.v1.RelayListRoomsResponse
-	(*RelayJoinRoomRequest)(nil),      // 24: xingyistarry.mp.v1.RelayJoinRoomRequest
-	(*RelayResumeRoomRequest)(nil),    // 25: xingyistarry.mp.v1.RelayResumeRoomRequest
-	(*RelayControlResponse)(nil),      // 26: xingyistarry.mp.v1.RelayControlResponse
-	(*RelayRoomRequest)(nil),          // 27: xingyistarry.mp.v1.RelayRoomRequest
-	(*RelayPeerNotice)(nil),           // 28: xingyistarry.mp.v1.RelayPeerNotice
-	(*JoinMatchRequest)(nil),          // 29: xingyistarry.mp.v1.JoinMatchRequest
-	(*JoinMatchAcceptedMessage)(nil),  // 30: xingyistarry.mp.v1.JoinMatchAcceptedMessage
-	(*ChatSendMessage)(nil),           // 31: xingyistarry.mp.v1.ChatSendMessage
-	(*ChatEventMessage)(nil),          // 32: xingyistarry.mp.v1.ChatEventMessage
-	(*PingSendMessage)(nil),           // 33: xingyistarry.mp.v1.PingSendMessage
-	(*PingEventMessage)(nil),          // 34: xingyistarry.mp.v1.PingEventMessage
-	(*SocialSyncRequestMessage)(nil),  // 35: xingyistarry.mp.v1.SocialSyncRequestMessage
-	(*SocialSyncBeginMessage)(nil),    // 36: xingyistarry.mp.v1.SocialSyncBeginMessage
-	(*SocialSyncChunkMessage)(nil),    // 37: xingyistarry.mp.v1.SocialSyncChunkMessage
-	(*SocialSyncCompleteMessage)(nil), // 38: xingyistarry.mp.v1.SocialSyncCompleteMessage
-	(*ResumeSessionRequest)(nil),      // 39: xingyistarry.mp.v1.ResumeSessionRequest
-	(*ResumeSessionAccepted)(nil),     // 40: xingyistarry.mp.v1.ResumeSessionAccepted
-	(*SeatControlChanged)(nil),        // 41: xingyistarry.mp.v1.SeatControlChanged
-	(*CommandResponseMessage)(nil),    // 42: xingyistarry.mp.v1.CommandResponseMessage
-	(*RandomRecordMessage)(nil),       // 43: xingyistarry.mp.v1.RandomRecordMessage
-	(*Resolution)(nil),                // 44: xingyistarry.mp.v1.Resolution
-	(*OperationBegin)(nil),            // 45: xingyistarry.mp.v1.OperationBegin
-	(*OperationEnd)(nil),              // 46: xingyistarry.mp.v1.OperationEnd
-	(*OperationFailed)(nil),           // 47: xingyistarry.mp.v1.OperationFailed
-	(*AuthorityFrameMessage)(nil),     // 48: xingyistarry.mp.v1.AuthorityFrameMessage
-	(*AuthorityHashInput)(nil),        // 49: xingyistarry.mp.v1.AuthorityHashInput
-	(*SnapshotManifestMessage)(nil),   // 50: xingyistarry.mp.v1.SnapshotManifestMessage
-	(*SnapshotChunkMessage)(nil),      // 51: xingyistarry.mp.v1.SnapshotChunkMessage
+	(AttackSettlement_Kind)(0),        // 7: xingyistarry.mp.v1.AttackSettlement.Kind
+	(*WireEnvelope)(nil),              // 8: xingyistarry.mp.v1.WireEnvelope
+	(*GuidValue)(nil),                 // 9: xingyistarry.mp.v1.GuidValue
+	(*Int64Value)(nil),                // 10: xingyistarry.mp.v1.Int64Value
+	(*StringValue)(nil),               // 11: xingyistarry.mp.v1.StringValue
+	(*Hello)(nil),                     // 12: xingyistarry.mp.v1.Hello
+	(*Welcome)(nil),                   // 13: xingyistarry.mp.v1.Welcome
+	(*Participant)(nil),               // 14: xingyistarry.mp.v1.Participant
+	(*Seat)(nil),                      // 15: xingyistarry.mp.v1.Seat
+	(*Room)(nil),                      // 16: xingyistarry.mp.v1.Room
+	(*GameCommandMessage)(nil),        // 17: xingyistarry.mp.v1.GameCommandMessage
+	(*ResolvedUnitAction)(nil),        // 18: xingyistarry.mp.v1.ResolvedUnitAction
+	(*CommandRequestMessage)(nil),     // 19: xingyistarry.mp.v1.CommandRequestMessage
+	(*RelayRoomInfo)(nil),             // 20: xingyistarry.mp.v1.RelayRoomInfo
+	(*RelayRegisterRoomRequest)(nil),  // 21: xingyistarry.mp.v1.RelayRegisterRoomRequest
+	(*RelayUpdateRoomRequest)(nil),    // 22: xingyistarry.mp.v1.RelayUpdateRoomRequest
+	(*RelayListRoomsRequest)(nil),     // 23: xingyistarry.mp.v1.RelayListRoomsRequest
+	(*RelayListRoomsResponse)(nil),    // 24: xingyistarry.mp.v1.RelayListRoomsResponse
+	(*RelayJoinRoomRequest)(nil),      // 25: xingyistarry.mp.v1.RelayJoinRoomRequest
+	(*RelayResumeRoomRequest)(nil),    // 26: xingyistarry.mp.v1.RelayResumeRoomRequest
+	(*RelayControlResponse)(nil),      // 27: xingyistarry.mp.v1.RelayControlResponse
+	(*RelayRoomRequest)(nil),          // 28: xingyistarry.mp.v1.RelayRoomRequest
+	(*RelayPeerNotice)(nil),           // 29: xingyistarry.mp.v1.RelayPeerNotice
+	(*JoinMatchRequest)(nil),          // 30: xingyistarry.mp.v1.JoinMatchRequest
+	(*JoinMatchAcceptedMessage)(nil),  // 31: xingyistarry.mp.v1.JoinMatchAcceptedMessage
+	(*ChatSendMessage)(nil),           // 32: xingyistarry.mp.v1.ChatSendMessage
+	(*ChatEventMessage)(nil),          // 33: xingyistarry.mp.v1.ChatEventMessage
+	(*PingSendMessage)(nil),           // 34: xingyistarry.mp.v1.PingSendMessage
+	(*PingEventMessage)(nil),          // 35: xingyistarry.mp.v1.PingEventMessage
+	(*SocialSyncRequestMessage)(nil),  // 36: xingyistarry.mp.v1.SocialSyncRequestMessage
+	(*SocialSyncBeginMessage)(nil),    // 37: xingyistarry.mp.v1.SocialSyncBeginMessage
+	(*SocialSyncChunkMessage)(nil),    // 38: xingyistarry.mp.v1.SocialSyncChunkMessage
+	(*SocialSyncCompleteMessage)(nil), // 39: xingyistarry.mp.v1.SocialSyncCompleteMessage
+	(*ResumeSessionRequest)(nil),      // 40: xingyistarry.mp.v1.ResumeSessionRequest
+	(*ResumeSessionAccepted)(nil),     // 41: xingyistarry.mp.v1.ResumeSessionAccepted
+	(*SeatControlChanged)(nil),        // 42: xingyistarry.mp.v1.SeatControlChanged
+	(*CommandResponseMessage)(nil),    // 43: xingyistarry.mp.v1.CommandResponseMessage
+	(*RandomRecordMessage)(nil),       // 44: xingyistarry.mp.v1.RandomRecordMessage
+	(*Resolution)(nil),                // 45: xingyistarry.mp.v1.Resolution
+	(*AttackSettlement)(nil),          // 46: xingyistarry.mp.v1.AttackSettlement
+	(*OperationBegin)(nil),            // 47: xingyistarry.mp.v1.OperationBegin
+	(*OperationEnd)(nil),              // 48: xingyistarry.mp.v1.OperationEnd
+	(*OperationFailed)(nil),           // 49: xingyistarry.mp.v1.OperationFailed
+	(*AuthorityFrameMessage)(nil),     // 50: xingyistarry.mp.v1.AuthorityFrameMessage
+	(*AuthorityHashInput)(nil),        // 51: xingyistarry.mp.v1.AuthorityHashInput
+	(*SnapshotManifestMessage)(nil),   // 52: xingyistarry.mp.v1.SnapshotManifestMessage
+	(*SnapshotChunkMessage)(nil),      // 53: xingyistarry.mp.v1.SnapshotChunkMessage
 }
 var file_multiplayer_proto_depIdxs = []int32{
 	0,  // 0: xingyistarry.mp.v1.WireEnvelope.delivery:type_name -> xingyistarry.mp.v1.Delivery
 	1,  // 1: xingyistarry.mp.v1.Welcome.mode:type_name -> xingyistarry.mp.v1.WelcomeMode
 	2,  // 2: xingyistarry.mp.v1.Participant.admission:type_name -> xingyistarry.mp.v1.ParticipantAdmission
-	14, // 3: xingyistarry.mp.v1.Room.seats:type_name -> xingyistarry.mp.v1.Seat
-	13, // 4: xingyistarry.mp.v1.Room.participants:type_name -> xingyistarry.mp.v1.Participant
-	17, // 5: xingyistarry.mp.v1.GameCommandMessage.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
-	16, // 6: xingyistarry.mp.v1.CommandRequestMessage.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
+	15, // 3: xingyistarry.mp.v1.Room.seats:type_name -> xingyistarry.mp.v1.Seat
+	14, // 4: xingyistarry.mp.v1.Room.participants:type_name -> xingyistarry.mp.v1.Participant
+	18, // 5: xingyistarry.mp.v1.GameCommandMessage.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
+	17, // 6: xingyistarry.mp.v1.CommandRequestMessage.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
 	3,  // 7: xingyistarry.mp.v1.RelayRoomInfo.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
 	3,  // 8: xingyistarry.mp.v1.RelayUpdateRoomRequest.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
-	19, // 9: xingyistarry.mp.v1.RelayListRoomsResponse.rooms:type_name -> xingyistarry.mp.v1.RelayRoomInfo
+	20, // 9: xingyistarry.mp.v1.RelayListRoomsResponse.rooms:type_name -> xingyistarry.mp.v1.RelayRoomInfo
 	4,  // 10: xingyistarry.mp.v1.ChatSendMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
 	4,  // 11: xingyistarry.mp.v1.ChatEventMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
 	5,  // 12: xingyistarry.mp.v1.ChatEventMessage.kind:type_name -> xingyistarry.mp.v1.ChatKind
 	6,  // 13: xingyistarry.mp.v1.ChatEventMessage.system_kind:type_name -> xingyistarry.mp.v1.SystemEventKind
-	13, // 14: xingyistarry.mp.v1.SocialSyncBeginMessage.participants:type_name -> xingyistarry.mp.v1.Participant
-	32, // 15: xingyistarry.mp.v1.SocialSyncChunkMessage.messages:type_name -> xingyistarry.mp.v1.ChatEventMessage
-	43, // 16: xingyistarry.mp.v1.Resolution.random_records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	16, // 17: xingyistarry.mp.v1.OperationBegin.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	14, // 14: xingyistarry.mp.v1.SocialSyncBeginMessage.participants:type_name -> xingyistarry.mp.v1.Participant
+	33, // 15: xingyistarry.mp.v1.SocialSyncChunkMessage.messages:type_name -> xingyistarry.mp.v1.ChatEventMessage
+	44, // 16: xingyistarry.mp.v1.Resolution.random_records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	46, // 17: xingyistarry.mp.v1.Resolution.attack_settlement:type_name -> xingyistarry.mp.v1.AttackSettlement
+	7,  // 18: xingyistarry.mp.v1.AttackSettlement.kind:type_name -> xingyistarry.mp.v1.AttackSettlement.Kind
+	17, // 19: xingyistarry.mp.v1.OperationBegin.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_multiplayer_proto_init() }
@@ -4410,8 +4613,8 @@ func file_multiplayer_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_multiplayer_proto_rawDesc), len(file_multiplayer_proto_rawDesc)),
-			NumEnums:      7,
-			NumMessages:   45,
+			NumEnums:      8,
+			NumMessages:   46,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
