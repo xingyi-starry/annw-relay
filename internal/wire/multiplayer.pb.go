@@ -2434,6 +2434,7 @@ func (x *GameCommandMessage) GetEndTurn() *EndTurnCommand {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetAutoGuideStart() *AutoGuideStartCommand {
 	if x != nil {
 		if x, ok := x.Body.(*GameCommandMessage_AutoGuideStart); ok {
@@ -2515,6 +2516,7 @@ func (x *GameCommandMessage) GetToggleSleep() *ToggleSleepCommand {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetStay() *StayCommand {
 	if x != nil {
 		if x, ok := x.Body.(*GameCommandMessage_Stay); ok {
@@ -2579,6 +2581,7 @@ type GameCommandMessage_EndTurn struct {
 }
 
 type GameCommandMessage_AutoGuideStart struct {
+	// Deprecated: Marked as deprecated in multiplayer.proto.
 	AutoGuideStart *AutoGuideStartCommand `protobuf:"bytes,109,opt,name=auto_guide_start,json=autoGuideStart,proto3,oneof"`
 }
 
@@ -2615,6 +2618,7 @@ type GameCommandMessage_ToggleSleep struct {
 }
 
 type GameCommandMessage_Stay struct {
+	// Deprecated: Marked as deprecated in multiplayer.proto.
 	Stay *StayCommand `protobuf:"bytes,119,opt,name=stay,proto3,oneof"`
 }
 
@@ -5582,13 +5586,16 @@ func (x *SnapshotChunkMessage) GetData() []byte {
 }
 
 type MoveCommand struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
-	TargetX            int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
-	TargetY            int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
-	UnitTargetXs       []int32                `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
-	UnitTargetYs       []int32                `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
-	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TargetX int32 `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TargetY      int32   `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	UnitTargetXs []int32 `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
+	UnitTargetYs []int32 `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	DesiredToggleState bool `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -5630,6 +5637,7 @@ func (x *MoveCommand) GetUnitIds() []int64 {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *MoveCommand) GetTargetX() int32 {
 	if x != nil {
 		return x.TargetX
@@ -5637,6 +5645,7 @@ func (x *MoveCommand) GetTargetX() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *MoveCommand) GetTargetY() int32 {
 	if x != nil {
 		return x.TargetY
@@ -5658,6 +5667,7 @@ func (x *MoveCommand) GetUnitTargetYs() []int32 {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *MoveCommand) GetDesiredToggleState() bool {
 	if x != nil {
 		return x.DesiredToggleState
@@ -5865,6 +5875,7 @@ type EquipmentMoveActionCommand struct {
 	ActionCategory int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
 	ActionId       string                 `protobuf:"bytes,8,opt,name=action_id,json=actionId,proto3" json:"action_id,omitempty"`
 	TemplateId     string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	MovePosition   *ActionMovePosition    `protobuf:"bytes,100,opt,name=move_position,json=movePosition,proto3" json:"move_position,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -5941,6 +5952,13 @@ func (x *EquipmentMoveActionCommand) GetTemplateId() string {
 	return ""
 }
 
+func (x *EquipmentMoveActionCommand) GetMovePosition() *ActionMovePosition {
+	if x != nil {
+		return x.MovePosition
+	}
+	return nil
+}
+
 type BuildWithMoveCommand struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	UnitIds        []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
@@ -5948,6 +5966,7 @@ type BuildWithMoveCommand struct {
 	TargetY        int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
 	ActionCategory int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
 	TemplateId     string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	MovePosition   *ActionMovePosition    `protobuf:"bytes,100,opt,name=move_position,json=movePosition,proto3" json:"move_position,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -6015,6 +6034,13 @@ func (x *BuildWithMoveCommand) GetTemplateId() string {
 		return x.TemplateId
 	}
 	return ""
+}
+
+func (x *BuildWithMoveCommand) GetMovePosition() *ActionMovePosition {
+	if x != nil {
+		return x.MovePosition
+	}
+	return nil
 }
 
 type SkillCommand struct {
@@ -7058,6 +7084,8 @@ type SettlementEvent struct {
 	//	*SettlementEvent_EffectMutation
 	//	*SettlementEvent_Experience
 	//	*SettlementEvent_SkillFinished
+	//	*SettlementEvent_ActionPreparation
+	//	*SettlementEvent_ActionCallbacks
 	Body          isSettlementEvent_Body `protobuf_oneof:"body"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -7315,6 +7343,24 @@ func (x *SettlementEvent) GetSkillFinished() *SkillFinishedEvent {
 	return nil
 }
 
+func (x *SettlementEvent) GetActionPreparation() *ActionPreparationEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_ActionPreparation); ok {
+			return x.ActionPreparation
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetActionCallbacks() *ActionCallbacksEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_ActionCallbacks); ok {
+			return x.ActionCallbacks
+		}
+	}
+	return nil
+}
+
 type isSettlementEvent_Body interface {
 	isSettlementEvent_Body()
 }
@@ -7400,6 +7446,14 @@ type SettlementEvent_SkillFinished struct {
 	SkillFinished *SkillFinishedEvent `protobuf:"bytes,121,opt,name=skill_finished,json=skillFinished,proto3,oneof"`
 }
 
+type SettlementEvent_ActionPreparation struct {
+	ActionPreparation *ActionPreparationEvent `protobuf:"bytes,122,opt,name=action_preparation,json=actionPreparation,proto3,oneof"`
+}
+
+type SettlementEvent_ActionCallbacks struct {
+	ActionCallbacks *ActionCallbacksEvent `protobuf:"bytes,123,opt,name=action_callbacks,json=actionCallbacks,proto3,oneof"`
+}
+
 func (*SettlementEvent_AttackStarted) isSettlementEvent_Body() {}
 
 func (*SettlementEvent_AttackCell) isSettlementEvent_Body() {}
@@ -7440,12 +7494,17 @@ func (*SettlementEvent_Experience) isSettlementEvent_Body() {}
 
 func (*SettlementEvent_SkillFinished) isSettlementEvent_Body() {}
 
+func (*SettlementEvent_ActionPreparation) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_ActionCallbacks) isSettlementEvent_Body() {}
+
 type AttackStartedEvent struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ActionName    string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
-	TargetX       int32                  `protobuf:"zigzag32,2,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
-	TargetY       int32                  `protobuf:"zigzag32,3,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
-	GlobalPhase   bool                   `protobuf:"varint,4,opt,name=global_phase,json=globalPhase,proto3" json:"global_phase,omitempty"`
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	ActionName string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	TargetX    int32                  `protobuf:"zigzag32,2,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY    int32                  `protobuf:"zigzag32,3,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	GlobalPhase   bool `protobuf:"varint,4,opt,name=global_phase,json=globalPhase,proto3" json:"global_phase,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -7501,6 +7560,7 @@ func (x *AttackStartedEvent) GetTargetY() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *AttackStartedEvent) GetGlobalPhase() bool {
 	if x != nil {
 		return x.GlobalPhase
@@ -7518,6 +7578,7 @@ type AttackCellEvent struct {
 	Data          *float32               `protobuf:"fixed32,6,opt,name=data,proto3,oneof" json:"data,omitempty"`
 	ActionType    string                 `protobuf:"bytes,7,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
 	SkillIndex    int32                  `protobuf:"varint,8,opt,name=skill_index,json=skillIndex,proto3" json:"skill_index,omitempty"`
+	Targets       []*AttackTargetResult  `protobuf:"bytes,100,rep,name=targets,proto3" json:"targets,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -7606,6 +7667,13 @@ func (x *AttackCellEvent) GetSkillIndex() int32 {
 		return x.SkillIndex
 	}
 	return 0
+}
+
+func (x *AttackCellEvent) GetTargets() []*AttackTargetResult {
+	if x != nil {
+		return x.Targets
+	}
+	return nil
 }
 
 type AttackFinishedEvent struct {
@@ -9200,6 +9268,348 @@ func (x *AuthorityMatchEnded) GetLocalVictory() bool {
 	return false
 }
 
+type ActionMovePosition struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	X             int32                  `protobuf:"zigzag32,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y             int32                  `protobuf:"zigzag32,2,opt,name=y,proto3" json:"y,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActionMovePosition) Reset() {
+	*x = ActionMovePosition{}
+	mi := &file_multiplayer_proto_msgTypes[97]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActionMovePosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActionMovePosition) ProtoMessage() {}
+
+func (x *ActionMovePosition) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[97]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActionMovePosition.ProtoReflect.Descriptor instead.
+func (*ActionMovePosition) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{97}
+}
+
+func (x *ActionMovePosition) GetX() int32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *ActionMovePosition) GetY() int32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+type ActionPreparationEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ActionName    string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	TargetX       int32                  `protobuf:"zigzag32,2,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY       int32                  `protobuf:"zigzag32,3,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActionPreparationEvent) Reset() {
+	*x = ActionPreparationEvent{}
+	mi := &file_multiplayer_proto_msgTypes[98]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActionPreparationEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActionPreparationEvent) ProtoMessage() {}
+
+func (x *ActionPreparationEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[98]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActionPreparationEvent.ProtoReflect.Descriptor instead.
+func (*ActionPreparationEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{98}
+}
+
+func (x *ActionPreparationEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *ActionPreparationEvent) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ActionPreparationEvent) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+type ActionCallbacksEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ActionName    string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ActionCallbacksEvent) Reset() {
+	*x = ActionCallbacksEvent{}
+	mi := &file_multiplayer_proto_msgTypes[99]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActionCallbacksEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActionCallbacksEvent) ProtoMessage() {}
+
+func (x *ActionCallbacksEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[99]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActionCallbacksEvent.ProtoReflect.Descriptor instead.
+func (*ActionCallbacksEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{99}
+}
+
+func (x *ActionCallbacksEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+type AttackTargetResult struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Position *ActionMovePosition    `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
+	Damage   *float32               `protobuf:"fixed32,2,opt,name=damage,proto3,oneof" json:"damage,omitempty"`
+	// Types that are valid to be assigned to Recipient:
+	//
+	//	*AttackTargetResult_Unit
+	//	*AttackTargetResult_Shield
+	Recipient     isAttackTargetResult_Recipient `protobuf_oneof:"recipient"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttackTargetResult) Reset() {
+	*x = AttackTargetResult{}
+	mi := &file_multiplayer_proto_msgTypes[100]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackTargetResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackTargetResult) ProtoMessage() {}
+
+func (x *AttackTargetResult) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[100]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackTargetResult.ProtoReflect.Descriptor instead.
+func (*AttackTargetResult) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{100}
+}
+
+func (x *AttackTargetResult) GetPosition() *ActionMovePosition {
+	if x != nil {
+		return x.Position
+	}
+	return nil
+}
+
+func (x *AttackTargetResult) GetDamage() float32 {
+	if x != nil && x.Damage != nil {
+		return *x.Damage
+	}
+	return 0
+}
+
+func (x *AttackTargetResult) GetRecipient() isAttackTargetResult_Recipient {
+	if x != nil {
+		return x.Recipient
+	}
+	return nil
+}
+
+func (x *AttackTargetResult) GetUnit() *AttackUnitRecipient {
+	if x != nil {
+		if x, ok := x.Recipient.(*AttackTargetResult_Unit); ok {
+			return x.Unit
+		}
+	}
+	return nil
+}
+
+func (x *AttackTargetResult) GetShield() *AttackShieldRecipient {
+	if x != nil {
+		if x, ok := x.Recipient.(*AttackTargetResult_Shield); ok {
+			return x.Shield
+		}
+	}
+	return nil
+}
+
+type isAttackTargetResult_Recipient interface {
+	isAttackTargetResult_Recipient()
+}
+
+type AttackTargetResult_Unit struct {
+	Unit *AttackUnitRecipient `protobuf:"bytes,101,opt,name=unit,proto3,oneof"`
+}
+
+type AttackTargetResult_Shield struct {
+	Shield *AttackShieldRecipient `protobuf:"bytes,102,opt,name=shield,proto3,oneof"`
+}
+
+func (*AttackTargetResult_Unit) isAttackTargetResult_Recipient() {}
+
+func (*AttackTargetResult_Shield) isAttackTargetResult_Recipient() {}
+
+type AttackUnitRecipient struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UnitId        int64                  `protobuf:"varint,1,opt,name=unit_id,json=unitId,proto3" json:"unit_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttackUnitRecipient) Reset() {
+	*x = AttackUnitRecipient{}
+	mi := &file_multiplayer_proto_msgTypes[101]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackUnitRecipient) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackUnitRecipient) ProtoMessage() {}
+
+func (x *AttackUnitRecipient) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[101]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackUnitRecipient.ProtoReflect.Descriptor instead.
+func (*AttackUnitRecipient) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{101}
+}
+
+func (x *AttackUnitRecipient) GetUnitId() int64 {
+	if x != nil {
+		return x.UnitId
+	}
+	return 0
+}
+
+type AttackShieldRecipient struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CasterUnitId  int64                  `protobuf:"varint,1,opt,name=caster_unit_id,json=casterUnitId,proto3" json:"caster_unit_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttackShieldRecipient) Reset() {
+	*x = AttackShieldRecipient{}
+	mi := &file_multiplayer_proto_msgTypes[102]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackShieldRecipient) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackShieldRecipient) ProtoMessage() {}
+
+func (x *AttackShieldRecipient) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[102]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackShieldRecipient.ProtoReflect.Descriptor instead.
+func (*AttackShieldRecipient) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{102}
+}
+
+func (x *AttackShieldRecipient) GetCasterUnitId() int64 {
+	if x != nil {
+		return x.CasterUnitId
+	}
+	return 0
+}
+
 var File_multiplayer_proto protoreflect.FileDescriptor
 
 const file_multiplayer_proto_rawDesc = "" +
@@ -9360,7 +9770,7 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x10max_participants\x18\x0f \x01(\x05R\x0fmaxParticipants\x12C\n" +
 	"\fparticipants\x18\x10 \x03(\v2\x1f.xingyistarry.mp.v1.ParticipantR\fparticipants\x121\n" +
 	"\x14participant_revision\x18\x11 \x01(\rR\x13participantRevisionB\v\n" +
-	"\t_match_id\"\xd7\x11\n" +
+	"\t_match_id\"\xdf\x11\n" +
 	"\x12GameCommandMessage\x12\x16\n" +
 	"\x04kind\x18\x01 \x01(\rB\x02\x18\x01R\x04kind\x12\x1d\n" +
 	"\bunit_ids\x18\x02 \x03(\x03B\x02\x18\x01R\aunitIds\x12\x1d\n" +
@@ -9387,8 +9797,8 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x0fbuild_with_move\x18i \x01(\v2(.xingyistarry.mp.v1.BuildWithMoveCommandH\x00R\rbuildWithMove\x128\n" +
 	"\x05skill\x18j \x01(\v2 .xingyistarry.mp.v1.SkillCommandH\x00R\x05skill\x12B\n" +
 	"\tundo_move\x18k \x01(\v2#.xingyistarry.mp.v1.UndoMoveCommandH\x00R\bundoMove\x12?\n" +
-	"\bend_turn\x18l \x01(\v2\".xingyistarry.mp.v1.EndTurnCommandH\x00R\aendTurn\x12U\n" +
-	"\x10auto_guide_start\x18m \x01(\v2).xingyistarry.mp.v1.AutoGuideStartCommandH\x00R\x0eautoGuideStart\x12^\n" +
+	"\bend_turn\x18l \x01(\v2\".xingyistarry.mp.v1.EndTurnCommandH\x00R\aendTurn\x12Y\n" +
+	"\x10auto_guide_start\x18m \x01(\v2).xingyistarry.mp.v1.AutoGuideStartCommandB\x02\x18\x01H\x00R\x0eautoGuideStart\x12^\n" +
 	"\x13debug_add_resources\x18o \x01(\v2,.xingyistarry.mp.v1.DebugAddResourcesCommandH\x00R\x11debugAddResources\x12U\n" +
 	"\x10debug_fill_skill\x18p \x01(\v2).xingyistarry.mp.v1.DebugFillSkillCommandH\x00R\x0edebugFillSkill\x12O\n" +
 	"\x0eai_unit_action\x18q \x01(\v2'.xingyistarry.mp.v1.AiUnitActionCommandH\x00R\faiUnitAction\x12?\n" +
@@ -9396,8 +9806,8 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\fturn_advance\x18s \x01(\v2&.xingyistarry.mp.v1.TurnAdvanceCommandH\x00R\vturnAdvance\x12D\n" +
 	"\tsurrender\x18t \x01(\v2$.xingyistarry.mp.v1.SurrenderCommandH\x00R\tsurrender\x12Q\n" +
 	"\x0etoggle_standby\x18u \x01(\v2(.xingyistarry.mp.v1.ToggleStandbyCommandH\x00R\rtoggleStandby\x12K\n" +
-	"\ftoggle_sleep\x18v \x01(\v2&.xingyistarry.mp.v1.ToggleSleepCommandH\x00R\vtoggleSleep\x125\n" +
-	"\x04stay\x18w \x01(\v2\x1f.xingyistarry.mp.v1.StayCommandH\x00R\x04stay\x12N\n" +
+	"\ftoggle_sleep\x18v \x01(\v2&.xingyistarry.mp.v1.ToggleSleepCommandH\x00R\vtoggleSleep\x129\n" +
+	"\x04stay\x18w \x01(\v2\x1f.xingyistarry.mp.v1.StayCommandB\x02\x18\x01H\x00R\x04stay\x12N\n" +
 	"\rself_destruct\x18x \x01(\v2'.xingyistarry.mp.v1.SelfDestructCommandH\x00R\fselfDestruct\x12d\n" +
 	"\x15resolved_unit_actions\x18y \x01(\v2..xingyistarry.mp.v1.ResolvedUnitActionsCommandH\x00R\x13resolvedUnitActionsB\x06\n" +
 	"\x04body\"\xeb\x04\n" +
@@ -9675,14 +10085,14 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\vsnapshot_id\x18\x01 \x01(\fR\n" +
 	"snapshotId\x12\x14\n" +
 	"\x05index\x18\x02 \x01(\x05R\x05index\x12\x12\n" +
-	"\x04data\x18\x03 \x01(\fR\x04data\"\xdc\x01\n" +
+	"\x04data\x18\x03 \x01(\fR\x04data\"\xe8\x01\n" +
 	"\vMoveCommand\x12\x19\n" +
-	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
-	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
-	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12$\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x1d\n" +
+	"\btarget_x\x18\x03 \x01(\x11B\x02\x18\x01R\atargetX\x12\x1d\n" +
+	"\btarget_y\x18\x04 \x01(\x11B\x02\x18\x01R\atargetY\x12$\n" +
 	"\x0eunit_target_xs\x18\x05 \x03(\x11R\funitTargetXs\x12$\n" +
-	"\x0eunit_target_ys\x18\x06 \x03(\x11R\funitTargetYs\x120\n" +
-	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\"\xd4\x02\n" +
+	"\x0eunit_target_ys\x18\x06 \x03(\x11R\funitTargetYs\x124\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bB\x02\x18\x01R\x12desiredToggleState\"\xd4\x02\n" +
 	"\rActionCommand\x12\x19\n" +
 	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
 	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
@@ -9702,7 +10112,7 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1b\n" +
 	"\taction_id\x18\b \x01(\tR\bactionId\x12\x1f\n" +
 	"\vtemplate_id\x18\t \x01(\tR\n" +
-	"templateId\"\xd4\x01\n" +
+	"templateId\"\xa1\x02\n" +
 	"\x1aEquipmentMoveActionCommand\x12\x19\n" +
 	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
 	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
@@ -9710,14 +10120,16 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1b\n" +
 	"\taction_id\x18\b \x01(\tR\bactionId\x12\x1f\n" +
 	"\vtemplate_id\x18\t \x01(\tR\n" +
-	"templateId\"\xb1\x01\n" +
+	"templateId\x12K\n" +
+	"\rmove_position\x18d \x01(\v2&.xingyistarry.mp.v1.ActionMovePositionR\fmovePosition\"\xfe\x01\n" +
 	"\x14BuildWithMoveCommand\x12\x19\n" +
 	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
 	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
 	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
 	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1f\n" +
 	"\vtemplate_id\x18\t \x01(\tR\n" +
-	"templateId\"D\n" +
+	"templateId\x12K\n" +
+	"\rmove_position\x18d \x01(\v2&.xingyistarry.mp.v1.ActionMovePositionR\fmovePosition\"D\n" +
 	"\fSkillCommand\x12\x19\n" +
 	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
 	"\btarget_y\x18\x04 \x01(\x11R\atargetY\"\x11\n" +
@@ -9780,7 +10192,7 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x11death_wreck_scale\x18\x03 \x01(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\x0fdeathWreckScale\x12<\n" +
 	"\x06wrecks\x18\x04 \x03(\v2$.xingyistarry.mp.v1.TileRandomResultR\x06wrecks\x12U\n" +
 	"\x13commander_positions\x18\x05 \x03(\v2$.xingyistarry.mp.v1.UnitRandomResultR\x12commanderPositions\x12Q\n" +
-	"\x11experience_shares\x18\x06 \x03(\v2$.xingyistarry.mp.v1.UnitRandomResultR\x10experienceShares\"\xb9\r\n" +
+	"\x11experience_shares\x18\x06 \x03(\v2$.xingyistarry.mp.v1.UnitRandomResultR\x10experienceShares\"\xed\x0e\n" +
 	"\x0fSettlementEvent\x12$\n" +
 	"\x0esource_unit_id\x18\x01 \x01(\x03R\fsourceUnitId\x12$\n" +
 	"\x0etarget_unit_id\x18\x02 \x01(\x03R\ftargetUnitId\x12E\n" +
@@ -9809,14 +10221,16 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\n" +
 	"experience\x18x \x01(\v2#.xingyistarry.mp.v1.ExperienceEventH\x00R\n" +
 	"experience\x12O\n" +
-	"\x0eskill_finished\x18y \x01(\v2&.xingyistarry.mp.v1.SkillFinishedEventH\x00R\rskillFinishedB\x06\n" +
-	"\x04bodyJ\x04\br\x10s\"\x8e\x01\n" +
+	"\x0eskill_finished\x18y \x01(\v2&.xingyistarry.mp.v1.SkillFinishedEventH\x00R\rskillFinished\x12[\n" +
+	"\x12action_preparation\x18z \x01(\v2*.xingyistarry.mp.v1.ActionPreparationEventH\x00R\x11actionPreparation\x12U\n" +
+	"\x10action_callbacks\x18{ \x01(\v2(.xingyistarry.mp.v1.ActionCallbacksEventH\x00R\x0factionCallbacksB\x06\n" +
+	"\x04bodyJ\x04\br\x10s\"\x92\x01\n" +
 	"\x12AttackStartedEvent\x12\x1f\n" +
 	"\vaction_name\x18\x01 \x01(\tR\n" +
 	"actionName\x12\x19\n" +
 	"\btarget_x\x18\x02 \x01(\x11R\atargetX\x12\x19\n" +
-	"\btarget_y\x18\x03 \x01(\x11R\atargetY\x12!\n" +
-	"\fglobal_phase\x18\x04 \x01(\bR\vglobalPhase\"\xa6\x02\n" +
+	"\btarget_y\x18\x03 \x01(\x11R\atargetY\x12%\n" +
+	"\fglobal_phase\x18\x04 \x01(\bB\x02\x18\x01R\vglobalPhase\"\xe8\x02\n" +
 	"\x0fAttackCellEvent\x12\x1f\n" +
 	"\vaction_name\x18\x01 \x01(\tR\n" +
 	"actionName\x12\x19\n" +
@@ -9828,7 +10242,8 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\vaction_type\x18\a \x01(\tR\n" +
 	"actionType\x12\x1f\n" +
 	"\vskill_index\x18\b \x01(\x05R\n" +
-	"skillIndexB\v\n" +
+	"skillIndex\x12@\n" +
+	"\atargets\x18d \x03(\v2&.xingyistarry.mp.v1.AttackTargetResultR\atargetsB\v\n" +
 	"\t_origin_xB\v\n" +
 	"\t_origin_yB\a\n" +
 	"\x05_data\"d\n" +
@@ -9971,7 +10386,29 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x12AuthorityTurnPhase\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\x05R\x05phase\":\n" +
 	"\x13AuthorityMatchEnded\x12#\n" +
-	"\rlocal_victory\x18\x01 \x01(\bR\flocalVictory*H\n" +
+	"\rlocal_victory\x18\x01 \x01(\bR\flocalVictory\"0\n" +
+	"\x12ActionMovePosition\x12\f\n" +
+	"\x01x\x18\x01 \x01(\x11R\x01x\x12\f\n" +
+	"\x01y\x18\x02 \x01(\x11R\x01y\"o\n" +
+	"\x16ActionPreparationEvent\x12\x1f\n" +
+	"\vaction_name\x18\x01 \x01(\tR\n" +
+	"actionName\x12\x19\n" +
+	"\btarget_x\x18\x02 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x03 \x01(\x11R\atargetY\"7\n" +
+	"\x14ActionCallbacksEvent\x12\x1f\n" +
+	"\vaction_name\x18\x01 \x01(\tR\n" +
+	"actionName\"\x91\x02\n" +
+	"\x12AttackTargetResult\x12B\n" +
+	"\bposition\x18\x01 \x01(\v2&.xingyistarry.mp.v1.ActionMovePositionR\bposition\x12\x1b\n" +
+	"\x06damage\x18\x02 \x01(\x02H\x01R\x06damage\x88\x01\x01\x12=\n" +
+	"\x04unit\x18e \x01(\v2'.xingyistarry.mp.v1.AttackUnitRecipientH\x00R\x04unit\x12C\n" +
+	"\x06shield\x18f \x01(\v2).xingyistarry.mp.v1.AttackShieldRecipientH\x00R\x06shieldB\v\n" +
+	"\trecipientB\t\n" +
+	"\a_damage\".\n" +
+	"\x13AttackUnitRecipient\x12\x17\n" +
+	"\aunit_id\x18\x01 \x01(\x03R\x06unitId\"=\n" +
+	"\x15AttackShieldRecipient\x12$\n" +
+	"\x0ecaster_unit_id\x18\x01 \x01(\x03R\fcasterUnitId*H\n" +
 	"\bDelivery\x12\x11\n" +
 	"\rRELAY_CONTROL\x10\x00\x12\v\n" +
 	"\aTO_HOST\x10\x01\x12\r\n" +
@@ -10019,7 +10456,7 @@ func file_multiplayer_proto_rawDescGZIP() []byte {
 }
 
 var file_multiplayer_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
-var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 97)
+var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 103)
 var file_multiplayer_proto_goTypes = []any{
 	(Delivery)(0),                      // 0: xingyistarry.mp.v1.Delivery
 	(WelcomeMode)(0),                   // 1: xingyistarry.mp.v1.WelcomeMode
@@ -10126,6 +10563,12 @@ var file_multiplayer_proto_goTypes = []any{
 	(*ResolvedUnload)(nil),             // 102: xingyistarry.mp.v1.ResolvedUnload
 	(*AuthorityTurnPhase)(nil),         // 103: xingyistarry.mp.v1.AuthorityTurnPhase
 	(*AuthorityMatchEnded)(nil),        // 104: xingyistarry.mp.v1.AuthorityMatchEnded
+	(*ActionMovePosition)(nil),         // 105: xingyistarry.mp.v1.ActionMovePosition
+	(*ActionPreparationEvent)(nil),     // 106: xingyistarry.mp.v1.ActionPreparationEvent
+	(*ActionCallbacksEvent)(nil),       // 107: xingyistarry.mp.v1.ActionCallbacksEvent
+	(*AttackTargetResult)(nil),         // 108: xingyistarry.mp.v1.AttackTargetResult
+	(*AttackUnitRecipient)(nil),        // 109: xingyistarry.mp.v1.AttackUnitRecipient
+	(*AttackShieldRecipient)(nil),      // 110: xingyistarry.mp.v1.AttackShieldRecipient
 }
 var file_multiplayer_proto_depIdxs = []int32{
 	0,   // 0: xingyistarry.mp.v1.WireEnvelope.delivery:type_name -> xingyistarry.mp.v1.Delivery
@@ -10231,43 +10674,51 @@ var file_multiplayer_proto_depIdxs = []int32{
 	42,  // 100: xingyistarry.mp.v1.AuthorityFrameMessage.seat_changed:type_name -> xingyistarry.mp.v1.SeatControlChanged
 	104, // 101: xingyistarry.mp.v1.AuthorityFrameMessage.match_ended:type_name -> xingyistarry.mp.v1.AuthorityMatchEnded
 	49,  // 102: xingyistarry.mp.v1.AuthorityFrameMessage.operation_failed:type_name -> xingyistarry.mp.v1.OperationFailed
-	18,  // 103: xingyistarry.mp.v1.ResolvedUnitActionsCommand.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
-	44,  // 104: xingyistarry.mp.v1.RandomRecordList.records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	74,  // 105: xingyistarry.mp.v1.UnitRandomResult.values:type_name -> xingyistarry.mp.v1.RandomRecordList
-	74,  // 106: xingyistarry.mp.v1.TileRandomResult.values:type_name -> xingyistarry.mp.v1.RandomRecordList
-	44,  // 107: xingyistarry.mp.v1.RandomResult.damage_roll:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	44,  // 108: xingyistarry.mp.v1.RandomResult.damage_variation:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	44,  // 109: xingyistarry.mp.v1.RandomResult.death_wreck_scale:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	76,  // 110: xingyistarry.mp.v1.RandomResult.wrecks:type_name -> xingyistarry.mp.v1.TileRandomResult
-	75,  // 111: xingyistarry.mp.v1.RandomResult.commander_positions:type_name -> xingyistarry.mp.v1.UnitRandomResult
-	75,  // 112: xingyistarry.mp.v1.RandomResult.experience_shares:type_name -> xingyistarry.mp.v1.UnitRandomResult
-	77,  // 113: xingyistarry.mp.v1.SettlementEvent.random_result:type_name -> xingyistarry.mp.v1.RandomResult
-	78,  // 114: xingyistarry.mp.v1.SettlementEvent.children:type_name -> xingyistarry.mp.v1.SettlementEvent
-	79,  // 115: xingyistarry.mp.v1.SettlementEvent.attack_started:type_name -> xingyistarry.mp.v1.AttackStartedEvent
-	80,  // 116: xingyistarry.mp.v1.SettlementEvent.attack_cell:type_name -> xingyistarry.mp.v1.AttackCellEvent
-	81,  // 117: xingyistarry.mp.v1.SettlementEvent.attack_finished:type_name -> xingyistarry.mp.v1.AttackFinishedEvent
-	82,  // 118: xingyistarry.mp.v1.SettlementEvent.damage:type_name -> xingyistarry.mp.v1.DamageEvent
-	83,  // 119: xingyistarry.mp.v1.SettlementEvent.death_started:type_name -> xingyistarry.mp.v1.DeathStartedEvent
-	84,  // 120: xingyistarry.mp.v1.SettlementEvent.death_committed:type_name -> xingyistarry.mp.v1.DeathCommittedEvent
-	85,  // 121: xingyistarry.mp.v1.SettlementEvent.player_defeated:type_name -> xingyistarry.mp.v1.PlayerDefeatedEvent
-	86,  // 122: xingyistarry.mp.v1.SettlementEvent.cleanup_completed:type_name -> xingyistarry.mp.v1.CleanupCompletedEvent
-	87,  // 123: xingyistarry.mp.v1.SettlementEvent.effect:type_name -> xingyistarry.mp.v1.EffectEvent
-	88,  // 124: xingyistarry.mp.v1.SettlementEvent.spawn:type_name -> xingyistarry.mp.v1.SpawnEvent
-	89,  // 125: xingyistarry.mp.v1.SettlementEvent.heal:type_name -> xingyistarry.mp.v1.HealEvent
-	90,  // 126: xingyistarry.mp.v1.SettlementEvent.resource:type_name -> xingyistarry.mp.v1.ResourceEvent
-	91,  // 127: xingyistarry.mp.v1.SettlementEvent.commander_position:type_name -> xingyistarry.mp.v1.CommanderPositionEvent
-	92,  // 128: xingyistarry.mp.v1.SettlementEvent.forced_attack:type_name -> xingyistarry.mp.v1.ForcedAttackEvent
-	93,  // 129: xingyistarry.mp.v1.SettlementEvent.pulse:type_name -> xingyistarry.mp.v1.PulseEvent
-	94,  // 130: xingyistarry.mp.v1.SettlementEvent.wreck:type_name -> xingyistarry.mp.v1.WreckEvent
-	95,  // 131: xingyistarry.mp.v1.SettlementEvent.shield:type_name -> xingyistarry.mp.v1.ShieldEvent
-	96,  // 132: xingyistarry.mp.v1.SettlementEvent.effect_mutation:type_name -> xingyistarry.mp.v1.EffectMutationEvent
-	97,  // 133: xingyistarry.mp.v1.SettlementEvent.experience:type_name -> xingyistarry.mp.v1.ExperienceEvent
-	98,  // 134: xingyistarry.mp.v1.SettlementEvent.skill_finished:type_name -> xingyistarry.mp.v1.SkillFinishedEvent
-	135, // [135:135] is the sub-list for method output_type
-	135, // [135:135] is the sub-list for method input_type
-	135, // [135:135] is the sub-list for extension type_name
-	135, // [135:135] is the sub-list for extension extendee
-	0,   // [0:135] is the sub-list for field type_name
+	105, // 103: xingyistarry.mp.v1.EquipmentMoveActionCommand.move_position:type_name -> xingyistarry.mp.v1.ActionMovePosition
+	105, // 104: xingyistarry.mp.v1.BuildWithMoveCommand.move_position:type_name -> xingyistarry.mp.v1.ActionMovePosition
+	18,  // 105: xingyistarry.mp.v1.ResolvedUnitActionsCommand.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
+	44,  // 106: xingyistarry.mp.v1.RandomRecordList.records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	74,  // 107: xingyistarry.mp.v1.UnitRandomResult.values:type_name -> xingyistarry.mp.v1.RandomRecordList
+	74,  // 108: xingyistarry.mp.v1.TileRandomResult.values:type_name -> xingyistarry.mp.v1.RandomRecordList
+	44,  // 109: xingyistarry.mp.v1.RandomResult.damage_roll:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	44,  // 110: xingyistarry.mp.v1.RandomResult.damage_variation:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	44,  // 111: xingyistarry.mp.v1.RandomResult.death_wreck_scale:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	76,  // 112: xingyistarry.mp.v1.RandomResult.wrecks:type_name -> xingyistarry.mp.v1.TileRandomResult
+	75,  // 113: xingyistarry.mp.v1.RandomResult.commander_positions:type_name -> xingyistarry.mp.v1.UnitRandomResult
+	75,  // 114: xingyistarry.mp.v1.RandomResult.experience_shares:type_name -> xingyistarry.mp.v1.UnitRandomResult
+	77,  // 115: xingyistarry.mp.v1.SettlementEvent.random_result:type_name -> xingyistarry.mp.v1.RandomResult
+	78,  // 116: xingyistarry.mp.v1.SettlementEvent.children:type_name -> xingyistarry.mp.v1.SettlementEvent
+	79,  // 117: xingyistarry.mp.v1.SettlementEvent.attack_started:type_name -> xingyistarry.mp.v1.AttackStartedEvent
+	80,  // 118: xingyistarry.mp.v1.SettlementEvent.attack_cell:type_name -> xingyistarry.mp.v1.AttackCellEvent
+	81,  // 119: xingyistarry.mp.v1.SettlementEvent.attack_finished:type_name -> xingyistarry.mp.v1.AttackFinishedEvent
+	82,  // 120: xingyistarry.mp.v1.SettlementEvent.damage:type_name -> xingyistarry.mp.v1.DamageEvent
+	83,  // 121: xingyistarry.mp.v1.SettlementEvent.death_started:type_name -> xingyistarry.mp.v1.DeathStartedEvent
+	84,  // 122: xingyistarry.mp.v1.SettlementEvent.death_committed:type_name -> xingyistarry.mp.v1.DeathCommittedEvent
+	85,  // 123: xingyistarry.mp.v1.SettlementEvent.player_defeated:type_name -> xingyistarry.mp.v1.PlayerDefeatedEvent
+	86,  // 124: xingyistarry.mp.v1.SettlementEvent.cleanup_completed:type_name -> xingyistarry.mp.v1.CleanupCompletedEvent
+	87,  // 125: xingyistarry.mp.v1.SettlementEvent.effect:type_name -> xingyistarry.mp.v1.EffectEvent
+	88,  // 126: xingyistarry.mp.v1.SettlementEvent.spawn:type_name -> xingyistarry.mp.v1.SpawnEvent
+	89,  // 127: xingyistarry.mp.v1.SettlementEvent.heal:type_name -> xingyistarry.mp.v1.HealEvent
+	90,  // 128: xingyistarry.mp.v1.SettlementEvent.resource:type_name -> xingyistarry.mp.v1.ResourceEvent
+	91,  // 129: xingyistarry.mp.v1.SettlementEvent.commander_position:type_name -> xingyistarry.mp.v1.CommanderPositionEvent
+	92,  // 130: xingyistarry.mp.v1.SettlementEvent.forced_attack:type_name -> xingyistarry.mp.v1.ForcedAttackEvent
+	93,  // 131: xingyistarry.mp.v1.SettlementEvent.pulse:type_name -> xingyistarry.mp.v1.PulseEvent
+	94,  // 132: xingyistarry.mp.v1.SettlementEvent.wreck:type_name -> xingyistarry.mp.v1.WreckEvent
+	95,  // 133: xingyistarry.mp.v1.SettlementEvent.shield:type_name -> xingyistarry.mp.v1.ShieldEvent
+	96,  // 134: xingyistarry.mp.v1.SettlementEvent.effect_mutation:type_name -> xingyistarry.mp.v1.EffectMutationEvent
+	97,  // 135: xingyistarry.mp.v1.SettlementEvent.experience:type_name -> xingyistarry.mp.v1.ExperienceEvent
+	98,  // 136: xingyistarry.mp.v1.SettlementEvent.skill_finished:type_name -> xingyistarry.mp.v1.SkillFinishedEvent
+	106, // 137: xingyistarry.mp.v1.SettlementEvent.action_preparation:type_name -> xingyistarry.mp.v1.ActionPreparationEvent
+	107, // 138: xingyistarry.mp.v1.SettlementEvent.action_callbacks:type_name -> xingyistarry.mp.v1.ActionCallbacksEvent
+	108, // 139: xingyistarry.mp.v1.AttackCellEvent.targets:type_name -> xingyistarry.mp.v1.AttackTargetResult
+	105, // 140: xingyistarry.mp.v1.AttackTargetResult.position:type_name -> xingyistarry.mp.v1.ActionMovePosition
+	109, // 141: xingyistarry.mp.v1.AttackTargetResult.unit:type_name -> xingyistarry.mp.v1.AttackUnitRecipient
+	110, // 142: xingyistarry.mp.v1.AttackTargetResult.shield:type_name -> xingyistarry.mp.v1.AttackShieldRecipient
+	143, // [143:143] is the sub-list for method output_type
+	143, // [143:143] is the sub-list for method input_type
+	143, // [143:143] is the sub-list for extension type_name
+	143, // [143:143] is the sub-list for extension extendee
+	0,   // [0:143] is the sub-list for field type_name
 }
 
 func init() { file_multiplayer_proto_init() }
@@ -10399,6 +10850,8 @@ func file_multiplayer_proto_init() {
 		(*SettlementEvent_EffectMutation)(nil),
 		(*SettlementEvent_Experience)(nil),
 		(*SettlementEvent_SkillFinished)(nil),
+		(*SettlementEvent_ActionPreparation)(nil),
+		(*SettlementEvent_ActionCallbacks)(nil),
 	}
 	file_multiplayer_proto_msgTypes[72].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[74].OneofWrappers = []any{}
@@ -10406,13 +10859,17 @@ func file_multiplayer_proto_init() {
 	file_multiplayer_proto_msgTypes[79].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[81].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[89].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[100].OneofWrappers = []any{
+		(*AttackTargetResult_Unit)(nil),
+		(*AttackTargetResult_Shield)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_multiplayer_proto_rawDesc), len(file_multiplayer_proto_rawDesc)),
 			NumEnums:      8,
-			NumMessages:   97,
+			NumMessages:   103,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -101,9 +101,6 @@ func hashGameCommandMessage(h *fieldHasher, value *GameCommandMessage) {
 	case *GameCommandMessage_EndTurn:
 		h.u32(108)
 		hashEndTurnCommand(h, body.EndTurn)
-	case *GameCommandMessage_AutoGuideStart:
-		h.u32(109)
-		hashAutoGuideStartCommand(h, body.AutoGuideStart)
 	case *GameCommandMessage_DebugAddResources:
 		h.u32(111)
 		hashDebugAddResourcesCommand(h, body.DebugAddResources)
@@ -128,9 +125,6 @@ func hashGameCommandMessage(h *fieldHasher, value *GameCommandMessage) {
 	case *GameCommandMessage_ToggleSleep:
 		h.u32(118)
 		hashToggleSleepCommand(h, body.ToggleSleep)
-	case *GameCommandMessage_Stay:
-		h.u32(119)
-		hashStayCommand(h, body.Stay)
 	case *GameCommandMessage_SelfDestruct:
 		h.u32(120)
 		hashSelfDestructCommand(h, body.SelfDestruct)
@@ -277,8 +271,6 @@ func hashMoveCommand(h *fieldHasher, value *MoveCommand) {
 	for _, item := range value.UnitIds {
 		h.u64(uint64(item))
 	}
-	h.u32(uint32(value.TargetX))
-	h.u32(uint32(value.TargetY))
 	h.u32(uint32(len(value.UnitTargetXs)))
 	for _, item := range value.UnitTargetXs {
 		h.u32(uint32(item))
@@ -287,7 +279,6 @@ func hashMoveCommand(h *fieldHasher, value *MoveCommand) {
 	for _, item := range value.UnitTargetYs {
 		h.u32(uint32(item))
 	}
-	h.flag(value.DesiredToggleState)
 }
 func hashActionCommand(h *fieldHasher, value *ActionCommand) {
 	if value == nil {
@@ -342,6 +333,10 @@ func hashEquipmentMoveActionCommand(h *fieldHasher, value *EquipmentMoveActionCo
 	h.u32(uint32(value.ActionCategory))
 	h.data([]byte(value.ActionId))
 	h.data([]byte(value.TemplateId))
+	h.flag(value.MovePosition != nil)
+	if value.MovePosition != nil {
+		hashActionMovePosition(h, value.MovePosition)
+	}
 }
 func hashBuildWithMoveCommand(h *fieldHasher, value *BuildWithMoveCommand) {
 	if value == nil {
@@ -356,6 +351,10 @@ func hashBuildWithMoveCommand(h *fieldHasher, value *BuildWithMoveCommand) {
 	h.u32(uint32(value.TargetY))
 	h.u32(uint32(value.ActionCategory))
 	h.data([]byte(value.TemplateId))
+	h.flag(value.MovePosition != nil)
+	if value.MovePosition != nil {
+		hashActionMovePosition(h, value.MovePosition)
+	}
 }
 func hashSkillCommand(h *fieldHasher, value *SkillCommand) {
 	if value == nil {
@@ -375,16 +374,6 @@ func hashEndTurnCommand(h *fieldHasher, value *EndTurnCommand) {
 	if value == nil {
 		h.err = errors.New("nil EndTurnCommand")
 		return
-	}
-}
-func hashAutoGuideStartCommand(h *fieldHasher, value *AutoGuideStartCommand) {
-	if value == nil {
-		h.err = errors.New("nil AutoGuideStartCommand")
-		return
-	}
-	h.u32(uint32(len(value.UnitIds)))
-	for _, item := range value.UnitIds {
-		h.u64(uint64(item))
 	}
 }
 func hashDebugAddResourcesCommand(h *fieldHasher, value *DebugAddResourcesCommand) {
@@ -471,16 +460,6 @@ func hashToggleSleepCommand(h *fieldHasher, value *ToggleSleepCommand) {
 		h.u64(uint64(item))
 	}
 	h.flag(value.DesiredToggleState)
-}
-func hashStayCommand(h *fieldHasher, value *StayCommand) {
-	if value == nil {
-		h.err = errors.New("nil StayCommand")
-		return
-	}
-	h.u32(uint32(len(value.UnitIds)))
-	for _, item := range value.UnitIds {
-		h.u64(uint64(item))
-	}
 }
 func hashSelfDestructCommand(h *fieldHasher, value *SelfDestructCommand) {
 	if value == nil {
@@ -646,6 +625,12 @@ func hashSettlementEvent(h *fieldHasher, value *SettlementEvent) {
 	case *SettlementEvent_SkillFinished:
 		h.u32(121)
 		hashSkillFinishedEvent(h, body.SkillFinished)
+	case *SettlementEvent_ActionPreparation:
+		h.u32(122)
+		hashActionPreparationEvent(h, body.ActionPreparation)
+	case *SettlementEvent_ActionCallbacks:
+		h.u32(123)
+		hashActionCallbacksEvent(h, body.ActionCallbacks)
 	default:
 		h.err = errors.New("missing oneof")
 	}
@@ -658,7 +643,6 @@ func hashAttackStartedEvent(h *fieldHasher, value *AttackStartedEvent) {
 	h.data([]byte(value.ActionName))
 	h.u32(uint32(value.TargetX))
 	h.u32(uint32(value.TargetY))
-	h.flag(value.GlobalPhase)
 }
 func hashAttackCellEvent(h *fieldHasher, value *AttackCellEvent) {
 	if value == nil {
@@ -682,6 +666,10 @@ func hashAttackCellEvent(h *fieldHasher, value *AttackCellEvent) {
 	}
 	h.data([]byte(value.ActionType))
 	h.u32(uint32(value.SkillIndex))
+	h.u32(uint32(len(value.Targets)))
+	for _, item := range value.Targets {
+		hashAttackTargetResult(h, item)
+	}
 }
 func hashAttackFinishedEvent(h *fieldHasher, value *AttackFinishedEvent) {
 	if value == nil {
@@ -947,4 +935,66 @@ func hashAuthorityMatchEnded(h *fieldHasher, value *AuthorityMatchEnded) {
 		return
 	}
 	h.flag(value.LocalVictory)
+}
+func hashActionMovePosition(h *fieldHasher, value *ActionMovePosition) {
+	if value == nil {
+		h.err = errors.New("nil ActionMovePosition")
+		return
+	}
+	h.u32(uint32(value.X))
+	h.u32(uint32(value.Y))
+}
+func hashActionPreparationEvent(h *fieldHasher, value *ActionPreparationEvent) {
+	if value == nil {
+		h.err = errors.New("nil ActionPreparationEvent")
+		return
+	}
+	h.data([]byte(value.ActionName))
+	h.u32(uint32(value.TargetX))
+	h.u32(uint32(value.TargetY))
+}
+func hashActionCallbacksEvent(h *fieldHasher, value *ActionCallbacksEvent) {
+	if value == nil {
+		h.err = errors.New("nil ActionCallbacksEvent")
+		return
+	}
+	h.data([]byte(value.ActionName))
+}
+func hashAttackTargetResult(h *fieldHasher, value *AttackTargetResult) {
+	if value == nil {
+		h.err = errors.New("nil AttackTargetResult")
+		return
+	}
+	h.flag(value.Position != nil)
+	if value.Position != nil {
+		hashActionMovePosition(h, value.Position)
+	}
+	h.flag(value.Damage != nil)
+	if value.Damage != nil {
+		h.u32(math.Float32bits(*value.Damage))
+	}
+	switch body := value.Recipient.(type) {
+	case *AttackTargetResult_Unit:
+		h.u32(101)
+		hashAttackUnitRecipient(h, body.Unit)
+	case *AttackTargetResult_Shield:
+		h.u32(102)
+		hashAttackShieldRecipient(h, body.Shield)
+	default:
+		h.err = errors.New("missing oneof")
+	}
+}
+func hashAttackUnitRecipient(h *fieldHasher, value *AttackUnitRecipient) {
+	if value == nil {
+		h.err = errors.New("nil AttackUnitRecipient")
+		return
+	}
+	h.u64(uint64(value.UnitId))
+}
+func hashAttackShieldRecipient(h *fieldHasher, value *AttackShieldRecipient) {
+	if value == nil {
+		h.err = errors.New("nil AttackShieldRecipient")
+		return
+	}
+	h.u64(uint64(value.CasterUnitId))
 }

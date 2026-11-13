@@ -13,7 +13,7 @@ import (
 // These vectors are shared with the C# tests. Relay decoding/re-encoding must
 // preserve the authority hash even when protobuf chooses a different encoding.
 func TestAuthorityHashVectors(t *testing.T) {
-	data, err := os.ReadFile("testdata/hash-v21.json")
+	data, err := os.ReadFile("testdata/hash-v22.json")
 	if err != nil {
 		t.Fatal(err)
 	}

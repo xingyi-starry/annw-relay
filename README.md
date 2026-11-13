@@ -46,7 +46,7 @@ and regenerates `internal/wire/multiplayer.pb.go`. The relay repository does not
 keep a second `.proto` copy. Generated Go code is committed so a standalone
 server clone does not need the plugin repository or `protoc` to build.
 The plugin tool `tools/generate_authority_hash.py` regenerates both explicit field
-hash encoders. Shared vectors in `internal/wire/testdata/hash-v21.json` check
+hash encoders. Shared vectors in `internal/wire/testdata/hash-v22.json` check
 compatibility with C#; the relay does not validate gameplay hashes when routing.
 
 ## Run
