@@ -7,10 +7,12 @@ import (
 	"io"
 
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"mprelay/internal/wire"
 )
 
 const (
+	MessageRelayRoomClosed      uint32 = 51
 	MessageRelayHeartbeat       uint32 = 4
 	MessageRelayRegisterRoom    uint32 = 23
 	MessageRelayUpdateRoom      uint32 = 24
@@ -43,6 +45,9 @@ func readEnvelope(r io.Reader, maxBytes int) (*wire.WireEnvelope, error) {
 	if err := proto.Unmarshal(data, envelope); err != nil {
 		return nil, fmt.Errorf("decode envelope: %w", err)
 	}
+	if envelopeBody(envelope) == nil {
+		return nil, errors.New("missing message body")
+	}
 	return envelope, nil
 }
 
@@ -60,24 +65,64 @@ func marshalEnvelope(envelope *wire.WireEnvelope, maxBytes int) ([]byte, error) 
 	return framed, nil
 }
 
-func unmarshalPayload(data []byte, message proto.Message) error {
-	if err := proto.Unmarshal(data, message); err != nil {
-		return fmt.Errorf("decode control payload: %w", err)
+func unmarshalPayload(value proto.Message, message proto.Message) error {
+	if value == nil || value.ProtoReflect().Descriptor().FullName() != message.ProtoReflect().Descriptor().FullName() {
+		return errors.New("unexpected control message")
 	}
+	proto.Merge(message, value)
 	return nil
 }
 
 func makeControlEnvelope(messageType uint32, payload proto.Message, roomID []byte) (*wire.WireEnvelope, error) {
-	data, err := proto.Marshal(payload)
-	if err != nil {
+	envelope := &wire.WireEnvelope{RoomId: cloneBytes(roomID), Delivery: wire.Delivery_RELAY_CONTROL}
+	if err := setEnvelopeBody(envelope, messageType, payload); err != nil {
 		return nil, err
 	}
-	return &wire.WireEnvelope{
-		MessageType: messageType,
-		Payload:     data,
-		RoomId:      cloneBytes(roomID),
-		Delivery:    wire.Delivery_RELAY_CONTROL,
-	}, nil
+	return envelope, nil
+}
+
+// The generated oneof descriptor is the source of branch identity. The relay
+// does not inspect game-message fields when classifying or forwarding them.
+func bodyField(envelope *wire.WireEnvelope) protoreflect.FieldDescriptor {
+	if envelope == nil {
+		return nil
+	}
+	message := envelope.ProtoReflect()
+	return message.WhichOneof(message.Descriptor().Oneofs().ByName("body"))
+}
+
+func envelopeType(envelope *wire.WireEnvelope) uint32 {
+	field := bodyField(envelope)
+	if field == nil {
+		return 0
+	}
+	return uint32(field.Number()) - 100
+}
+
+func envelopeBody(envelope *wire.WireEnvelope) proto.Message {
+	field := bodyField(envelope)
+	if field == nil {
+		return nil
+	}
+	message := envelope.ProtoReflect().Get(field).Message()
+	if !message.IsValid() {
+		return nil
+	}
+	return message.Interface()
+}
+
+func setEnvelopeBody(envelope *wire.WireEnvelope, messageType uint32, payload proto.Message) error {
+	message := envelope.ProtoReflect()
+	field := message.Descriptor().Fields().ByNumber(protoreflect.FieldNumber(100 + messageType))
+	if field == nil || field.ContainingOneof() == nil || field.ContainingOneof().Name() != "body" || payload == nil {
+		return errors.New("unknown envelope body")
+	}
+	value := payload.ProtoReflect()
+	if !value.IsValid() || field.Message().FullName() != value.Descriptor().FullName() {
+		return errors.New("unexpected envelope body")
+	}
+	message.Set(field, protoreflect.ValueOfMessage(value))
+	return nil
 }
 
 func cloneBytes(value []byte) []byte {

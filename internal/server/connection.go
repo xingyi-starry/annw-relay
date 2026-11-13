@@ -213,7 +213,7 @@ func (c *connection) writeLoop() {
 			if connectionState(c.state.Load()) != connectionOpen {
 				continue
 			}
-			heartbeat := &wire.WireEnvelope{MessageType: MessageRelayHeartbeat, Delivery: wire.Delivery_RELAY_CONTROL}
+			heartbeat := &wire.WireEnvelope{Body: &wire.WireEnvelope_Heartbeat{Heartbeat: &wire.Int64Value{}}, Delivery: wire.Delivery_RELAY_CONTROL}
 			framed, err := marshalEnvelope(heartbeat, c.server.config.MaxPacketBytes)
 			if err != nil || c.write(framed) != nil {
 				c.abort(disconnectWriteFailure)

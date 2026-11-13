@@ -128,7 +128,7 @@ func (s *Server) Close() error {
 }
 
 func (s *Server) handleEnvelope(c *connection, envelope *wire.WireEnvelope) error {
-	if envelope.MessageType == MessageRelayHeartbeat && envelope.Delivery == wire.Delivery_RELAY_CONTROL {
+	if envelopeType(envelope) == MessageRelayHeartbeat && envelope.Delivery == wire.Delivery_RELAY_CONTROL {
 		return nil
 	}
 	if envelope.Delivery == wire.Delivery_RELAY_CONTROL {
@@ -138,7 +138,7 @@ func (s *Server) handleEnvelope(c *connection, envelope *wire.WireEnvelope) erro
 }
 
 func (s *Server) handleControl(c *connection, envelope *wire.WireEnvelope) error {
-	switch envelope.MessageType {
+	switch envelopeType(envelope) {
 	case MessageRelayRegisterRoom:
 		return s.registerRoom(c, envelope)
 	case MessageRelayUpdateRoom:
@@ -156,7 +156,7 @@ func (s *Server) handleControl(c *connection, envelope *wire.WireEnvelope) error
 	case MessageRelayCloseRoom:
 		return s.closeRoomRequest(c, envelope)
 	default:
-		return fmt.Errorf("control message type %d is not accepted", envelope.MessageType)
+		return fmt.Errorf("control message type %d is not accepted", envelopeType(envelope))
 	}
 }
 
@@ -168,7 +168,7 @@ func (s *Server) registerRoom(c *connection, envelope *wire.WireEnvelope) error 
 		return errors.New("unbound register envelope contains identity")
 	}
 	req := new(wire.RelayRegisterRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	if err := validateID(req.RoomId, "room id"); err != nil {
@@ -208,7 +208,7 @@ func (s *Server) registerRoom(c *connection, envelope *wire.WireEnvelope) error 
 
 func (s *Server) updateRoom(c *connection, envelope *wire.WireEnvelope) error {
 	req := new(wire.RelayUpdateRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	r, err := s.boundHost(c, envelope, req.RoomId)
@@ -265,7 +265,7 @@ func (s *Server) listRooms(c *connection, envelope *wire.WireEnvelope) error {
 		return errors.New("list envelope contains routing identity")
 	}
 	req := new(wire.RelayListRoomsRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	response := &wire.RelayListRoomsResponse{RequestId: req.RequestId}
@@ -288,7 +288,7 @@ func (s *Server) joinRoom(c *connection, envelope *wire.WireEnvelope) error {
 		return errors.New("unbound join envelope contains identity")
 	}
 	req := new(wire.RelayJoinRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	if err := validateID(req.RoomId, "room id"); err != nil {
@@ -348,7 +348,7 @@ func (s *Server) resumeRoom(c *connection, envelope *wire.WireEnvelope) error {
 		return errors.New("unbound resume envelope contains identity")
 	}
 	req := new(wire.RelayResumeRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	if err := validateID(req.RoomId, "room id"); err != nil {
@@ -390,7 +390,7 @@ func (s *Server) resumeRoom(c *connection, envelope *wire.WireEnvelope) error {
 
 func (s *Server) closeJoining(c *connection, envelope *wire.WireEnvelope) error {
 	req := new(wire.RelayRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	r, err := s.boundHost(c, envelope, req.RoomId)
@@ -408,7 +408,7 @@ func (s *Server) closeJoining(c *connection, envelope *wire.WireEnvelope) error 
 
 func (s *Server) leaveRoom(c *connection, envelope *wire.WireEnvelope) error {
 	req := new(wire.RelayRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	role, _, roomID := c.binding()
@@ -446,7 +446,7 @@ func (s *Server) leaveRoom(c *connection, envelope *wire.WireEnvelope) error {
 
 func (s *Server) closeRoomRequest(c *connection, envelope *wire.WireEnvelope) error {
 	req := new(wire.RelayRoomRequest)
-	if err := unmarshalPayload(envelope.Payload, req); err != nil {
+	if err := unmarshalPayload(envelopeBody(envelope), req); err != nil {
 		return err
 	}
 	if _, err := s.boundHost(c, envelope, req.RoomId); err != nil {
@@ -648,7 +648,7 @@ func (s *Server) expireReservation(roomID, clientID []byte, deadline time.Time) 
 
 func (s *Server) notifyRoomClosed(client *connection, reason string, roomID []byte) {
 	notice := &wire.RelayPeerNotice{Reason: reason}
-	envelope, err := makeControlEnvelope(MessageRelayCloseRoom, notice, roomID)
+	envelope, err := makeControlEnvelope(MessageRelayRoomClosed, notice, roomID)
 	if err != nil {
 		client.abort(disconnectRoomClosed)
 		return

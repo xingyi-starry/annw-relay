@@ -435,15 +435,71 @@ func (AttackSettlement_Kind) EnumDescriptor() ([]byte, []int) {
 }
 
 type WireEnvelope struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	MessageType    uint32                 `protobuf:"varint,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
-	Payload        []byte                 `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
-	RoomId         []byte                 `protobuf:"bytes,3,opt,name=room_id,json=roomId,proto3,oneof" json:"room_id,omitempty"`
-	ClientId       []byte                 `protobuf:"bytes,4,opt,name=client_id,json=clientId,proto3,oneof" json:"client_id,omitempty"`
-	TargetClientId []byte                 `protobuf:"bytes,5,opt,name=target_client_id,json=targetClientId,proto3,oneof" json:"target_client_id,omitempty"`
-	Delivery       Delivery               `protobuf:"varint,6,opt,name=delivery,proto3,enum=xingyistarry.mp.v1.Delivery" json:"delivery,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	MessageType uint32 `protobuf:"varint,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	Payload        []byte   `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+	RoomId         []byte   `protobuf:"bytes,3,opt,name=room_id,json=roomId,proto3,oneof" json:"room_id,omitempty"`
+	ClientId       []byte   `protobuf:"bytes,4,opt,name=client_id,json=clientId,proto3,oneof" json:"client_id,omitempty"`
+	TargetClientId []byte   `protobuf:"bytes,5,opt,name=target_client_id,json=targetClientId,proto3,oneof" json:"target_client_id,omitempty"`
+	Delivery       Delivery `protobuf:"varint,6,opt,name=delivery,proto3,enum=xingyistarry.mp.v1.Delivery" json:"delivery,omitempty"`
+	// Types that are valid to be assigned to Body:
+	//
+	//	*WireEnvelope_Hello
+	//	*WireEnvelope_Welcome
+	//	*WireEnvelope_Reject
+	//	*WireEnvelope_Heartbeat
+	//	*WireEnvelope_RoomState
+	//	*WireEnvelope_ClaimSeat
+	//	*WireEnvelope_SetReady
+	//	*WireEnvelope_StartMatch
+	//	*WireEnvelope_CommandRequest
+	//	*WireEnvelope_CommandAccepted
+	//	*WireEnvelope_CommandRejected
+	//	*WireEnvelope_AuthorityFrame
+	//	*WireEnvelope_HistoryRequest
+	//	*WireEnvelope_HistoryComplete
+	//	*WireEnvelope_SnapshotRequest
+	//	*WireEnvelope_SnapshotManifest
+	//	*WireEnvelope_SnapshotChunk
+	//	*WireEnvelope_SnapshotComplete
+	//	*WireEnvelope_CatchUpComplete
+	//	*WireEnvelope_SessionEnded
+	//	*WireEnvelope_LobbyDraftChange
+	//	*WireEnvelope_ParticipantNotice
+	//	*WireEnvelope_RelayRegisterRoom
+	//	*WireEnvelope_RelayUpdateRoom
+	//	*WireEnvelope_RelayListRooms
+	//	*WireEnvelope_RelayRoomList
+	//	*WireEnvelope_RelayJoinRoom
+	//	*WireEnvelope_RelayControlResponse
+	//	*WireEnvelope_RelayCloseJoining
+	//	*WireEnvelope_RelayLeaveRoom
+	//	*WireEnvelope_RelayCloseRoom
+	//	*WireEnvelope_RelayPeerJoined
+	//	*WireEnvelope_RelayPeerLeft
+	//	*WireEnvelope_ReleaseSeat
+	//	*WireEnvelope_JoinMatchRequest
+	//	*WireEnvelope_JoinMatchAccepted
+	//	*WireEnvelope_ResumeSession
+	//	*WireEnvelope_ResumeSessionAccepted
+	//	*WireEnvelope_ResumeSessionRejected
+	//	*WireEnvelope_LeaveSession
+	//	*WireEnvelope_RelayResumeRoom
+	//	*WireEnvelope_MatchStarting
+	//	*WireEnvelope_ChatSend
+	//	*WireEnvelope_ChatEvent
+	//	*WireEnvelope_PingSend
+	//	*WireEnvelope_PingEvent
+	//	*WireEnvelope_SocialSyncRequest
+	//	*WireEnvelope_SocialSyncBegin
+	//	*WireEnvelope_SocialSyncChunk
+	//	*WireEnvelope_SocialSyncComplete
+	//	*WireEnvelope_RelayRoomClosed
+	Body          isWireEnvelope_Body `protobuf_oneof:"body"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *WireEnvelope) Reset() {
@@ -476,6 +532,7 @@ func (*WireEnvelope) Descriptor() ([]byte, []int) {
 	return file_multiplayer_proto_rawDescGZIP(), []int{0}
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *WireEnvelope) GetMessageType() uint32 {
 	if x != nil {
 		return x.MessageType
@@ -483,6 +540,7 @@ func (x *WireEnvelope) GetMessageType() uint32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *WireEnvelope) GetPayload() []byte {
 	if x != nil {
 		return x.Payload
@@ -517,6 +575,782 @@ func (x *WireEnvelope) GetDelivery() Delivery {
 	}
 	return Delivery_RELAY_CONTROL
 }
+
+func (x *WireEnvelope) GetBody() isWireEnvelope_Body {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetHello() *Hello {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_Hello); ok {
+			return x.Hello
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetWelcome() *Welcome {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_Welcome); ok {
+			return x.Welcome
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetReject() *StringValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_Reject); ok {
+			return x.Reject
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetHeartbeat() *Int64Value {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_Heartbeat); ok {
+			return x.Heartbeat
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRoomState() *Room {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RoomState); ok {
+			return x.RoomState
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetClaimSeat() *Int64Value {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ClaimSeat); ok {
+			return x.ClaimSeat
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSetReady() *Int64Value {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SetReady); ok {
+			return x.SetReady
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetStartMatch() *GuidValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_StartMatch); ok {
+			return x.StartMatch
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetCommandRequest() *CommandRequestMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_CommandRequest); ok {
+			return x.CommandRequest
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetCommandAccepted() *CommandResponseMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_CommandAccepted); ok {
+			return x.CommandAccepted
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetCommandRejected() *CommandResponseMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_CommandRejected); ok {
+			return x.CommandRejected
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetAuthorityFrame() *AuthorityFrameMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_AuthorityFrame); ok {
+			return x.AuthorityFrame
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetHistoryRequest() *Int64Value {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_HistoryRequest); ok {
+			return x.HistoryRequest
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetHistoryComplete() *Int64Value {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_HistoryComplete); ok {
+			return x.HistoryComplete
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSnapshotRequest() *Int64Value {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SnapshotRequest); ok {
+			return x.SnapshotRequest
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSnapshotManifest() *SnapshotManifestMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SnapshotManifest); ok {
+			return x.SnapshotManifest
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSnapshotChunk() *SnapshotChunkMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SnapshotChunk); ok {
+			return x.SnapshotChunk
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSnapshotComplete() *GuidValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SnapshotComplete); ok {
+			return x.SnapshotComplete
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetCatchUpComplete() *GuidValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_CatchUpComplete); ok {
+			return x.CatchUpComplete
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSessionEnded() *StringValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SessionEnded); ok {
+			return x.SessionEnded
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetLobbyDraftChange() *Room {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_LobbyDraftChange); ok {
+			return x.LobbyDraftChange
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetParticipantNotice() *StringValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ParticipantNotice); ok {
+			return x.ParticipantNotice
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayRegisterRoom() *RelayRegisterRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayRegisterRoom); ok {
+			return x.RelayRegisterRoom
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayUpdateRoom() *RelayUpdateRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayUpdateRoom); ok {
+			return x.RelayUpdateRoom
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayListRooms() *RelayListRoomsRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayListRooms); ok {
+			return x.RelayListRooms
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayRoomList() *RelayListRoomsResponse {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayRoomList); ok {
+			return x.RelayRoomList
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayJoinRoom() *RelayJoinRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayJoinRoom); ok {
+			return x.RelayJoinRoom
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayControlResponse() *RelayControlResponse {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayControlResponse); ok {
+			return x.RelayControlResponse
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayCloseJoining() *RelayRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayCloseJoining); ok {
+			return x.RelayCloseJoining
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayLeaveRoom() *RelayRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayLeaveRoom); ok {
+			return x.RelayLeaveRoom
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayCloseRoom() *RelayRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayCloseRoom); ok {
+			return x.RelayCloseRoom
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayPeerJoined() *RelayPeerNotice {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayPeerJoined); ok {
+			return x.RelayPeerJoined
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayPeerLeft() *RelayPeerNotice {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayPeerLeft); ok {
+			return x.RelayPeerLeft
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetReleaseSeat() *GuidValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ReleaseSeat); ok {
+			return x.ReleaseSeat
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetJoinMatchRequest() *JoinMatchRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_JoinMatchRequest); ok {
+			return x.JoinMatchRequest
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetJoinMatchAccepted() *JoinMatchAcceptedMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_JoinMatchAccepted); ok {
+			return x.JoinMatchAccepted
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetResumeSession() *ResumeSessionRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ResumeSession); ok {
+			return x.ResumeSession
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetResumeSessionAccepted() *ResumeSessionAccepted {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ResumeSessionAccepted); ok {
+			return x.ResumeSessionAccepted
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetResumeSessionRejected() *StringValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ResumeSessionRejected); ok {
+			return x.ResumeSessionRejected
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetLeaveSession() *GuidValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_LeaveSession); ok {
+			return x.LeaveSession
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayResumeRoom() *RelayResumeRoomRequest {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayResumeRoom); ok {
+			return x.RelayResumeRoom
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetMatchStarting() *GuidValue {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_MatchStarting); ok {
+			return x.MatchStarting
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetChatSend() *ChatSendMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ChatSend); ok {
+			return x.ChatSend
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetChatEvent() *ChatEventMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_ChatEvent); ok {
+			return x.ChatEvent
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetPingSend() *PingSendMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_PingSend); ok {
+			return x.PingSend
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetPingEvent() *PingEventMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_PingEvent); ok {
+			return x.PingEvent
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSocialSyncRequest() *SocialSyncRequestMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SocialSyncRequest); ok {
+			return x.SocialSyncRequest
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSocialSyncBegin() *SocialSyncBeginMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SocialSyncBegin); ok {
+			return x.SocialSyncBegin
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSocialSyncChunk() *SocialSyncChunkMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SocialSyncChunk); ok {
+			return x.SocialSyncChunk
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetSocialSyncComplete() *SocialSyncCompleteMessage {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_SocialSyncComplete); ok {
+			return x.SocialSyncComplete
+		}
+	}
+	return nil
+}
+
+func (x *WireEnvelope) GetRelayRoomClosed() *RelayPeerNotice {
+	if x != nil {
+		if x, ok := x.Body.(*WireEnvelope_RelayRoomClosed); ok {
+			return x.RelayRoomClosed
+		}
+	}
+	return nil
+}
+
+type isWireEnvelope_Body interface {
+	isWireEnvelope_Body()
+}
+
+type WireEnvelope_Hello struct {
+	Hello *Hello `protobuf:"bytes,101,opt,name=hello,proto3,oneof"`
+}
+
+type WireEnvelope_Welcome struct {
+	Welcome *Welcome `protobuf:"bytes,102,opt,name=welcome,proto3,oneof"`
+}
+
+type WireEnvelope_Reject struct {
+	Reject *StringValue `protobuf:"bytes,103,opt,name=reject,proto3,oneof"`
+}
+
+type WireEnvelope_Heartbeat struct {
+	Heartbeat *Int64Value `protobuf:"bytes,104,opt,name=heartbeat,proto3,oneof"`
+}
+
+type WireEnvelope_RoomState struct {
+	RoomState *Room `protobuf:"bytes,105,opt,name=room_state,json=roomState,proto3,oneof"`
+}
+
+type WireEnvelope_ClaimSeat struct {
+	ClaimSeat *Int64Value `protobuf:"bytes,106,opt,name=claim_seat,json=claimSeat,proto3,oneof"`
+}
+
+type WireEnvelope_SetReady struct {
+	SetReady *Int64Value `protobuf:"bytes,107,opt,name=set_ready,json=setReady,proto3,oneof"`
+}
+
+type WireEnvelope_StartMatch struct {
+	StartMatch *GuidValue `protobuf:"bytes,108,opt,name=start_match,json=startMatch,proto3,oneof"`
+}
+
+type WireEnvelope_CommandRequest struct {
+	CommandRequest *CommandRequestMessage `protobuf:"bytes,109,opt,name=command_request,json=commandRequest,proto3,oneof"`
+}
+
+type WireEnvelope_CommandAccepted struct {
+	CommandAccepted *CommandResponseMessage `protobuf:"bytes,110,opt,name=command_accepted,json=commandAccepted,proto3,oneof"`
+}
+
+type WireEnvelope_CommandRejected struct {
+	CommandRejected *CommandResponseMessage `protobuf:"bytes,111,opt,name=command_rejected,json=commandRejected,proto3,oneof"`
+}
+
+type WireEnvelope_AuthorityFrame struct {
+	AuthorityFrame *AuthorityFrameMessage `protobuf:"bytes,112,opt,name=authority_frame,json=authorityFrame,proto3,oneof"`
+}
+
+type WireEnvelope_HistoryRequest struct {
+	HistoryRequest *Int64Value `protobuf:"bytes,113,opt,name=history_request,json=historyRequest,proto3,oneof"`
+}
+
+type WireEnvelope_HistoryComplete struct {
+	HistoryComplete *Int64Value `protobuf:"bytes,114,opt,name=history_complete,json=historyComplete,proto3,oneof"`
+}
+
+type WireEnvelope_SnapshotRequest struct {
+	SnapshotRequest *Int64Value `protobuf:"bytes,115,opt,name=snapshot_request,json=snapshotRequest,proto3,oneof"`
+}
+
+type WireEnvelope_SnapshotManifest struct {
+	SnapshotManifest *SnapshotManifestMessage `protobuf:"bytes,116,opt,name=snapshot_manifest,json=snapshotManifest,proto3,oneof"`
+}
+
+type WireEnvelope_SnapshotChunk struct {
+	SnapshotChunk *SnapshotChunkMessage `protobuf:"bytes,117,opt,name=snapshot_chunk,json=snapshotChunk,proto3,oneof"`
+}
+
+type WireEnvelope_SnapshotComplete struct {
+	SnapshotComplete *GuidValue `protobuf:"bytes,118,opt,name=snapshot_complete,json=snapshotComplete,proto3,oneof"`
+}
+
+type WireEnvelope_CatchUpComplete struct {
+	CatchUpComplete *GuidValue `protobuf:"bytes,119,opt,name=catch_up_complete,json=catchUpComplete,proto3,oneof"`
+}
+
+type WireEnvelope_SessionEnded struct {
+	SessionEnded *StringValue `protobuf:"bytes,120,opt,name=session_ended,json=sessionEnded,proto3,oneof"`
+}
+
+type WireEnvelope_LobbyDraftChange struct {
+	LobbyDraftChange *Room `protobuf:"bytes,121,opt,name=lobby_draft_change,json=lobbyDraftChange,proto3,oneof"`
+}
+
+type WireEnvelope_ParticipantNotice struct {
+	ParticipantNotice *StringValue `protobuf:"bytes,122,opt,name=participant_notice,json=participantNotice,proto3,oneof"`
+}
+
+type WireEnvelope_RelayRegisterRoom struct {
+	RelayRegisterRoom *RelayRegisterRoomRequest `protobuf:"bytes,123,opt,name=relay_register_room,json=relayRegisterRoom,proto3,oneof"`
+}
+
+type WireEnvelope_RelayUpdateRoom struct {
+	RelayUpdateRoom *RelayUpdateRoomRequest `protobuf:"bytes,124,opt,name=relay_update_room,json=relayUpdateRoom,proto3,oneof"`
+}
+
+type WireEnvelope_RelayListRooms struct {
+	RelayListRooms *RelayListRoomsRequest `protobuf:"bytes,125,opt,name=relay_list_rooms,json=relayListRooms,proto3,oneof"`
+}
+
+type WireEnvelope_RelayRoomList struct {
+	RelayRoomList *RelayListRoomsResponse `protobuf:"bytes,126,opt,name=relay_room_list,json=relayRoomList,proto3,oneof"`
+}
+
+type WireEnvelope_RelayJoinRoom struct {
+	RelayJoinRoom *RelayJoinRoomRequest `protobuf:"bytes,127,opt,name=relay_join_room,json=relayJoinRoom,proto3,oneof"`
+}
+
+type WireEnvelope_RelayControlResponse struct {
+	RelayControlResponse *RelayControlResponse `protobuf:"bytes,128,opt,name=relay_control_response,json=relayControlResponse,proto3,oneof"`
+}
+
+type WireEnvelope_RelayCloseJoining struct {
+	RelayCloseJoining *RelayRoomRequest `protobuf:"bytes,129,opt,name=relay_close_joining,json=relayCloseJoining,proto3,oneof"`
+}
+
+type WireEnvelope_RelayLeaveRoom struct {
+	RelayLeaveRoom *RelayRoomRequest `protobuf:"bytes,130,opt,name=relay_leave_room,json=relayLeaveRoom,proto3,oneof"`
+}
+
+type WireEnvelope_RelayCloseRoom struct {
+	RelayCloseRoom *RelayRoomRequest `protobuf:"bytes,131,opt,name=relay_close_room,json=relayCloseRoom,proto3,oneof"`
+}
+
+type WireEnvelope_RelayPeerJoined struct {
+	RelayPeerJoined *RelayPeerNotice `protobuf:"bytes,132,opt,name=relay_peer_joined,json=relayPeerJoined,proto3,oneof"`
+}
+
+type WireEnvelope_RelayPeerLeft struct {
+	RelayPeerLeft *RelayPeerNotice `protobuf:"bytes,133,opt,name=relay_peer_left,json=relayPeerLeft,proto3,oneof"`
+}
+
+type WireEnvelope_ReleaseSeat struct {
+	ReleaseSeat *GuidValue `protobuf:"bytes,134,opt,name=release_seat,json=releaseSeat,proto3,oneof"`
+}
+
+type WireEnvelope_JoinMatchRequest struct {
+	JoinMatchRequest *JoinMatchRequest `protobuf:"bytes,135,opt,name=join_match_request,json=joinMatchRequest,proto3,oneof"`
+}
+
+type WireEnvelope_JoinMatchAccepted struct {
+	JoinMatchAccepted *JoinMatchAcceptedMessage `protobuf:"bytes,136,opt,name=join_match_accepted,json=joinMatchAccepted,proto3,oneof"`
+}
+
+type WireEnvelope_ResumeSession struct {
+	ResumeSession *ResumeSessionRequest `protobuf:"bytes,137,opt,name=resume_session,json=resumeSession,proto3,oneof"`
+}
+
+type WireEnvelope_ResumeSessionAccepted struct {
+	ResumeSessionAccepted *ResumeSessionAccepted `protobuf:"bytes,138,opt,name=resume_session_accepted,json=resumeSessionAccepted,proto3,oneof"`
+}
+
+type WireEnvelope_ResumeSessionRejected struct {
+	ResumeSessionRejected *StringValue `protobuf:"bytes,139,opt,name=resume_session_rejected,json=resumeSessionRejected,proto3,oneof"`
+}
+
+type WireEnvelope_LeaveSession struct {
+	LeaveSession *GuidValue `protobuf:"bytes,140,opt,name=leave_session,json=leaveSession,proto3,oneof"`
+}
+
+type WireEnvelope_RelayResumeRoom struct {
+	RelayResumeRoom *RelayResumeRoomRequest `protobuf:"bytes,141,opt,name=relay_resume_room,json=relayResumeRoom,proto3,oneof"`
+}
+
+type WireEnvelope_MatchStarting struct {
+	MatchStarting *GuidValue `protobuf:"bytes,142,opt,name=match_starting,json=matchStarting,proto3,oneof"`
+}
+
+type WireEnvelope_ChatSend struct {
+	ChatSend *ChatSendMessage `protobuf:"bytes,143,opt,name=chat_send,json=chatSend,proto3,oneof"`
+}
+
+type WireEnvelope_ChatEvent struct {
+	ChatEvent *ChatEventMessage `protobuf:"bytes,144,opt,name=chat_event,json=chatEvent,proto3,oneof"`
+}
+
+type WireEnvelope_PingSend struct {
+	PingSend *PingSendMessage `protobuf:"bytes,145,opt,name=ping_send,json=pingSend,proto3,oneof"`
+}
+
+type WireEnvelope_PingEvent struct {
+	PingEvent *PingEventMessage `protobuf:"bytes,146,opt,name=ping_event,json=pingEvent,proto3,oneof"`
+}
+
+type WireEnvelope_SocialSyncRequest struct {
+	SocialSyncRequest *SocialSyncRequestMessage `protobuf:"bytes,147,opt,name=social_sync_request,json=socialSyncRequest,proto3,oneof"`
+}
+
+type WireEnvelope_SocialSyncBegin struct {
+	SocialSyncBegin *SocialSyncBeginMessage `protobuf:"bytes,148,opt,name=social_sync_begin,json=socialSyncBegin,proto3,oneof"`
+}
+
+type WireEnvelope_SocialSyncChunk struct {
+	SocialSyncChunk *SocialSyncChunkMessage `protobuf:"bytes,149,opt,name=social_sync_chunk,json=socialSyncChunk,proto3,oneof"`
+}
+
+type WireEnvelope_SocialSyncComplete struct {
+	SocialSyncComplete *SocialSyncCompleteMessage `protobuf:"bytes,150,opt,name=social_sync_complete,json=socialSyncComplete,proto3,oneof"`
+}
+
+type WireEnvelope_RelayRoomClosed struct {
+	RelayRoomClosed *RelayPeerNotice `protobuf:"bytes,151,opt,name=relay_room_closed,json=relayRoomClosed,proto3,oneof"`
+}
+
+func (*WireEnvelope_Hello) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_Welcome) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_Reject) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_Heartbeat) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RoomState) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ClaimSeat) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SetReady) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_StartMatch) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_CommandRequest) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_CommandAccepted) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_CommandRejected) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_AuthorityFrame) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_HistoryRequest) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_HistoryComplete) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SnapshotRequest) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SnapshotManifest) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SnapshotChunk) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SnapshotComplete) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_CatchUpComplete) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SessionEnded) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_LobbyDraftChange) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ParticipantNotice) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayRegisterRoom) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayUpdateRoom) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayListRooms) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayRoomList) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayJoinRoom) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayControlResponse) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayCloseJoining) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayLeaveRoom) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayCloseRoom) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayPeerJoined) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayPeerLeft) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ReleaseSeat) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_JoinMatchRequest) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_JoinMatchAccepted) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ResumeSession) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ResumeSessionAccepted) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ResumeSessionRejected) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_LeaveSession) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayResumeRoom) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_MatchStarting) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ChatSend) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_ChatEvent) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_PingSend) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_PingEvent) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SocialSyncRequest) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SocialSyncBegin) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SocialSyncChunk) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_SocialSyncComplete) isWireEnvelope_Body() {}
+
+func (*WireEnvelope_RelayRoomClosed) isWireEnvelope_Body() {}
 
 type GuidValue struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -1303,25 +2137,64 @@ func (x *Room) GetParticipantRevision() uint32 {
 }
 
 type GameCommandMessage struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	Kind               uint32                 `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty"`
-	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
-	TargetX            int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
-	TargetY            int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
-	UnitTargetXs       []int32                `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
-	UnitTargetYs       []int32                `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
-	ActionCategory     int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
-	ActionId           string                 `protobuf:"bytes,8,opt,name=action_id,json=actionId,proto3" json:"action_id,omitempty"`
-	TemplateId         string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
-	PassengerUnitId    int64                  `protobuf:"varint,10,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
-	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
-	DebugPlayerIndex   int32                  `protobuf:"varint,12,opt,name=debug_player_index,json=debugPlayerIndex,proto3" json:"debug_player_index,omitempty"`
-	DebugMetalDelta    int32                  `protobuf:"zigzag32,13,opt,name=debug_metal_delta,json=debugMetalDelta,proto3" json:"debug_metal_delta,omitempty"`
-	DebugPowerDelta    int32                  `protobuf:"zigzag32,14,opt,name=debug_power_delta,json=debugPowerDelta,proto3" json:"debug_power_delta,omitempty"`
-	AiActionType       int32                  `protobuf:"varint,15,opt,name=ai_action_type,json=aiActionType,proto3" json:"ai_action_type,omitempty"`
-	ResolvedActions    []*ResolvedUnitAction  `protobuf:"bytes,16,rep,name=resolved_actions,json=resolvedActions,proto3" json:"resolved_actions,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	Kind uint32 `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	UnitIds []int64 `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TargetX int32 `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TargetY int32 `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	UnitTargetXs []int32 `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	UnitTargetYs []int32 `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	ActionCategory int32 `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	ActionId string `protobuf:"bytes,8,opt,name=action_id,json=actionId,proto3" json:"action_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TemplateId string `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	PassengerUnitId int64 `protobuf:"varint,10,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	DesiredToggleState bool `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	DebugPlayerIndex int32 `protobuf:"varint,12,opt,name=debug_player_index,json=debugPlayerIndex,proto3" json:"debug_player_index,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	DebugMetalDelta int32 `protobuf:"zigzag32,13,opt,name=debug_metal_delta,json=debugMetalDelta,proto3" json:"debug_metal_delta,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	DebugPowerDelta int32 `protobuf:"zigzag32,14,opt,name=debug_power_delta,json=debugPowerDelta,proto3" json:"debug_power_delta,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	AiActionType int32 `protobuf:"varint,15,opt,name=ai_action_type,json=aiActionType,proto3" json:"ai_action_type,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	ResolvedActions []*ResolvedUnitAction `protobuf:"bytes,16,rep,name=resolved_actions,json=resolvedActions,proto3" json:"resolved_actions,omitempty"`
+	// Types that are valid to be assigned to Body:
+	//
+	//	*GameCommandMessage_Move
+	//	*GameCommandMessage_Action
+	//	*GameCommandMessage_EquipmentAction
+	//	*GameCommandMessage_EquipmentMoveAction
+	//	*GameCommandMessage_BuildWithMove
+	//	*GameCommandMessage_Skill
+	//	*GameCommandMessage_UndoMove
+	//	*GameCommandMessage_EndTurn
+	//	*GameCommandMessage_AutoGuideStart
+	//	*GameCommandMessage_DebugAddResources
+	//	*GameCommandMessage_DebugFillSkill
+	//	*GameCommandMessage_AiUnitAction
+	//	*GameCommandMessage_AiSkill
+	//	*GameCommandMessage_TurnAdvance
+	//	*GameCommandMessage_Surrender
+	//	*GameCommandMessage_ToggleStandby
+	//	*GameCommandMessage_ToggleSleep
+	//	*GameCommandMessage_Stay
+	//	*GameCommandMessage_SelfDestruct
+	//	*GameCommandMessage_ResolvedUnitActions
+	Body          isGameCommandMessage_Body `protobuf_oneof:"body"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GameCommandMessage) Reset() {
@@ -1354,6 +2227,7 @@ func (*GameCommandMessage) Descriptor() ([]byte, []int) {
 	return file_multiplayer_proto_rawDescGZIP(), []int{9}
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetKind() uint32 {
 	if x != nil {
 		return x.Kind
@@ -1361,6 +2235,7 @@ func (x *GameCommandMessage) GetKind() uint32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetUnitIds() []int64 {
 	if x != nil {
 		return x.UnitIds
@@ -1368,6 +2243,7 @@ func (x *GameCommandMessage) GetUnitIds() []int64 {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetTargetX() int32 {
 	if x != nil {
 		return x.TargetX
@@ -1375,6 +2251,7 @@ func (x *GameCommandMessage) GetTargetX() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetTargetY() int32 {
 	if x != nil {
 		return x.TargetY
@@ -1382,6 +2259,7 @@ func (x *GameCommandMessage) GetTargetY() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetUnitTargetXs() []int32 {
 	if x != nil {
 		return x.UnitTargetXs
@@ -1389,6 +2267,7 @@ func (x *GameCommandMessage) GetUnitTargetXs() []int32 {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetUnitTargetYs() []int32 {
 	if x != nil {
 		return x.UnitTargetYs
@@ -1396,6 +2275,7 @@ func (x *GameCommandMessage) GetUnitTargetYs() []int32 {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetActionCategory() int32 {
 	if x != nil {
 		return x.ActionCategory
@@ -1403,6 +2283,7 @@ func (x *GameCommandMessage) GetActionCategory() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetActionId() string {
 	if x != nil {
 		return x.ActionId
@@ -1410,6 +2291,7 @@ func (x *GameCommandMessage) GetActionId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetTemplateId() string {
 	if x != nil {
 		return x.TemplateId
@@ -1417,6 +2299,7 @@ func (x *GameCommandMessage) GetTemplateId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetPassengerUnitId() int64 {
 	if x != nil {
 		return x.PassengerUnitId
@@ -1424,6 +2307,7 @@ func (x *GameCommandMessage) GetPassengerUnitId() int64 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetDesiredToggleState() bool {
 	if x != nil {
 		return x.DesiredToggleState
@@ -1431,6 +2315,7 @@ func (x *GameCommandMessage) GetDesiredToggleState() bool {
 	return false
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetDebugPlayerIndex() int32 {
 	if x != nil {
 		return x.DebugPlayerIndex
@@ -1438,6 +2323,7 @@ func (x *GameCommandMessage) GetDebugPlayerIndex() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetDebugMetalDelta() int32 {
 	if x != nil {
 		return x.DebugMetalDelta
@@ -1445,6 +2331,7 @@ func (x *GameCommandMessage) GetDebugMetalDelta() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetDebugPowerDelta() int32 {
 	if x != nil {
 		return x.DebugPowerDelta
@@ -1452,6 +2339,7 @@ func (x *GameCommandMessage) GetDebugPowerDelta() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetAiActionType() int32 {
 	if x != nil {
 		return x.AiActionType
@@ -1459,6 +2347,7 @@ func (x *GameCommandMessage) GetAiActionType() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *GameCommandMessage) GetResolvedActions() []*ResolvedUnitAction {
 	if x != nil {
 		return x.ResolvedActions
@@ -1466,21 +2355,347 @@ func (x *GameCommandMessage) GetResolvedActions() []*ResolvedUnitAction {
 	return nil
 }
 
+func (x *GameCommandMessage) GetBody() isGameCommandMessage_Body {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetMove() *MoveCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_Move); ok {
+			return x.Move
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetAction() *ActionCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_Action); ok {
+			return x.Action
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetEquipmentAction() *EquipmentActionCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_EquipmentAction); ok {
+			return x.EquipmentAction
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetEquipmentMoveAction() *EquipmentMoveActionCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_EquipmentMoveAction); ok {
+			return x.EquipmentMoveAction
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetBuildWithMove() *BuildWithMoveCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_BuildWithMove); ok {
+			return x.BuildWithMove
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetSkill() *SkillCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_Skill); ok {
+			return x.Skill
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetUndoMove() *UndoMoveCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_UndoMove); ok {
+			return x.UndoMove
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetEndTurn() *EndTurnCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_EndTurn); ok {
+			return x.EndTurn
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetAutoGuideStart() *AutoGuideStartCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_AutoGuideStart); ok {
+			return x.AutoGuideStart
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetDebugAddResources() *DebugAddResourcesCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_DebugAddResources); ok {
+			return x.DebugAddResources
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetDebugFillSkill() *DebugFillSkillCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_DebugFillSkill); ok {
+			return x.DebugFillSkill
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetAiUnitAction() *AiUnitActionCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_AiUnitAction); ok {
+			return x.AiUnitAction
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetAiSkill() *AiSkillCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_AiSkill); ok {
+			return x.AiSkill
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetTurnAdvance() *TurnAdvanceCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_TurnAdvance); ok {
+			return x.TurnAdvance
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetSurrender() *SurrenderCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_Surrender); ok {
+			return x.Surrender
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetToggleStandby() *ToggleStandbyCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_ToggleStandby); ok {
+			return x.ToggleStandby
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetToggleSleep() *ToggleSleepCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_ToggleSleep); ok {
+			return x.ToggleSleep
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetStay() *StayCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_Stay); ok {
+			return x.Stay
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetSelfDestruct() *SelfDestructCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_SelfDestruct); ok {
+			return x.SelfDestruct
+		}
+	}
+	return nil
+}
+
+func (x *GameCommandMessage) GetResolvedUnitActions() *ResolvedUnitActionsCommand {
+	if x != nil {
+		if x, ok := x.Body.(*GameCommandMessage_ResolvedUnitActions); ok {
+			return x.ResolvedUnitActions
+		}
+	}
+	return nil
+}
+
+type isGameCommandMessage_Body interface {
+	isGameCommandMessage_Body()
+}
+
+type GameCommandMessage_Move struct {
+	Move *MoveCommand `protobuf:"bytes,101,opt,name=move,proto3,oneof"`
+}
+
+type GameCommandMessage_Action struct {
+	Action *ActionCommand `protobuf:"bytes,102,opt,name=action,proto3,oneof"`
+}
+
+type GameCommandMessage_EquipmentAction struct {
+	EquipmentAction *EquipmentActionCommand `protobuf:"bytes,103,opt,name=equipment_action,json=equipmentAction,proto3,oneof"`
+}
+
+type GameCommandMessage_EquipmentMoveAction struct {
+	EquipmentMoveAction *EquipmentMoveActionCommand `protobuf:"bytes,104,opt,name=equipment_move_action,json=equipmentMoveAction,proto3,oneof"`
+}
+
+type GameCommandMessage_BuildWithMove struct {
+	BuildWithMove *BuildWithMoveCommand `protobuf:"bytes,105,opt,name=build_with_move,json=buildWithMove,proto3,oneof"`
+}
+
+type GameCommandMessage_Skill struct {
+	Skill *SkillCommand `protobuf:"bytes,106,opt,name=skill,proto3,oneof"`
+}
+
+type GameCommandMessage_UndoMove struct {
+	UndoMove *UndoMoveCommand `protobuf:"bytes,107,opt,name=undo_move,json=undoMove,proto3,oneof"`
+}
+
+type GameCommandMessage_EndTurn struct {
+	EndTurn *EndTurnCommand `protobuf:"bytes,108,opt,name=end_turn,json=endTurn,proto3,oneof"`
+}
+
+type GameCommandMessage_AutoGuideStart struct {
+	AutoGuideStart *AutoGuideStartCommand `protobuf:"bytes,109,opt,name=auto_guide_start,json=autoGuideStart,proto3,oneof"`
+}
+
+type GameCommandMessage_DebugAddResources struct {
+	DebugAddResources *DebugAddResourcesCommand `protobuf:"bytes,111,opt,name=debug_add_resources,json=debugAddResources,proto3,oneof"`
+}
+
+type GameCommandMessage_DebugFillSkill struct {
+	DebugFillSkill *DebugFillSkillCommand `protobuf:"bytes,112,opt,name=debug_fill_skill,json=debugFillSkill,proto3,oneof"`
+}
+
+type GameCommandMessage_AiUnitAction struct {
+	AiUnitAction *AiUnitActionCommand `protobuf:"bytes,113,opt,name=ai_unit_action,json=aiUnitAction,proto3,oneof"`
+}
+
+type GameCommandMessage_AiSkill struct {
+	AiSkill *AiSkillCommand `protobuf:"bytes,114,opt,name=ai_skill,json=aiSkill,proto3,oneof"`
+}
+
+type GameCommandMessage_TurnAdvance struct {
+	TurnAdvance *TurnAdvanceCommand `protobuf:"bytes,115,opt,name=turn_advance,json=turnAdvance,proto3,oneof"`
+}
+
+type GameCommandMessage_Surrender struct {
+	Surrender *SurrenderCommand `protobuf:"bytes,116,opt,name=surrender,proto3,oneof"`
+}
+
+type GameCommandMessage_ToggleStandby struct {
+	ToggleStandby *ToggleStandbyCommand `protobuf:"bytes,117,opt,name=toggle_standby,json=toggleStandby,proto3,oneof"`
+}
+
+type GameCommandMessage_ToggleSleep struct {
+	ToggleSleep *ToggleSleepCommand `protobuf:"bytes,118,opt,name=toggle_sleep,json=toggleSleep,proto3,oneof"`
+}
+
+type GameCommandMessage_Stay struct {
+	Stay *StayCommand `protobuf:"bytes,119,opt,name=stay,proto3,oneof"`
+}
+
+type GameCommandMessage_SelfDestruct struct {
+	SelfDestruct *SelfDestructCommand `protobuf:"bytes,120,opt,name=self_destruct,json=selfDestruct,proto3,oneof"`
+}
+
+type GameCommandMessage_ResolvedUnitActions struct {
+	ResolvedUnitActions *ResolvedUnitActionsCommand `protobuf:"bytes,121,opt,name=resolved_unit_actions,json=resolvedUnitActions,proto3,oneof"`
+}
+
+func (*GameCommandMessage_Move) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_Action) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_EquipmentAction) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_EquipmentMoveAction) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_BuildWithMove) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_Skill) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_UndoMove) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_EndTurn) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_AutoGuideStart) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_DebugAddResources) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_DebugFillSkill) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_AiUnitAction) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_AiSkill) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_TurnAdvance) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_Surrender) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_ToggleStandby) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_ToggleSleep) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_Stay) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_SelfDestruct) isGameCommandMessage_Body() {}
+
+func (*GameCommandMessage_ResolvedUnitActions) isGameCommandMessage_Body() {}
+
 // Host-resolved native auto-guide batch. Clients execute these actions without planning.
 type ResolvedUnitAction struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	UnitId          int64                  `protobuf:"varint,1,opt,name=unit_id,json=unitId,proto3" json:"unit_id,omitempty"`
-	ActionType      int32                  `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
-	MoveX           int32                  `protobuf:"zigzag32,3,opt,name=move_x,json=moveX,proto3" json:"move_x,omitempty"`
-	MoveY           int32                  `protobuf:"zigzag32,4,opt,name=move_y,json=moveY,proto3" json:"move_y,omitempty"`
-	TargetX         int32                  `protobuf:"zigzag32,5,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
-	TargetY         int32                  `protobuf:"zigzag32,6,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
-	ActionCategory  int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
-	TemplateId      string                 `protobuf:"bytes,8,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
-	PassengerUnitId int64                  `protobuf:"varint,9,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
-	SkipAnimations  bool                   `protobuf:"varint,10,opt,name=skip_animations,json=skipAnimations,proto3" json:"skip_animations,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	UnitId int64                  `protobuf:"varint,1,opt,name=unit_id,json=unitId,proto3" json:"unit_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	ActionType int32 `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	MoveX int32 `protobuf:"zigzag32,3,opt,name=move_x,json=moveX,proto3" json:"move_x,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	MoveY int32 `protobuf:"zigzag32,4,opt,name=move_y,json=moveY,proto3" json:"move_y,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TargetX int32 `protobuf:"zigzag32,5,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TargetY int32 `protobuf:"zigzag32,6,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	ActionCategory int32 `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	TemplateId string `protobuf:"bytes,8,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	PassengerUnitId int64 `protobuf:"varint,9,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
+	SkipAnimations  bool  `protobuf:"varint,10,opt,name=skip_animations,json=skipAnimations,proto3" json:"skip_animations,omitempty"`
+	// Types that are valid to be assigned to Body:
+	//
+	//	*ResolvedUnitAction_Move
+	//	*ResolvedUnitAction_Action
+	//	*ResolvedUnitAction_Create
+	//	*ResolvedUnitAction_Unload
+	Body          isResolvedUnitAction_Body `protobuf_oneof:"body"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ResolvedUnitAction) Reset() {
@@ -1520,6 +2735,7 @@ func (x *ResolvedUnitAction) GetUnitId() int64 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetActionType() int32 {
 	if x != nil {
 		return x.ActionType
@@ -1527,6 +2743,7 @@ func (x *ResolvedUnitAction) GetActionType() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetMoveX() int32 {
 	if x != nil {
 		return x.MoveX
@@ -1534,6 +2751,7 @@ func (x *ResolvedUnitAction) GetMoveX() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetMoveY() int32 {
 	if x != nil {
 		return x.MoveY
@@ -1541,6 +2759,7 @@ func (x *ResolvedUnitAction) GetMoveY() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetTargetX() int32 {
 	if x != nil {
 		return x.TargetX
@@ -1548,6 +2767,7 @@ func (x *ResolvedUnitAction) GetTargetX() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetTargetY() int32 {
 	if x != nil {
 		return x.TargetY
@@ -1555,6 +2775,7 @@ func (x *ResolvedUnitAction) GetTargetY() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetActionCategory() int32 {
 	if x != nil {
 		return x.ActionCategory
@@ -1562,6 +2783,7 @@ func (x *ResolvedUnitAction) GetActionCategory() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetTemplateId() string {
 	if x != nil {
 		return x.TemplateId
@@ -1569,6 +2791,7 @@ func (x *ResolvedUnitAction) GetTemplateId() string {
 	return ""
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *ResolvedUnitAction) GetPassengerUnitId() int64 {
 	if x != nil {
 		return x.PassengerUnitId
@@ -1582,6 +2805,77 @@ func (x *ResolvedUnitAction) GetSkipAnimations() bool {
 	}
 	return false
 }
+
+func (x *ResolvedUnitAction) GetBody() isResolvedUnitAction_Body {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *ResolvedUnitAction) GetMove() *ResolvedMove {
+	if x != nil {
+		if x, ok := x.Body.(*ResolvedUnitAction_Move); ok {
+			return x.Move
+		}
+	}
+	return nil
+}
+
+func (x *ResolvedUnitAction) GetAction() *ResolvedAction {
+	if x != nil {
+		if x, ok := x.Body.(*ResolvedUnitAction_Action); ok {
+			return x.Action
+		}
+	}
+	return nil
+}
+
+func (x *ResolvedUnitAction) GetCreate() *ResolvedCreate {
+	if x != nil {
+		if x, ok := x.Body.(*ResolvedUnitAction_Create); ok {
+			return x.Create
+		}
+	}
+	return nil
+}
+
+func (x *ResolvedUnitAction) GetUnload() *ResolvedUnload {
+	if x != nil {
+		if x, ok := x.Body.(*ResolvedUnitAction_Unload); ok {
+			return x.Unload
+		}
+	}
+	return nil
+}
+
+type isResolvedUnitAction_Body interface {
+	isResolvedUnitAction_Body()
+}
+
+type ResolvedUnitAction_Move struct {
+	Move *ResolvedMove `protobuf:"bytes,100,opt,name=move,proto3,oneof"`
+}
+
+type ResolvedUnitAction_Action struct {
+	Action *ResolvedAction `protobuf:"bytes,101,opt,name=action,proto3,oneof"`
+}
+
+type ResolvedUnitAction_Create struct {
+	Create *ResolvedCreate `protobuf:"bytes,102,opt,name=create,proto3,oneof"`
+}
+
+type ResolvedUnitAction_Unload struct {
+	Unload *ResolvedUnload `protobuf:"bytes,103,opt,name=unload,proto3,oneof"`
+}
+
+func (*ResolvedUnitAction_Move) isResolvedUnitAction_Body() {}
+
+func (*ResolvedUnitAction_Action) isResolvedUnitAction_Body() {}
+
+func (*ResolvedUnitAction_Create) isResolvedUnitAction_Body() {}
+
+func (*ResolvedUnitAction_Unload) isResolvedUnitAction_Body() {}
 
 type CommandRequestMessage struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
@@ -3324,12 +4618,20 @@ func (x *CommandResponseMessage) GetReason() string {
 }
 
 type RandomRecordMessage struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	CallSite      string                 `protobuf:"bytes,1,opt,name=call_site,json=callSite,proto3" json:"call_site,omitempty"`
-	Ordinal       int32                  `protobuf:"varint,2,opt,name=ordinal,proto3" json:"ordinal,omitempty"`
-	ValueKind     uint32                 `protobuf:"varint,3,opt,name=value_kind,json=valueKind,proto3" json:"value_kind,omitempty"`
-	IntegerValue  int64                  `protobuf:"varint,4,opt,name=integer_value,json=integerValue,proto3" json:"integer_value,omitempty"`
-	FloatingValue float64                `protobuf:"fixed64,5,opt,name=floating_value,json=floatingValue,proto3" json:"floating_value,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	CallSite string                 `protobuf:"bytes,1,opt,name=call_site,json=callSite,proto3" json:"call_site,omitempty"`
+	Ordinal  int32                  `protobuf:"varint,2,opt,name=ordinal,proto3" json:"ordinal,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	ValueKind uint32 `protobuf:"varint,3,opt,name=value_kind,json=valueKind,proto3" json:"value_kind,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	IntegerValue int64 `protobuf:"varint,4,opt,name=integer_value,json=integerValue,proto3" json:"integer_value,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	FloatingValue float64 `protobuf:"fixed64,5,opt,name=floating_value,json=floatingValue,proto3" json:"floating_value,omitempty"`
+	// Types that are valid to be assigned to Value:
+	//
+	//	*RandomRecordMessage_Integer
+	//	*RandomRecordMessage_Floating
+	Value         isRandomRecordMessage_Value `protobuf_oneof:"value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3378,6 +4680,7 @@ func (x *RandomRecordMessage) GetOrdinal() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *RandomRecordMessage) GetValueKind() uint32 {
 	if x != nil {
 		return x.ValueKind
@@ -3385,6 +4688,7 @@ func (x *RandomRecordMessage) GetValueKind() uint32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *RandomRecordMessage) GetIntegerValue() int64 {
 	if x != nil {
 		return x.IntegerValue
@@ -3392,6 +4696,7 @@ func (x *RandomRecordMessage) GetIntegerValue() int64 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *RandomRecordMessage) GetFloatingValue() float64 {
 	if x != nil {
 		return x.FloatingValue
@@ -3399,15 +4704,61 @@ func (x *RandomRecordMessage) GetFloatingValue() float64 {
 	return 0
 }
 
+func (x *RandomRecordMessage) GetValue() isRandomRecordMessage_Value {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+func (x *RandomRecordMessage) GetInteger() int64 {
+	if x != nil {
+		if x, ok := x.Value.(*RandomRecordMessage_Integer); ok {
+			return x.Integer
+		}
+	}
+	return 0
+}
+
+func (x *RandomRecordMessage) GetFloating() float64 {
+	if x != nil {
+		if x, ok := x.Value.(*RandomRecordMessage_Floating); ok {
+			return x.Floating
+		}
+	}
+	return 0
+}
+
+type isRandomRecordMessage_Value interface {
+	isRandomRecordMessage_Value()
+}
+
+type RandomRecordMessage_Integer struct {
+	Integer int64 `protobuf:"varint,6,opt,name=integer,proto3,oneof"`
+}
+
+type RandomRecordMessage_Floating struct {
+	Floating float64 `protobuf:"fixed64,7,opt,name=floating,proto3,oneof"`
+}
+
+func (*RandomRecordMessage_Integer) isRandomRecordMessage_Value() {}
+
+func (*RandomRecordMessage_Floating) isRandomRecordMessage_Value() {}
+
 type Resolution struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	OperationId       []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
-	StageId           int32                  `protobuf:"varint,2,opt,name=stage_id,json=stageId,proto3" json:"stage_id,omitempty"`
-	SettlementOrdinal int32                  `protobuf:"varint,3,opt,name=settlement_ordinal,json=settlementOrdinal,proto3" json:"settlement_ordinal,omitempty"`
-	RandomRecords     []*RandomRecordMessage `protobuf:"bytes,4,rep,name=random_records,json=randomRecords,proto3" json:"random_records,omitempty"`
-	AttackSettlement  *AttackSettlement      `protobuf:"bytes,5,opt,name=attack_settlement,json=attackSettlement,proto3" json:"attack_settlement,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	OperationId []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	StageId int32 `protobuf:"varint,2,opt,name=stage_id,json=stageId,proto3" json:"stage_id,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	SettlementOrdinal int32 `protobuf:"varint,3,opt,name=settlement_ordinal,json=settlementOrdinal,proto3" json:"settlement_ordinal,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	RandomRecords []*RandomRecordMessage `protobuf:"bytes,4,rep,name=random_records,json=randomRecords,proto3" json:"random_records,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	AttackSettlement *AttackSettlement `protobuf:"bytes,5,opt,name=attack_settlement,json=attackSettlement,proto3" json:"attack_settlement,omitempty"`
+	Event            *SettlementEvent  `protobuf:"bytes,100,opt,name=event,proto3" json:"event,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Resolution) Reset() {
@@ -3447,6 +4798,7 @@ func (x *Resolution) GetOperationId() []byte {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *Resolution) GetStageId() int32 {
 	if x != nil {
 		return x.StageId
@@ -3454,6 +4806,7 @@ func (x *Resolution) GetStageId() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *Resolution) GetSettlementOrdinal() int32 {
 	if x != nil {
 		return x.SettlementOrdinal
@@ -3461,6 +4814,7 @@ func (x *Resolution) GetSettlementOrdinal() int32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *Resolution) GetRandomRecords() []*RandomRecordMessage {
 	if x != nil {
 		return x.RandomRecords
@@ -3468,6 +4822,7 @@ func (x *Resolution) GetRandomRecords() []*RandomRecordMessage {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *Resolution) GetAttackSettlement() *AttackSettlement {
 	if x != nil {
 		return x.AttackSettlement
@@ -3475,7 +4830,16 @@ func (x *Resolution) GetAttackSettlement() *AttackSettlement {
 	return nil
 }
 
+func (x *Resolution) GetEvent() *SettlementEvent {
+	if x != nil {
+		return x.Event
+	}
+	return nil
+}
+
 // Runtime events, not predicted damage. Native animations do not authorize settlement.
+//
+// Deprecated: Marked as deprecated in multiplayer.proto.
 type AttackSettlement struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Kind          AttackSettlement_Kind  `protobuf:"varint,1,opt,name=kind,proto3,enum=xingyistarry.mp.v1.AttackSettlement_Kind" json:"kind,omitempty"`
@@ -3585,13 +4949,14 @@ func (x *AttackSettlement) GetData() float32 {
 }
 
 type OperationBegin struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	OperationId     []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
-	SeatId          []byte                 `protobuf:"bytes,2,opt,name=seat_id,json=seatId,proto3" json:"seat_id,omitempty"`
-	RequestId       uint64                 `protobuf:"varint,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
-	Round           int32                  `protobuf:"varint,4,opt,name=round,proto3" json:"round,omitempty"`
-	Command         *GameCommandMessage    `protobuf:"bytes,5,opt,name=command,proto3" json:"command,omitempty"`
-	LiveSettlements bool                   `protobuf:"varint,6,opt,name=live_settlements,json=liveSettlements,proto3" json:"live_settlements,omitempty"`
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	OperationId []byte                 `protobuf:"bytes,1,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	SeatId      []byte                 `protobuf:"bytes,2,opt,name=seat_id,json=seatId,proto3" json:"seat_id,omitempty"`
+	RequestId   uint64                 `protobuf:"varint,3,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	Round       int32                  `protobuf:"varint,4,opt,name=round,proto3" json:"round,omitempty"`
+	Command     *GameCommandMessage    `protobuf:"bytes,5,opt,name=command,proto3" json:"command,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	LiveSettlements bool `protobuf:"varint,6,opt,name=live_settlements,json=liveSettlements,proto3" json:"live_settlements,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -3661,6 +5026,7 @@ func (x *OperationBegin) GetCommand() *GameCommandMessage {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *OperationBegin) GetLiveSettlements() bool {
 	if x != nil {
 		return x.LiveSettlements
@@ -3765,13 +5131,25 @@ func (x *OperationFailed) GetReason() string {
 }
 
 type AuthorityFrameMessage struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	MatchId       []byte                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
-	FrameId       int64                  `protobuf:"varint,2,opt,name=frame_id,json=frameId,proto3" json:"frame_id,omitempty"`
-	PreviousHash  []byte                 `protobuf:"bytes,3,opt,name=previous_hash,json=previousHash,proto3" json:"previous_hash,omitempty"`
-	FrameType     uint32                 `protobuf:"varint,4,opt,name=frame_type,json=frameType,proto3" json:"frame_type,omitempty"`
-	Payload       []byte                 `protobuf:"bytes,5,opt,name=payload,proto3" json:"payload,omitempty"`
-	Hash          []byte                 `protobuf:"bytes,6,opt,name=hash,proto3" json:"hash,omitempty"`
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	MatchId      []byte                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
+	FrameId      int64                  `protobuf:"varint,2,opt,name=frame_id,json=frameId,proto3" json:"frame_id,omitempty"`
+	PreviousHash []byte                 `protobuf:"bytes,3,opt,name=previous_hash,json=previousHash,proto3" json:"previous_hash,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	FrameType uint32 `protobuf:"varint,4,opt,name=frame_type,json=frameType,proto3" json:"frame_type,omitempty"`
+	// Deprecated: Marked as deprecated in multiplayer.proto.
+	Payload []byte `protobuf:"bytes,5,opt,name=payload,proto3" json:"payload,omitempty"`
+	Hash    []byte `protobuf:"bytes,6,opt,name=hash,proto3" json:"hash,omitempty"`
+	// Types that are valid to be assigned to Body:
+	//
+	//	*AuthorityFrameMessage_OperationBegin
+	//	*AuthorityFrameMessage_Resolution
+	//	*AuthorityFrameMessage_OperationEnd
+	//	*AuthorityFrameMessage_TurnPhase
+	//	*AuthorityFrameMessage_SeatChanged
+	//	*AuthorityFrameMessage_MatchEnded
+	//	*AuthorityFrameMessage_OperationFailed
+	Body          isAuthorityFrameMessage_Body `protobuf_oneof:"body"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3827,6 +5205,7 @@ func (x *AuthorityFrameMessage) GetPreviousHash() []byte {
 	return nil
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *AuthorityFrameMessage) GetFrameType() uint32 {
 	if x != nil {
 		return x.FrameType
@@ -3834,6 +5213,7 @@ func (x *AuthorityFrameMessage) GetFrameType() uint32 {
 	return 0
 }
 
+// Deprecated: Marked as deprecated in multiplayer.proto.
 func (x *AuthorityFrameMessage) GetPayload() []byte {
 	if x != nil {
 		return x.Payload
@@ -3848,6 +5228,123 @@ func (x *AuthorityFrameMessage) GetHash() []byte {
 	return nil
 }
 
+func (x *AuthorityFrameMessage) GetBody() isAuthorityFrameMessage_Body {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetOperationBegin() *OperationBegin {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_OperationBegin); ok {
+			return x.OperationBegin
+		}
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetResolution() *Resolution {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_Resolution); ok {
+			return x.Resolution
+		}
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetOperationEnd() *OperationEnd {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_OperationEnd); ok {
+			return x.OperationEnd
+		}
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetTurnPhase() *AuthorityTurnPhase {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_TurnPhase); ok {
+			return x.TurnPhase
+		}
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetSeatChanged() *SeatControlChanged {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_SeatChanged); ok {
+			return x.SeatChanged
+		}
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetMatchEnded() *AuthorityMatchEnded {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_MatchEnded); ok {
+			return x.MatchEnded
+		}
+	}
+	return nil
+}
+
+func (x *AuthorityFrameMessage) GetOperationFailed() *OperationFailed {
+	if x != nil {
+		if x, ok := x.Body.(*AuthorityFrameMessage_OperationFailed); ok {
+			return x.OperationFailed
+		}
+	}
+	return nil
+}
+
+type isAuthorityFrameMessage_Body interface {
+	isAuthorityFrameMessage_Body()
+}
+
+type AuthorityFrameMessage_OperationBegin struct {
+	OperationBegin *OperationBegin `protobuf:"bytes,101,opt,name=operation_begin,json=operationBegin,proto3,oneof"`
+}
+
+type AuthorityFrameMessage_Resolution struct {
+	Resolution *Resolution `protobuf:"bytes,102,opt,name=resolution,proto3,oneof"`
+}
+
+type AuthorityFrameMessage_OperationEnd struct {
+	OperationEnd *OperationEnd `protobuf:"bytes,103,opt,name=operation_end,json=operationEnd,proto3,oneof"`
+}
+
+type AuthorityFrameMessage_TurnPhase struct {
+	TurnPhase *AuthorityTurnPhase `protobuf:"bytes,104,opt,name=turn_phase,json=turnPhase,proto3,oneof"`
+}
+
+type AuthorityFrameMessage_SeatChanged struct {
+	SeatChanged *SeatControlChanged `protobuf:"bytes,105,opt,name=seat_changed,json=seatChanged,proto3,oneof"`
+}
+
+type AuthorityFrameMessage_MatchEnded struct {
+	MatchEnded *AuthorityMatchEnded `protobuf:"bytes,106,opt,name=match_ended,json=matchEnded,proto3,oneof"`
+}
+
+type AuthorityFrameMessage_OperationFailed struct {
+	OperationFailed *OperationFailed `protobuf:"bytes,107,opt,name=operation_failed,json=operationFailed,proto3,oneof"`
+}
+
+func (*AuthorityFrameMessage_OperationBegin) isAuthorityFrameMessage_Body() {}
+
+func (*AuthorityFrameMessage_Resolution) isAuthorityFrameMessage_Body() {}
+
+func (*AuthorityFrameMessage_OperationEnd) isAuthorityFrameMessage_Body() {}
+
+func (*AuthorityFrameMessage_TurnPhase) isAuthorityFrameMessage_Body() {}
+
+func (*AuthorityFrameMessage_SeatChanged) isAuthorityFrameMessage_Body() {}
+
+func (*AuthorityFrameMessage_MatchEnded) isAuthorityFrameMessage_Body() {}
+
+func (*AuthorityFrameMessage_OperationFailed) isAuthorityFrameMessage_Body() {}
+
+// Deprecated: Marked as deprecated in multiplayer.proto.
 type AuthorityHashInput struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Domain        string                 `protobuf:"bytes,1,opt,name=domain,proto3" json:"domain,omitempty"`
@@ -4084,18 +5581,3694 @@ func (x *SnapshotChunkMessage) GetData() []byte {
 	return nil
 }
 
+type MoveCommand struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	TargetX            int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY            int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	UnitTargetXs       []int32                `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
+	UnitTargetYs       []int32                `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
+	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *MoveCommand) Reset() {
+	*x = MoveCommand{}
+	mi := &file_multiplayer_proto_msgTypes[46]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MoveCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MoveCommand) ProtoMessage() {}
+
+func (x *MoveCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[46]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MoveCommand.ProtoReflect.Descriptor instead.
+func (*MoveCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{46}
+}
+
+func (x *MoveCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *MoveCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *MoveCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *MoveCommand) GetUnitTargetXs() []int32 {
+	if x != nil {
+		return x.UnitTargetXs
+	}
+	return nil
+}
+
+func (x *MoveCommand) GetUnitTargetYs() []int32 {
+	if x != nil {
+		return x.UnitTargetYs
+	}
+	return nil
+}
+
+func (x *MoveCommand) GetDesiredToggleState() bool {
+	if x != nil {
+		return x.DesiredToggleState
+	}
+	return false
+}
+
+type ActionCommand struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	TargetX            int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY            int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	UnitTargetXs       []int32                `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
+	UnitTargetYs       []int32                `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
+	ActionCategory     int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	TemplateId         string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	PassengerUnitId    int64                  `protobuf:"varint,10,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
+	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ActionCommand) Reset() {
+	*x = ActionCommand{}
+	mi := &file_multiplayer_proto_msgTypes[47]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ActionCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ActionCommand) ProtoMessage() {}
+
+func (x *ActionCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[47]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ActionCommand.ProtoReflect.Descriptor instead.
+func (*ActionCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *ActionCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *ActionCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ActionCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *ActionCommand) GetUnitTargetXs() []int32 {
+	if x != nil {
+		return x.UnitTargetXs
+	}
+	return nil
+}
+
+func (x *ActionCommand) GetUnitTargetYs() []int32 {
+	if x != nil {
+		return x.UnitTargetYs
+	}
+	return nil
+}
+
+func (x *ActionCommand) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *ActionCommand) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *ActionCommand) GetPassengerUnitId() int64 {
+	if x != nil {
+		return x.PassengerUnitId
+	}
+	return 0
+}
+
+func (x *ActionCommand) GetDesiredToggleState() bool {
+	if x != nil {
+		return x.DesiredToggleState
+	}
+	return false
+}
+
+type EquipmentActionCommand struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds        []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	TargetX        int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY        int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	ActionId       string                 `protobuf:"bytes,8,opt,name=action_id,json=actionId,proto3" json:"action_id,omitempty"`
+	TemplateId     string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *EquipmentActionCommand) Reset() {
+	*x = EquipmentActionCommand{}
+	mi := &file_multiplayer_proto_msgTypes[48]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EquipmentActionCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EquipmentActionCommand) ProtoMessage() {}
+
+func (x *EquipmentActionCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[48]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EquipmentActionCommand.ProtoReflect.Descriptor instead.
+func (*EquipmentActionCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *EquipmentActionCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *EquipmentActionCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *EquipmentActionCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *EquipmentActionCommand) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *EquipmentActionCommand) GetActionId() string {
+	if x != nil {
+		return x.ActionId
+	}
+	return ""
+}
+
+func (x *EquipmentActionCommand) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type EquipmentMoveActionCommand struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds        []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	TargetX        int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY        int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	ActionId       string                 `protobuf:"bytes,8,opt,name=action_id,json=actionId,proto3" json:"action_id,omitempty"`
+	TemplateId     string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *EquipmentMoveActionCommand) Reset() {
+	*x = EquipmentMoveActionCommand{}
+	mi := &file_multiplayer_proto_msgTypes[49]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EquipmentMoveActionCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EquipmentMoveActionCommand) ProtoMessage() {}
+
+func (x *EquipmentMoveActionCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[49]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EquipmentMoveActionCommand.ProtoReflect.Descriptor instead.
+func (*EquipmentMoveActionCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{49}
+}
+
+func (x *EquipmentMoveActionCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *EquipmentMoveActionCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *EquipmentMoveActionCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *EquipmentMoveActionCommand) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *EquipmentMoveActionCommand) GetActionId() string {
+	if x != nil {
+		return x.ActionId
+	}
+	return ""
+}
+
+func (x *EquipmentMoveActionCommand) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type BuildWithMoveCommand struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds        []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	TargetX        int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY        int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	TemplateId     string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *BuildWithMoveCommand) Reset() {
+	*x = BuildWithMoveCommand{}
+	mi := &file_multiplayer_proto_msgTypes[50]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BuildWithMoveCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BuildWithMoveCommand) ProtoMessage() {}
+
+func (x *BuildWithMoveCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[50]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BuildWithMoveCommand.ProtoReflect.Descriptor instead.
+func (*BuildWithMoveCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{50}
+}
+
+func (x *BuildWithMoveCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *BuildWithMoveCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *BuildWithMoveCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *BuildWithMoveCommand) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *BuildWithMoveCommand) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type SkillCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TargetX       int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY       int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SkillCommand) Reset() {
+	*x = SkillCommand{}
+	mi := &file_multiplayer_proto_msgTypes[51]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SkillCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SkillCommand) ProtoMessage() {}
+
+func (x *SkillCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[51]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SkillCommand.ProtoReflect.Descriptor instead.
+func (*SkillCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{51}
+}
+
+func (x *SkillCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *SkillCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+type UndoMoveCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UndoMoveCommand) Reset() {
+	*x = UndoMoveCommand{}
+	mi := &file_multiplayer_proto_msgTypes[52]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UndoMoveCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UndoMoveCommand) ProtoMessage() {}
+
+func (x *UndoMoveCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[52]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UndoMoveCommand.ProtoReflect.Descriptor instead.
+func (*UndoMoveCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{52}
+}
+
+type EndTurnCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EndTurnCommand) Reset() {
+	*x = EndTurnCommand{}
+	mi := &file_multiplayer_proto_msgTypes[53]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EndTurnCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EndTurnCommand) ProtoMessage() {}
+
+func (x *EndTurnCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[53]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EndTurnCommand.ProtoReflect.Descriptor instead.
+func (*EndTurnCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{53}
+}
+
+type AutoGuideStartCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds       []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AutoGuideStartCommand) Reset() {
+	*x = AutoGuideStartCommand{}
+	mi := &file_multiplayer_proto_msgTypes[54]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AutoGuideStartCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AutoGuideStartCommand) ProtoMessage() {}
+
+func (x *AutoGuideStartCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[54]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AutoGuideStartCommand.ProtoReflect.Descriptor instead.
+func (*AutoGuideStartCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{54}
+}
+
+func (x *AutoGuideStartCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+type DebugAddResourcesCommand struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	DebugPlayerIndex int32                  `protobuf:"varint,12,opt,name=debug_player_index,json=debugPlayerIndex,proto3" json:"debug_player_index,omitempty"`
+	DebugMetalDelta  int32                  `protobuf:"zigzag32,13,opt,name=debug_metal_delta,json=debugMetalDelta,proto3" json:"debug_metal_delta,omitempty"`
+	DebugPowerDelta  int32                  `protobuf:"zigzag32,14,opt,name=debug_power_delta,json=debugPowerDelta,proto3" json:"debug_power_delta,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *DebugAddResourcesCommand) Reset() {
+	*x = DebugAddResourcesCommand{}
+	mi := &file_multiplayer_proto_msgTypes[55]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DebugAddResourcesCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DebugAddResourcesCommand) ProtoMessage() {}
+
+func (x *DebugAddResourcesCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[55]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DebugAddResourcesCommand.ProtoReflect.Descriptor instead.
+func (*DebugAddResourcesCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{55}
+}
+
+func (x *DebugAddResourcesCommand) GetDebugPlayerIndex() int32 {
+	if x != nil {
+		return x.DebugPlayerIndex
+	}
+	return 0
+}
+
+func (x *DebugAddResourcesCommand) GetDebugMetalDelta() int32 {
+	if x != nil {
+		return x.DebugMetalDelta
+	}
+	return 0
+}
+
+func (x *DebugAddResourcesCommand) GetDebugPowerDelta() int32 {
+	if x != nil {
+		return x.DebugPowerDelta
+	}
+	return 0
+}
+
+type DebugFillSkillCommand struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	DebugPlayerIndex int32                  `protobuf:"varint,12,opt,name=debug_player_index,json=debugPlayerIndex,proto3" json:"debug_player_index,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *DebugFillSkillCommand) Reset() {
+	*x = DebugFillSkillCommand{}
+	mi := &file_multiplayer_proto_msgTypes[56]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DebugFillSkillCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DebugFillSkillCommand) ProtoMessage() {}
+
+func (x *DebugFillSkillCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[56]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DebugFillSkillCommand.ProtoReflect.Descriptor instead.
+func (*DebugFillSkillCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{56}
+}
+
+func (x *DebugFillSkillCommand) GetDebugPlayerIndex() int32 {
+	if x != nil {
+		return x.DebugPlayerIndex
+	}
+	return 0
+}
+
+type AiUnitActionCommand struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	TargetX            int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY            int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	UnitTargetXs       []int32                `protobuf:"zigzag32,5,rep,packed,name=unit_target_xs,json=unitTargetXs,proto3" json:"unit_target_xs,omitempty"`
+	UnitTargetYs       []int32                `protobuf:"zigzag32,6,rep,packed,name=unit_target_ys,json=unitTargetYs,proto3" json:"unit_target_ys,omitempty"`
+	ActionCategory     int32                  `protobuf:"varint,7,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	TemplateId         string                 `protobuf:"bytes,9,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	PassengerUnitId    int64                  `protobuf:"varint,10,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
+	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	AiActionType       int32                  `protobuf:"varint,15,opt,name=ai_action_type,json=aiActionType,proto3" json:"ai_action_type,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *AiUnitActionCommand) Reset() {
+	*x = AiUnitActionCommand{}
+	mi := &file_multiplayer_proto_msgTypes[57]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AiUnitActionCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AiUnitActionCommand) ProtoMessage() {}
+
+func (x *AiUnitActionCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[57]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AiUnitActionCommand.ProtoReflect.Descriptor instead.
+func (*AiUnitActionCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{57}
+}
+
+func (x *AiUnitActionCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *AiUnitActionCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *AiUnitActionCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *AiUnitActionCommand) GetUnitTargetXs() []int32 {
+	if x != nil {
+		return x.UnitTargetXs
+	}
+	return nil
+}
+
+func (x *AiUnitActionCommand) GetUnitTargetYs() []int32 {
+	if x != nil {
+		return x.UnitTargetYs
+	}
+	return nil
+}
+
+func (x *AiUnitActionCommand) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *AiUnitActionCommand) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *AiUnitActionCommand) GetPassengerUnitId() int64 {
+	if x != nil {
+		return x.PassengerUnitId
+	}
+	return 0
+}
+
+func (x *AiUnitActionCommand) GetDesiredToggleState() bool {
+	if x != nil {
+		return x.DesiredToggleState
+	}
+	return false
+}
+
+func (x *AiUnitActionCommand) GetAiActionType() int32 {
+	if x != nil {
+		return x.AiActionType
+	}
+	return 0
+}
+
+type AiSkillCommand struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	TargetX            int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY            int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *AiSkillCommand) Reset() {
+	*x = AiSkillCommand{}
+	mi := &file_multiplayer_proto_msgTypes[58]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AiSkillCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AiSkillCommand) ProtoMessage() {}
+
+func (x *AiSkillCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[58]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AiSkillCommand.ProtoReflect.Descriptor instead.
+func (*AiSkillCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{58}
+}
+
+func (x *AiSkillCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *AiSkillCommand) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *AiSkillCommand) GetDesiredToggleState() bool {
+	if x != nil {
+		return x.DesiredToggleState
+	}
+	return false
+}
+
+type TurnAdvanceCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TurnAdvanceCommand) Reset() {
+	*x = TurnAdvanceCommand{}
+	mi := &file_multiplayer_proto_msgTypes[59]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TurnAdvanceCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TurnAdvanceCommand) ProtoMessage() {}
+
+func (x *TurnAdvanceCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[59]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TurnAdvanceCommand.ProtoReflect.Descriptor instead.
+func (*TurnAdvanceCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{59}
+}
+
+type SurrenderCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TargetX       int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SurrenderCommand) Reset() {
+	*x = SurrenderCommand{}
+	mi := &file_multiplayer_proto_msgTypes[60]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SurrenderCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SurrenderCommand) ProtoMessage() {}
+
+func (x *SurrenderCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[60]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SurrenderCommand.ProtoReflect.Descriptor instead.
+func (*SurrenderCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{60}
+}
+
+func (x *SurrenderCommand) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+type ToggleStandbyCommand struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ToggleStandbyCommand) Reset() {
+	*x = ToggleStandbyCommand{}
+	mi := &file_multiplayer_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ToggleStandbyCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ToggleStandbyCommand) ProtoMessage() {}
+
+func (x *ToggleStandbyCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ToggleStandbyCommand.ProtoReflect.Descriptor instead.
+func (*ToggleStandbyCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{61}
+}
+
+func (x *ToggleStandbyCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *ToggleStandbyCommand) GetDesiredToggleState() bool {
+	if x != nil {
+		return x.DesiredToggleState
+	}
+	return false
+}
+
+type ToggleSleepCommand struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds            []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	DesiredToggleState bool                   `protobuf:"varint,11,opt,name=desired_toggle_state,json=desiredToggleState,proto3" json:"desired_toggle_state,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ToggleSleepCommand) Reset() {
+	*x = ToggleSleepCommand{}
+	mi := &file_multiplayer_proto_msgTypes[62]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ToggleSleepCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ToggleSleepCommand) ProtoMessage() {}
+
+func (x *ToggleSleepCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[62]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ToggleSleepCommand.ProtoReflect.Descriptor instead.
+func (*ToggleSleepCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{62}
+}
+
+func (x *ToggleSleepCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *ToggleSleepCommand) GetDesiredToggleState() bool {
+	if x != nil {
+		return x.DesiredToggleState
+	}
+	return false
+}
+
+type StayCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds       []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StayCommand) Reset() {
+	*x = StayCommand{}
+	mi := &file_multiplayer_proto_msgTypes[63]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StayCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StayCommand) ProtoMessage() {}
+
+func (x *StayCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[63]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StayCommand.ProtoReflect.Descriptor instead.
+func (*StayCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{63}
+}
+
+func (x *StayCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+type SelfDestructCommand struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds       []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SelfDestructCommand) Reset() {
+	*x = SelfDestructCommand{}
+	mi := &file_multiplayer_proto_msgTypes[64]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SelfDestructCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelfDestructCommand) ProtoMessage() {}
+
+func (x *SelfDestructCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[64]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelfDestructCommand.ProtoReflect.Descriptor instead.
+func (*SelfDestructCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{64}
+}
+
+func (x *SelfDestructCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+type ResolvedUnitActionsCommand struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	UnitIds         []int64                `protobuf:"varint,2,rep,packed,name=unit_ids,json=unitIds,proto3" json:"unit_ids,omitempty"`
+	ResolvedActions []*ResolvedUnitAction  `protobuf:"bytes,16,rep,name=resolved_actions,json=resolvedActions,proto3" json:"resolved_actions,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ResolvedUnitActionsCommand) Reset() {
+	*x = ResolvedUnitActionsCommand{}
+	mi := &file_multiplayer_proto_msgTypes[65]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolvedUnitActionsCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolvedUnitActionsCommand) ProtoMessage() {}
+
+func (x *ResolvedUnitActionsCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[65]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolvedUnitActionsCommand.ProtoReflect.Descriptor instead.
+func (*ResolvedUnitActionsCommand) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{65}
+}
+
+func (x *ResolvedUnitActionsCommand) GetUnitIds() []int64 {
+	if x != nil {
+		return x.UnitIds
+	}
+	return nil
+}
+
+func (x *ResolvedUnitActionsCommand) GetResolvedActions() []*ResolvedUnitAction {
+	if x != nil {
+		return x.ResolvedActions
+	}
+	return nil
+}
+
+type RandomRecordList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Records       []*RandomRecordMessage `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RandomRecordList) Reset() {
+	*x = RandomRecordList{}
+	mi := &file_multiplayer_proto_msgTypes[66]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RandomRecordList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RandomRecordList) ProtoMessage() {}
+
+func (x *RandomRecordList) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[66]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RandomRecordList.ProtoReflect.Descriptor instead.
+func (*RandomRecordList) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{66}
+}
+
+func (x *RandomRecordList) GetRecords() []*RandomRecordMessage {
+	if x != nil {
+		return x.Records
+	}
+	return nil
+}
+
+type UnitRandomResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UnitId        int64                  `protobuf:"varint,1,opt,name=unit_id,json=unitId,proto3" json:"unit_id,omitempty"`
+	Values        *RandomRecordList      `protobuf:"bytes,2,opt,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UnitRandomResult) Reset() {
+	*x = UnitRandomResult{}
+	mi := &file_multiplayer_proto_msgTypes[67]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnitRandomResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnitRandomResult) ProtoMessage() {}
+
+func (x *UnitRandomResult) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[67]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnitRandomResult.ProtoReflect.Descriptor instead.
+func (*UnitRandomResult) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{67}
+}
+
+func (x *UnitRandomResult) GetUnitId() int64 {
+	if x != nil {
+		return x.UnitId
+	}
+	return 0
+}
+
+func (x *UnitRandomResult) GetValues() *RandomRecordList {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type TileRandomResult struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	X             int32                  `protobuf:"zigzag32,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y             int32                  `protobuf:"zigzag32,2,opt,name=y,proto3" json:"y,omitempty"`
+	Values        *RandomRecordList      `protobuf:"bytes,3,opt,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TileRandomResult) Reset() {
+	*x = TileRandomResult{}
+	mi := &file_multiplayer_proto_msgTypes[68]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TileRandomResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TileRandomResult) ProtoMessage() {}
+
+func (x *TileRandomResult) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[68]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TileRandomResult.ProtoReflect.Descriptor instead.
+func (*TileRandomResult) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{68}
+}
+
+func (x *TileRandomResult) GetX() int32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *TileRandomResult) GetY() int32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+func (x *TileRandomResult) GetValues() *RandomRecordList {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type RandomResult struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	DamageRoll         *RandomRecordMessage   `protobuf:"bytes,1,opt,name=damage_roll,json=damageRoll,proto3" json:"damage_roll,omitempty"`
+	DamageVariation    *RandomRecordMessage   `protobuf:"bytes,2,opt,name=damage_variation,json=damageVariation,proto3" json:"damage_variation,omitempty"`
+	DeathWreckScale    *RandomRecordMessage   `protobuf:"bytes,3,opt,name=death_wreck_scale,json=deathWreckScale,proto3" json:"death_wreck_scale,omitempty"`
+	Wrecks             []*TileRandomResult    `protobuf:"bytes,4,rep,name=wrecks,proto3" json:"wrecks,omitempty"`
+	CommanderPositions []*UnitRandomResult    `protobuf:"bytes,5,rep,name=commander_positions,json=commanderPositions,proto3" json:"commander_positions,omitempty"`
+	ExperienceShares   []*UnitRandomResult    `protobuf:"bytes,6,rep,name=experience_shares,json=experienceShares,proto3" json:"experience_shares,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *RandomResult) Reset() {
+	*x = RandomResult{}
+	mi := &file_multiplayer_proto_msgTypes[69]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RandomResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RandomResult) ProtoMessage() {}
+
+func (x *RandomResult) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[69]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RandomResult.ProtoReflect.Descriptor instead.
+func (*RandomResult) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{69}
+}
+
+func (x *RandomResult) GetDamageRoll() *RandomRecordMessage {
+	if x != nil {
+		return x.DamageRoll
+	}
+	return nil
+}
+
+func (x *RandomResult) GetDamageVariation() *RandomRecordMessage {
+	if x != nil {
+		return x.DamageVariation
+	}
+	return nil
+}
+
+func (x *RandomResult) GetDeathWreckScale() *RandomRecordMessage {
+	if x != nil {
+		return x.DeathWreckScale
+	}
+	return nil
+}
+
+func (x *RandomResult) GetWrecks() []*TileRandomResult {
+	if x != nil {
+		return x.Wrecks
+	}
+	return nil
+}
+
+func (x *RandomResult) GetCommanderPositions() []*UnitRandomResult {
+	if x != nil {
+		return x.CommanderPositions
+	}
+	return nil
+}
+
+func (x *RandomResult) GetExperienceShares() []*UnitRandomResult {
+	if x != nil {
+		return x.ExperienceShares
+	}
+	return nil
+}
+
+type SettlementEvent struct {
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	SourceUnitId int64                  `protobuf:"varint,1,opt,name=source_unit_id,json=sourceUnitId,proto3" json:"source_unit_id,omitempty"`
+	TargetUnitId int64                  `protobuf:"varint,2,opt,name=target_unit_id,json=targetUnitId,proto3" json:"target_unit_id,omitempty"`
+	RandomResult *RandomResult          `protobuf:"bytes,3,opt,name=random_result,json=randomResult,proto3" json:"random_result,omitempty"`
+	Children     []*SettlementEvent     `protobuf:"bytes,4,rep,name=children,proto3" json:"children,omitempty"`
+	PlayerIndex  int32                  `protobuf:"varint,5,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	// Types that are valid to be assigned to Body:
+	//
+	//	*SettlementEvent_AttackStarted
+	//	*SettlementEvent_AttackCell
+	//	*SettlementEvent_AttackFinished
+	//	*SettlementEvent_Damage
+	//	*SettlementEvent_DeathStarted
+	//	*SettlementEvent_DeathCommitted
+	//	*SettlementEvent_PlayerDefeated
+	//	*SettlementEvent_CleanupCompleted
+	//	*SettlementEvent_Effect
+	//	*SettlementEvent_Spawn
+	//	*SettlementEvent_Heal
+	//	*SettlementEvent_Resource
+	//	*SettlementEvent_CommanderPosition
+	//	*SettlementEvent_ForcedAttack
+	//	*SettlementEvent_Pulse
+	//	*SettlementEvent_Wreck
+	//	*SettlementEvent_Shield
+	//	*SettlementEvent_EffectMutation
+	//	*SettlementEvent_Experience
+	//	*SettlementEvent_SkillFinished
+	Body          isSettlementEvent_Body `protobuf_oneof:"body"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SettlementEvent) Reset() {
+	*x = SettlementEvent{}
+	mi := &file_multiplayer_proto_msgTypes[70]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SettlementEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SettlementEvent) ProtoMessage() {}
+
+func (x *SettlementEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[70]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SettlementEvent.ProtoReflect.Descriptor instead.
+func (*SettlementEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{70}
+}
+
+func (x *SettlementEvent) GetSourceUnitId() int64 {
+	if x != nil {
+		return x.SourceUnitId
+	}
+	return 0
+}
+
+func (x *SettlementEvent) GetTargetUnitId() int64 {
+	if x != nil {
+		return x.TargetUnitId
+	}
+	return 0
+}
+
+func (x *SettlementEvent) GetRandomResult() *RandomResult {
+	if x != nil {
+		return x.RandomResult
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetChildren() []*SettlementEvent {
+	if x != nil {
+		return x.Children
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+func (x *SettlementEvent) GetBody() isSettlementEvent_Body {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetAttackStarted() *AttackStartedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_AttackStarted); ok {
+			return x.AttackStarted
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetAttackCell() *AttackCellEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_AttackCell); ok {
+			return x.AttackCell
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetAttackFinished() *AttackFinishedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_AttackFinished); ok {
+			return x.AttackFinished
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetDamage() *DamageEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Damage); ok {
+			return x.Damage
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetDeathStarted() *DeathStartedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_DeathStarted); ok {
+			return x.DeathStarted
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetDeathCommitted() *DeathCommittedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_DeathCommitted); ok {
+			return x.DeathCommitted
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetPlayerDefeated() *PlayerDefeatedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_PlayerDefeated); ok {
+			return x.PlayerDefeated
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetCleanupCompleted() *CleanupCompletedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_CleanupCompleted); ok {
+			return x.CleanupCompleted
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetEffect() *EffectEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Effect); ok {
+			return x.Effect
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetSpawn() *SpawnEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Spawn); ok {
+			return x.Spawn
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetHeal() *HealEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Heal); ok {
+			return x.Heal
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetResource() *ResourceEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Resource); ok {
+			return x.Resource
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetCommanderPosition() *CommanderPositionEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_CommanderPosition); ok {
+			return x.CommanderPosition
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetForcedAttack() *ForcedAttackEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_ForcedAttack); ok {
+			return x.ForcedAttack
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetPulse() *PulseEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Pulse); ok {
+			return x.Pulse
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetWreck() *WreckEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Wreck); ok {
+			return x.Wreck
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetShield() *ShieldEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Shield); ok {
+			return x.Shield
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetEffectMutation() *EffectMutationEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_EffectMutation); ok {
+			return x.EffectMutation
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetExperience() *ExperienceEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_Experience); ok {
+			return x.Experience
+		}
+	}
+	return nil
+}
+
+func (x *SettlementEvent) GetSkillFinished() *SkillFinishedEvent {
+	if x != nil {
+		if x, ok := x.Body.(*SettlementEvent_SkillFinished); ok {
+			return x.SkillFinished
+		}
+	}
+	return nil
+}
+
+type isSettlementEvent_Body interface {
+	isSettlementEvent_Body()
+}
+
+type SettlementEvent_AttackStarted struct {
+	AttackStarted *AttackStartedEvent `protobuf:"bytes,101,opt,name=attack_started,json=attackStarted,proto3,oneof"`
+}
+
+type SettlementEvent_AttackCell struct {
+	AttackCell *AttackCellEvent `protobuf:"bytes,102,opt,name=attack_cell,json=attackCell,proto3,oneof"`
+}
+
+type SettlementEvent_AttackFinished struct {
+	AttackFinished *AttackFinishedEvent `protobuf:"bytes,103,opt,name=attack_finished,json=attackFinished,proto3,oneof"`
+}
+
+type SettlementEvent_Damage struct {
+	Damage *DamageEvent `protobuf:"bytes,104,opt,name=damage,proto3,oneof"`
+}
+
+type SettlementEvent_DeathStarted struct {
+	DeathStarted *DeathStartedEvent `protobuf:"bytes,105,opt,name=death_started,json=deathStarted,proto3,oneof"`
+}
+
+type SettlementEvent_DeathCommitted struct {
+	DeathCommitted *DeathCommittedEvent `protobuf:"bytes,106,opt,name=death_committed,json=deathCommitted,proto3,oneof"`
+}
+
+type SettlementEvent_PlayerDefeated struct {
+	PlayerDefeated *PlayerDefeatedEvent `protobuf:"bytes,107,opt,name=player_defeated,json=playerDefeated,proto3,oneof"`
+}
+
+type SettlementEvent_CleanupCompleted struct {
+	CleanupCompleted *CleanupCompletedEvent `protobuf:"bytes,108,opt,name=cleanup_completed,json=cleanupCompleted,proto3,oneof"`
+}
+
+type SettlementEvent_Effect struct {
+	Effect *EffectEvent `protobuf:"bytes,109,opt,name=effect,proto3,oneof"`
+}
+
+type SettlementEvent_Spawn struct {
+	Spawn *SpawnEvent `protobuf:"bytes,110,opt,name=spawn,proto3,oneof"`
+}
+
+type SettlementEvent_Heal struct {
+	Heal *HealEvent `protobuf:"bytes,111,opt,name=heal,proto3,oneof"`
+}
+
+type SettlementEvent_Resource struct {
+	Resource *ResourceEvent `protobuf:"bytes,112,opt,name=resource,proto3,oneof"`
+}
+
+type SettlementEvent_CommanderPosition struct {
+	CommanderPosition *CommanderPositionEvent `protobuf:"bytes,113,opt,name=commander_position,json=commanderPosition,proto3,oneof"`
+}
+
+type SettlementEvent_ForcedAttack struct {
+	// 114 is retired: experience sharing is an Effect callback with local results.
+	ForcedAttack *ForcedAttackEvent `protobuf:"bytes,115,opt,name=forced_attack,json=forcedAttack,proto3,oneof"`
+}
+
+type SettlementEvent_Pulse struct {
+	Pulse *PulseEvent `protobuf:"bytes,116,opt,name=pulse,proto3,oneof"`
+}
+
+type SettlementEvent_Wreck struct {
+	Wreck *WreckEvent `protobuf:"bytes,117,opt,name=wreck,proto3,oneof"`
+}
+
+type SettlementEvent_Shield struct {
+	Shield *ShieldEvent `protobuf:"bytes,118,opt,name=shield,proto3,oneof"`
+}
+
+type SettlementEvent_EffectMutation struct {
+	EffectMutation *EffectMutationEvent `protobuf:"bytes,119,opt,name=effect_mutation,json=effectMutation,proto3,oneof"`
+}
+
+type SettlementEvent_Experience struct {
+	Experience *ExperienceEvent `protobuf:"bytes,120,opt,name=experience,proto3,oneof"`
+}
+
+type SettlementEvent_SkillFinished struct {
+	SkillFinished *SkillFinishedEvent `protobuf:"bytes,121,opt,name=skill_finished,json=skillFinished,proto3,oneof"`
+}
+
+func (*SettlementEvent_AttackStarted) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_AttackCell) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_AttackFinished) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Damage) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_DeathStarted) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_DeathCommitted) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_PlayerDefeated) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_CleanupCompleted) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Effect) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Spawn) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Heal) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Resource) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_CommanderPosition) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_ForcedAttack) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Pulse) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Wreck) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Shield) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_EffectMutation) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_Experience) isSettlementEvent_Body() {}
+
+func (*SettlementEvent_SkillFinished) isSettlementEvent_Body() {}
+
+type AttackStartedEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ActionName    string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	TargetX       int32                  `protobuf:"zigzag32,2,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY       int32                  `protobuf:"zigzag32,3,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	GlobalPhase   bool                   `protobuf:"varint,4,opt,name=global_phase,json=globalPhase,proto3" json:"global_phase,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttackStartedEvent) Reset() {
+	*x = AttackStartedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[71]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackStartedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackStartedEvent) ProtoMessage() {}
+
+func (x *AttackStartedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[71]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackStartedEvent.ProtoReflect.Descriptor instead.
+func (*AttackStartedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{71}
+}
+
+func (x *AttackStartedEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *AttackStartedEvent) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *AttackStartedEvent) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *AttackStartedEvent) GetGlobalPhase() bool {
+	if x != nil {
+		return x.GlobalPhase
+	}
+	return false
+}
+
+type AttackCellEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ActionName    string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	TargetX       int32                  `protobuf:"zigzag32,2,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY       int32                  `protobuf:"zigzag32,3,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	OriginX       *int32                 `protobuf:"zigzag32,4,opt,name=origin_x,json=originX,proto3,oneof" json:"origin_x,omitempty"`
+	OriginY       *int32                 `protobuf:"zigzag32,5,opt,name=origin_y,json=originY,proto3,oneof" json:"origin_y,omitempty"`
+	Data          *float32               `protobuf:"fixed32,6,opt,name=data,proto3,oneof" json:"data,omitempty"`
+	ActionType    string                 `protobuf:"bytes,7,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"`
+	SkillIndex    int32                  `protobuf:"varint,8,opt,name=skill_index,json=skillIndex,proto3" json:"skill_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AttackCellEvent) Reset() {
+	*x = AttackCellEvent{}
+	mi := &file_multiplayer_proto_msgTypes[72]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackCellEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackCellEvent) ProtoMessage() {}
+
+func (x *AttackCellEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[72]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackCellEvent.ProtoReflect.Descriptor instead.
+func (*AttackCellEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{72}
+}
+
+func (x *AttackCellEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *AttackCellEvent) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *AttackCellEvent) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *AttackCellEvent) GetOriginX() int32 {
+	if x != nil && x.OriginX != nil {
+		return *x.OriginX
+	}
+	return 0
+}
+
+func (x *AttackCellEvent) GetOriginY() int32 {
+	if x != nil && x.OriginY != nil {
+		return *x.OriginY
+	}
+	return 0
+}
+
+func (x *AttackCellEvent) GetData() float32 {
+	if x != nil && x.Data != nil {
+		return *x.Data
+	}
+	return 0
+}
+
+func (x *AttackCellEvent) GetActionType() string {
+	if x != nil {
+		return x.ActionType
+	}
+	return ""
+}
+
+func (x *AttackCellEvent) GetSkillIndex() int32 {
+	if x != nil {
+		return x.SkillIndex
+	}
+	return 0
+}
+
+type AttackFinishedEvent struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	ActionName       string                 `protobuf:"bytes,1,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	CheckAfterAction bool                   `protobuf:"varint,2,opt,name=check_after_action,json=checkAfterAction,proto3" json:"check_after_action,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *AttackFinishedEvent) Reset() {
+	*x = AttackFinishedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[73]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AttackFinishedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttackFinishedEvent) ProtoMessage() {}
+
+func (x *AttackFinishedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[73]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttackFinishedEvent.ProtoReflect.Descriptor instead.
+func (*AttackFinishedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{73}
+}
+
+func (x *AttackFinishedEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *AttackFinishedEvent) GetCheckAfterAction() bool {
+	if x != nil {
+		return x.CheckAfterAction
+	}
+	return false
+}
+
+type DamageEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Damage        *float32               `protobuf:"fixed32,1,opt,name=damage,proto3,oneof" json:"damage,omitempty"`
+	ActionName    string                 `protobuf:"bytes,2,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	CenterX       *int32                 `protobuf:"zigzag32,3,opt,name=center_x,json=centerX,proto3,oneof" json:"center_x,omitempty"`
+	CenterY       *int32                 `protobuf:"zigzag32,4,opt,name=center_y,json=centerY,proto3,oneof" json:"center_y,omitempty"`
+	UsePredamage  bool                   `protobuf:"varint,5,opt,name=use_predamage,json=usePredamage,proto3" json:"use_predamage,omitempty"`
+	DoRandom      bool                   `protobuf:"varint,6,opt,name=do_random,json=doRandom,proto3" json:"do_random,omitempty"`
+	NoKill        bool                   `protobuf:"varint,7,opt,name=no_kill,json=noKill,proto3" json:"no_kill,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DamageEvent) Reset() {
+	*x = DamageEvent{}
+	mi := &file_multiplayer_proto_msgTypes[74]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DamageEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DamageEvent) ProtoMessage() {}
+
+func (x *DamageEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[74]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DamageEvent.ProtoReflect.Descriptor instead.
+func (*DamageEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{74}
+}
+
+func (x *DamageEvent) GetDamage() float32 {
+	if x != nil && x.Damage != nil {
+		return *x.Damage
+	}
+	return 0
+}
+
+func (x *DamageEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *DamageEvent) GetCenterX() int32 {
+	if x != nil && x.CenterX != nil {
+		return *x.CenterX
+	}
+	return 0
+}
+
+func (x *DamageEvent) GetCenterY() int32 {
+	if x != nil && x.CenterY != nil {
+		return *x.CenterY
+	}
+	return 0
+}
+
+func (x *DamageEvent) GetUsePredamage() bool {
+	if x != nil {
+		return x.UsePredamage
+	}
+	return false
+}
+
+func (x *DamageEvent) GetDoRandom() bool {
+	if x != nil {
+		return x.DoRandom
+	}
+	return false
+}
+
+func (x *DamageEvent) GetNoKill() bool {
+	if x != nil {
+		return x.NoKill
+	}
+	return false
+}
+
+type DeathStartedEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Reason        int32                  `protobuf:"varint,1,opt,name=reason,proto3" json:"reason,omitempty"`
+	Damage        *float32               `protobuf:"fixed32,2,opt,name=damage,proto3,oneof" json:"damage,omitempty"`
+	ActionName    string                 `protobuf:"bytes,3,opt,name=action_name,json=actionName,proto3" json:"action_name,omitempty"`
+	GenerateWreck bool                   `protobuf:"varint,4,opt,name=generate_wreck,json=generateWreck,proto3" json:"generate_wreck,omitempty"`
+	CenterX       *int32                 `protobuf:"zigzag32,5,opt,name=center_x,json=centerX,proto3,oneof" json:"center_x,omitempty"`
+	CenterY       *int32                 `protobuf:"zigzag32,6,opt,name=center_y,json=centerY,proto3,oneof" json:"center_y,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeathStartedEvent) Reset() {
+	*x = DeathStartedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[75]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeathStartedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeathStartedEvent) ProtoMessage() {}
+
+func (x *DeathStartedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[75]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeathStartedEvent.ProtoReflect.Descriptor instead.
+func (*DeathStartedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{75}
+}
+
+func (x *DeathStartedEvent) GetReason() int32 {
+	if x != nil {
+		return x.Reason
+	}
+	return 0
+}
+
+func (x *DeathStartedEvent) GetDamage() float32 {
+	if x != nil && x.Damage != nil {
+		return *x.Damage
+	}
+	return 0
+}
+
+func (x *DeathStartedEvent) GetActionName() string {
+	if x != nil {
+		return x.ActionName
+	}
+	return ""
+}
+
+func (x *DeathStartedEvent) GetGenerateWreck() bool {
+	if x != nil {
+		return x.GenerateWreck
+	}
+	return false
+}
+
+func (x *DeathStartedEvent) GetCenterX() int32 {
+	if x != nil && x.CenterX != nil {
+		return *x.CenterX
+	}
+	return 0
+}
+
+func (x *DeathStartedEvent) GetCenterY() int32 {
+	if x != nil && x.CenterY != nil {
+		return *x.CenterY
+	}
+	return 0
+}
+
+type DeathCommittedEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Reason        int32                  `protobuf:"varint,1,opt,name=reason,proto3" json:"reason,omitempty"`
+	KillerPlayer  int32                  `protobuf:"varint,2,opt,name=killer_player,json=killerPlayer,proto3" json:"killer_player,omitempty"`
+	DescendOnly   bool                   `protobuf:"varint,3,opt,name=descend_only,json=descendOnly,proto3" json:"descend_only,omitempty"`
+	CallbacksOnly bool                   `protobuf:"varint,4,opt,name=callbacks_only,json=callbacksOnly,proto3" json:"callbacks_only,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeathCommittedEvent) Reset() {
+	*x = DeathCommittedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[76]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeathCommittedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeathCommittedEvent) ProtoMessage() {}
+
+func (x *DeathCommittedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[76]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeathCommittedEvent.ProtoReflect.Descriptor instead.
+func (*DeathCommittedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{76}
+}
+
+func (x *DeathCommittedEvent) GetReason() int32 {
+	if x != nil {
+		return x.Reason
+	}
+	return 0
+}
+
+func (x *DeathCommittedEvent) GetKillerPlayer() int32 {
+	if x != nil {
+		return x.KillerPlayer
+	}
+	return 0
+}
+
+func (x *DeathCommittedEvent) GetDescendOnly() bool {
+	if x != nil {
+		return x.DescendOnly
+	}
+	return false
+}
+
+func (x *DeathCommittedEvent) GetCallbacksOnly() bool {
+	if x != nil {
+		return x.CallbacksOnly
+	}
+	return false
+}
+
+type PlayerDefeatedEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerIndex   int32                  `protobuf:"varint,1,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PlayerDefeatedEvent) Reset() {
+	*x = PlayerDefeatedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[77]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PlayerDefeatedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlayerDefeatedEvent) ProtoMessage() {}
+
+func (x *PlayerDefeatedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[77]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlayerDefeatedEvent.ProtoReflect.Descriptor instead.
+func (*PlayerDefeatedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{77}
+}
+
+func (x *PlayerDefeatedEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+type CleanupCompletedEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerIndex   int32                  `protobuf:"varint,1,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CleanupCompletedEvent) Reset() {
+	*x = CleanupCompletedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[78]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CleanupCompletedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CleanupCompletedEvent) ProtoMessage() {}
+
+func (x *CleanupCompletedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[78]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CleanupCompletedEvent.ProtoReflect.Descriptor instead.
+func (*CleanupCompletedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{78}
+}
+
+func (x *CleanupCompletedEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+type EffectEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EffectName    string                 `protobuf:"bytes,1,opt,name=effect_name,json=effectName,proto3" json:"effect_name,omitempty"`
+	EffectIndex   int32                  `protobuf:"varint,2,opt,name=effect_index,json=effectIndex,proto3" json:"effect_index,omitempty"`
+	Callback      string                 `protobuf:"bytes,3,opt,name=callback,proto3" json:"callback,omitempty"`
+	OtherUnitId   int64                  `protobuf:"varint,4,opt,name=other_unit_id,json=otherUnitId,proto3" json:"other_unit_id,omitempty"`
+	Damage        *float32               `protobuf:"fixed32,5,opt,name=damage,proto3,oneof" json:"damage,omitempty"`
+	Killed        bool                   `protobuf:"varint,6,opt,name=killed,proto3" json:"killed,omitempty"`
+	Reason        int32                  `protobuf:"varint,7,opt,name=reason,proto3" json:"reason,omitempty"`
+	Value         *float32               `protobuf:"fixed32,8,opt,name=value,proto3,oneof" json:"value,omitempty"`
+	Preview       bool                   `protobuf:"varint,9,opt,name=preview,proto3" json:"preview,omitempty"`
+	EffectType    string                 `protobuf:"bytes,10,opt,name=effect_type,json=effectType,proto3" json:"effect_type,omitempty"`
+	X             int32                  `protobuf:"zigzag32,11,opt,name=x,proto3" json:"x,omitempty"`
+	Y             int32                  `protobuf:"zigzag32,12,opt,name=y,proto3" json:"y,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EffectEvent) Reset() {
+	*x = EffectEvent{}
+	mi := &file_multiplayer_proto_msgTypes[79]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EffectEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EffectEvent) ProtoMessage() {}
+
+func (x *EffectEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[79]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EffectEvent.ProtoReflect.Descriptor instead.
+func (*EffectEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{79}
+}
+
+func (x *EffectEvent) GetEffectName() string {
+	if x != nil {
+		return x.EffectName
+	}
+	return ""
+}
+
+func (x *EffectEvent) GetEffectIndex() int32 {
+	if x != nil {
+		return x.EffectIndex
+	}
+	return 0
+}
+
+func (x *EffectEvent) GetCallback() string {
+	if x != nil {
+		return x.Callback
+	}
+	return ""
+}
+
+func (x *EffectEvent) GetOtherUnitId() int64 {
+	if x != nil {
+		return x.OtherUnitId
+	}
+	return 0
+}
+
+func (x *EffectEvent) GetDamage() float32 {
+	if x != nil && x.Damage != nil {
+		return *x.Damage
+	}
+	return 0
+}
+
+func (x *EffectEvent) GetKilled() bool {
+	if x != nil {
+		return x.Killed
+	}
+	return false
+}
+
+func (x *EffectEvent) GetReason() int32 {
+	if x != nil {
+		return x.Reason
+	}
+	return 0
+}
+
+func (x *EffectEvent) GetValue() float32 {
+	if x != nil && x.Value != nil {
+		return *x.Value
+	}
+	return 0
+}
+
+func (x *EffectEvent) GetPreview() bool {
+	if x != nil {
+		return x.Preview
+	}
+	return false
+}
+
+func (x *EffectEvent) GetEffectType() string {
+	if x != nil {
+		return x.EffectType
+	}
+	return ""
+}
+
+func (x *EffectEvent) GetX() int32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *EffectEvent) GetY() int32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+type SpawnEvent struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	TemplateId      string                 `protobuf:"bytes,1,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	X               int32                  `protobuf:"zigzag32,2,opt,name=x,proto3" json:"x,omitempty"`
+	Y               int32                  `protobuf:"zigzag32,3,opt,name=y,proto3" json:"y,omitempty"`
+	PlayerIndex     int32                  `protobuf:"varint,4,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	Building        bool                   `protobuf:"varint,5,opt,name=building,proto3" json:"building,omitempty"`
+	Spawned         bool                   `protobuf:"varint,6,opt,name=spawned,proto3" json:"spawned,omitempty"`
+	CreateReason    int32                  `protobuf:"varint,7,opt,name=create_reason,json=createReason,proto3" json:"create_reason,omitempty"`
+	TriggerPassives bool                   `protobuf:"varint,8,opt,name=trigger_passives,json=triggerPassives,proto3" json:"trigger_passives,omitempty"`
+	HasPosition     bool                   `protobuf:"varint,9,opt,name=has_position,json=hasPosition,proto3" json:"has_position,omitempty"`
+	Moved           bool                   `protobuf:"varint,10,opt,name=moved,proto3" json:"moved,omitempty"`
+	Actioned        bool                   `protobuf:"varint,11,opt,name=actioned,proto3" json:"actioned,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *SpawnEvent) Reset() {
+	*x = SpawnEvent{}
+	mi := &file_multiplayer_proto_msgTypes[80]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SpawnEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SpawnEvent) ProtoMessage() {}
+
+func (x *SpawnEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[80]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SpawnEvent.ProtoReflect.Descriptor instead.
+func (*SpawnEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{80}
+}
+
+func (x *SpawnEvent) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *SpawnEvent) GetX() int32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *SpawnEvent) GetY() int32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+func (x *SpawnEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+func (x *SpawnEvent) GetBuilding() bool {
+	if x != nil {
+		return x.Building
+	}
+	return false
+}
+
+func (x *SpawnEvent) GetSpawned() bool {
+	if x != nil {
+		return x.Spawned
+	}
+	return false
+}
+
+func (x *SpawnEvent) GetCreateReason() int32 {
+	if x != nil {
+		return x.CreateReason
+	}
+	return 0
+}
+
+func (x *SpawnEvent) GetTriggerPassives() bool {
+	if x != nil {
+		return x.TriggerPassives
+	}
+	return false
+}
+
+func (x *SpawnEvent) GetHasPosition() bool {
+	if x != nil {
+		return x.HasPosition
+	}
+	return false
+}
+
+func (x *SpawnEvent) GetMoved() bool {
+	if x != nil {
+		return x.Moved
+	}
+	return false
+}
+
+func (x *SpawnEvent) GetActioned() bool {
+	if x != nil {
+		return x.Actioned
+	}
+	return false
+}
+
+type HealEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Amount        *float32               `protobuf:"fixed32,1,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HealEvent) Reset() {
+	*x = HealEvent{}
+	mi := &file_multiplayer_proto_msgTypes[81]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HealEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealEvent) ProtoMessage() {}
+
+func (x *HealEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[81]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealEvent.ProtoReflect.Descriptor instead.
+func (*HealEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{81}
+}
+
+func (x *HealEvent) GetAmount() float32 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+type ResourceEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerIndex   int32                  `protobuf:"varint,1,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	Reason        int32                  `protobuf:"varint,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	Metal         int32                  `protobuf:"zigzag32,3,opt,name=metal,proto3" json:"metal,omitempty"`
+	Power         int32                  `protobuf:"zigzag32,4,opt,name=power,proto3" json:"power,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResourceEvent) Reset() {
+	*x = ResourceEvent{}
+	mi := &file_multiplayer_proto_msgTypes[82]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResourceEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResourceEvent) ProtoMessage() {}
+
+func (x *ResourceEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[82]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResourceEvent.ProtoReflect.Descriptor instead.
+func (*ResourceEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{82}
+}
+
+func (x *ResourceEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+func (x *ResourceEvent) GetReason() int32 {
+	if x != nil {
+		return x.Reason
+	}
+	return 0
+}
+
+func (x *ResourceEvent) GetMetal() int32 {
+	if x != nil {
+		return x.Metal
+	}
+	return 0
+}
+
+func (x *ResourceEvent) GetPower() int32 {
+	if x != nil {
+		return x.Power
+	}
+	return 0
+}
+
+type CommanderPositionEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerIndex   int32                  `protobuf:"varint,1,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommanderPositionEvent) Reset() {
+	*x = CommanderPositionEvent{}
+	mi := &file_multiplayer_proto_msgTypes[83]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommanderPositionEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommanderPositionEvent) ProtoMessage() {}
+
+func (x *CommanderPositionEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[83]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommanderPositionEvent.ProtoReflect.Descriptor instead.
+func (*CommanderPositionEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{83}
+}
+
+func (x *CommanderPositionEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+type ForcedAttackEvent struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ActionCategory int32                  `protobuf:"varint,1,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	TargetX        int32                  `protobuf:"zigzag32,2,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY        int32                  `protobuf:"zigzag32,3,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ForcedAttackEvent) Reset() {
+	*x = ForcedAttackEvent{}
+	mi := &file_multiplayer_proto_msgTypes[84]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ForcedAttackEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ForcedAttackEvent) ProtoMessage() {}
+
+func (x *ForcedAttackEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[84]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ForcedAttackEvent.ProtoReflect.Descriptor instead.
+func (*ForcedAttackEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{84}
+}
+
+func (x *ForcedAttackEvent) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *ForcedAttackEvent) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ForcedAttackEvent) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+type PulseEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EffectIndex   int32                  `protobuf:"varint,1,opt,name=effect_index,json=effectIndex,proto3" json:"effect_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PulseEvent) Reset() {
+	*x = PulseEvent{}
+	mi := &file_multiplayer_proto_msgTypes[85]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PulseEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PulseEvent) ProtoMessage() {}
+
+func (x *PulseEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[85]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PulseEvent.ProtoReflect.Descriptor instead.
+func (*PulseEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{85}
+}
+
+func (x *PulseEvent) GetEffectIndex() int32 {
+	if x != nil {
+		return x.EffectIndex
+	}
+	return 0
+}
+
+type WreckEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	X             int32                  `protobuf:"zigzag32,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y             int32                  `protobuf:"zigzag32,2,opt,name=y,proto3" json:"y,omitempty"`
+	Amount        int32                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	UseRandom     bool                   `protobuf:"varint,4,opt,name=use_random,json=useRandom,proto3" json:"use_random,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WreckEvent) Reset() {
+	*x = WreckEvent{}
+	mi := &file_multiplayer_proto_msgTypes[86]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WreckEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WreckEvent) ProtoMessage() {}
+
+func (x *WreckEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[86]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WreckEvent.ProtoReflect.Descriptor instead.
+func (*WreckEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{86}
+}
+
+func (x *WreckEvent) GetX() int32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *WreckEvent) GetY() int32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+func (x *WreckEvent) GetAmount() int32 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *WreckEvent) GetUseRandom() bool {
+	if x != nil {
+		return x.UseRandom
+	}
+	return false
+}
+
+type ShieldEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Damage        int32                  `protobuf:"varint,1,opt,name=damage,proto3" json:"damage,omitempty"`
+	Preview       bool                   `protobuf:"varint,2,opt,name=preview,proto3" json:"preview,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ShieldEvent) Reset() {
+	*x = ShieldEvent{}
+	mi := &file_multiplayer_proto_msgTypes[87]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ShieldEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShieldEvent) ProtoMessage() {}
+
+func (x *ShieldEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[87]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShieldEvent.ProtoReflect.Descriptor instead.
+func (*ShieldEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{87}
+}
+
+func (x *ShieldEvent) GetDamage() int32 {
+	if x != nil {
+		return x.Damage
+	}
+	return 0
+}
+
+func (x *ShieldEvent) GetPreview() bool {
+	if x != nil {
+		return x.Preview
+	}
+	return false
+}
+
+type EffectMutationEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EffectName    string                 `protobuf:"bytes,1,opt,name=effect_name,json=effectName,proto3" json:"effect_name,omitempty"`
+	Layer         int32                  `protobuf:"varint,2,opt,name=layer,proto3" json:"layer,omitempty"`
+	CasterUnitId  int64                  `protobuf:"varint,3,opt,name=caster_unit_id,json=casterUnitId,proto3" json:"caster_unit_id,omitempty"`
+	CasterPlayer  int32                  `protobuf:"varint,4,opt,name=caster_player,json=casterPlayer,proto3" json:"caster_player,omitempty"`
+	Remove        bool                   `protobuf:"varint,5,opt,name=remove,proto3" json:"remove,omitempty"`
+	EffectIndex   int32                  `protobuf:"varint,6,opt,name=effect_index,json=effectIndex,proto3" json:"effect_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EffectMutationEvent) Reset() {
+	*x = EffectMutationEvent{}
+	mi := &file_multiplayer_proto_msgTypes[88]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EffectMutationEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EffectMutationEvent) ProtoMessage() {}
+
+func (x *EffectMutationEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[88]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EffectMutationEvent.ProtoReflect.Descriptor instead.
+func (*EffectMutationEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{88}
+}
+
+func (x *EffectMutationEvent) GetEffectName() string {
+	if x != nil {
+		return x.EffectName
+	}
+	return ""
+}
+
+func (x *EffectMutationEvent) GetLayer() int32 {
+	if x != nil {
+		return x.Layer
+	}
+	return 0
+}
+
+func (x *EffectMutationEvent) GetCasterUnitId() int64 {
+	if x != nil {
+		return x.CasterUnitId
+	}
+	return 0
+}
+
+func (x *EffectMutationEvent) GetCasterPlayer() int32 {
+	if x != nil {
+		return x.CasterPlayer
+	}
+	return 0
+}
+
+func (x *EffectMutationEvent) GetRemove() bool {
+	if x != nil {
+		return x.Remove
+	}
+	return false
+}
+
+func (x *EffectMutationEvent) GetEffectIndex() int32 {
+	if x != nil {
+		return x.EffectIndex
+	}
+	return 0
+}
+
+type ExperienceEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Amount        *float32               `protobuf:"fixed32,1,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	UseFilter     bool                   `protobuf:"varint,2,opt,name=use_filter,json=useFilter,proto3" json:"use_filter,omitempty"`
+	BasePercent   bool                   `protobuf:"varint,3,opt,name=base_percent,json=basePercent,proto3" json:"base_percent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExperienceEvent) Reset() {
+	*x = ExperienceEvent{}
+	mi := &file_multiplayer_proto_msgTypes[89]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExperienceEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExperienceEvent) ProtoMessage() {}
+
+func (x *ExperienceEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[89]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExperienceEvent.ProtoReflect.Descriptor instead.
+func (*ExperienceEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{89}
+}
+
+func (x *ExperienceEvent) GetAmount() float32 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+func (x *ExperienceEvent) GetUseFilter() bool {
+	if x != nil {
+		return x.UseFilter
+	}
+	return false
+}
+
+func (x *ExperienceEvent) GetBasePercent() bool {
+	if x != nil {
+		return x.BasePercent
+	}
+	return false
+}
+
+type SkillFinishedEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerIndex   int32                  `protobuf:"varint,1,opt,name=player_index,json=playerIndex,proto3" json:"player_index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SkillFinishedEvent) Reset() {
+	*x = SkillFinishedEvent{}
+	mi := &file_multiplayer_proto_msgTypes[90]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SkillFinishedEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SkillFinishedEvent) ProtoMessage() {}
+
+func (x *SkillFinishedEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[90]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SkillFinishedEvent.ProtoReflect.Descriptor instead.
+func (*SkillFinishedEvent) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{90}
+}
+
+func (x *SkillFinishedEvent) GetPlayerIndex() int32 {
+	if x != nil {
+		return x.PlayerIndex
+	}
+	return 0
+}
+
+type ResolvedMove struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	X             int32                  `protobuf:"zigzag32,1,opt,name=x,proto3" json:"x,omitempty"`
+	Y             int32                  `protobuf:"zigzag32,2,opt,name=y,proto3" json:"y,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ResolvedMove) Reset() {
+	*x = ResolvedMove{}
+	mi := &file_multiplayer_proto_msgTypes[91]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolvedMove) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolvedMove) ProtoMessage() {}
+
+func (x *ResolvedMove) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[91]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolvedMove.ProtoReflect.Descriptor instead.
+func (*ResolvedMove) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{91}
+}
+
+func (x *ResolvedMove) GetX() int32 {
+	if x != nil {
+		return x.X
+	}
+	return 0
+}
+
+func (x *ResolvedMove) GetY() int32 {
+	if x != nil {
+		return x.Y
+	}
+	return 0
+}
+
+type ResolvedAction struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	MoveX          int32                  `protobuf:"zigzag32,1,opt,name=move_x,json=moveX,proto3" json:"move_x,omitempty"`
+	MoveY          int32                  `protobuf:"zigzag32,2,opt,name=move_y,json=moveY,proto3" json:"move_y,omitempty"`
+	TargetX        int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY        int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory int32                  `protobuf:"varint,5,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ResolvedAction) Reset() {
+	*x = ResolvedAction{}
+	mi := &file_multiplayer_proto_msgTypes[92]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolvedAction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolvedAction) ProtoMessage() {}
+
+func (x *ResolvedAction) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[92]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolvedAction.ProtoReflect.Descriptor instead.
+func (*ResolvedAction) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{92}
+}
+
+func (x *ResolvedAction) GetMoveX() int32 {
+	if x != nil {
+		return x.MoveX
+	}
+	return 0
+}
+
+func (x *ResolvedAction) GetMoveY() int32 {
+	if x != nil {
+		return x.MoveY
+	}
+	return 0
+}
+
+func (x *ResolvedAction) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ResolvedAction) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *ResolvedAction) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+type ResolvedCreate struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	MoveX          int32                  `protobuf:"zigzag32,1,opt,name=move_x,json=moveX,proto3" json:"move_x,omitempty"`
+	MoveY          int32                  `protobuf:"zigzag32,2,opt,name=move_y,json=moveY,proto3" json:"move_y,omitempty"`
+	TargetX        int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY        int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory int32                  `protobuf:"varint,5,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	TemplateId     string                 `protobuf:"bytes,6,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ResolvedCreate) Reset() {
+	*x = ResolvedCreate{}
+	mi := &file_multiplayer_proto_msgTypes[93]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolvedCreate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolvedCreate) ProtoMessage() {}
+
+func (x *ResolvedCreate) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[93]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolvedCreate.ProtoReflect.Descriptor instead.
+func (*ResolvedCreate) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{93}
+}
+
+func (x *ResolvedCreate) GetMoveX() int32 {
+	if x != nil {
+		return x.MoveX
+	}
+	return 0
+}
+
+func (x *ResolvedCreate) GetMoveY() int32 {
+	if x != nil {
+		return x.MoveY
+	}
+	return 0
+}
+
+func (x *ResolvedCreate) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ResolvedCreate) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *ResolvedCreate) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *ResolvedCreate) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type ResolvedUnload struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	MoveX           int32                  `protobuf:"zigzag32,1,opt,name=move_x,json=moveX,proto3" json:"move_x,omitempty"`
+	MoveY           int32                  `protobuf:"zigzag32,2,opt,name=move_y,json=moveY,proto3" json:"move_y,omitempty"`
+	TargetX         int32                  `protobuf:"zigzag32,3,opt,name=target_x,json=targetX,proto3" json:"target_x,omitempty"`
+	TargetY         int32                  `protobuf:"zigzag32,4,opt,name=target_y,json=targetY,proto3" json:"target_y,omitempty"`
+	ActionCategory  int32                  `protobuf:"varint,5,opt,name=action_category,json=actionCategory,proto3" json:"action_category,omitempty"`
+	PassengerUnitId int64                  `protobuf:"varint,6,opt,name=passenger_unit_id,json=passengerUnitId,proto3" json:"passenger_unit_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ResolvedUnload) Reset() {
+	*x = ResolvedUnload{}
+	mi := &file_multiplayer_proto_msgTypes[94]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolvedUnload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolvedUnload) ProtoMessage() {}
+
+func (x *ResolvedUnload) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[94]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResolvedUnload.ProtoReflect.Descriptor instead.
+func (*ResolvedUnload) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{94}
+}
+
+func (x *ResolvedUnload) GetMoveX() int32 {
+	if x != nil {
+		return x.MoveX
+	}
+	return 0
+}
+
+func (x *ResolvedUnload) GetMoveY() int32 {
+	if x != nil {
+		return x.MoveY
+	}
+	return 0
+}
+
+func (x *ResolvedUnload) GetTargetX() int32 {
+	if x != nil {
+		return x.TargetX
+	}
+	return 0
+}
+
+func (x *ResolvedUnload) GetTargetY() int32 {
+	if x != nil {
+		return x.TargetY
+	}
+	return 0
+}
+
+func (x *ResolvedUnload) GetActionCategory() int32 {
+	if x != nil {
+		return x.ActionCategory
+	}
+	return 0
+}
+
+func (x *ResolvedUnload) GetPassengerUnitId() int64 {
+	if x != nil {
+		return x.PassengerUnitId
+	}
+	return 0
+}
+
+type AuthorityTurnPhase struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Phase         int32                  `protobuf:"varint,1,opt,name=phase,proto3" json:"phase,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AuthorityTurnPhase) Reset() {
+	*x = AuthorityTurnPhase{}
+	mi := &file_multiplayer_proto_msgTypes[95]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AuthorityTurnPhase) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthorityTurnPhase) ProtoMessage() {}
+
+func (x *AuthorityTurnPhase) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[95]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthorityTurnPhase.ProtoReflect.Descriptor instead.
+func (*AuthorityTurnPhase) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{95}
+}
+
+func (x *AuthorityTurnPhase) GetPhase() int32 {
+	if x != nil {
+		return x.Phase
+	}
+	return 0
+}
+
+type AuthorityMatchEnded struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LocalVictory  bool                   `protobuf:"varint,1,opt,name=local_victory,json=localVictory,proto3" json:"local_victory,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AuthorityMatchEnded) Reset() {
+	*x = AuthorityMatchEnded{}
+	mi := &file_multiplayer_proto_msgTypes[96]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AuthorityMatchEnded) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthorityMatchEnded) ProtoMessage() {}
+
+func (x *AuthorityMatchEnded) ProtoReflect() protoreflect.Message {
+	mi := &file_multiplayer_proto_msgTypes[96]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthorityMatchEnded.ProtoReflect.Descriptor instead.
+func (*AuthorityMatchEnded) Descriptor() ([]byte, []int) {
+	return file_multiplayer_proto_rawDescGZIP(), []int{96}
+}
+
+func (x *AuthorityMatchEnded) GetLocalVictory() bool {
+	if x != nil {
+		return x.LocalVictory
+	}
+	return false
+}
+
 var File_multiplayer_proto protoreflect.FileDescriptor
 
 const file_multiplayer_proto_rawDesc = "" +
 	"\n" +
-	"\x11multiplayer.proto\x12\x12xingyistarry.mp.v1\"\xa3\x02\n" +
-	"\fWireEnvelope\x12!\n" +
-	"\fmessage_type\x18\x01 \x01(\rR\vmessageType\x12\x18\n" +
-	"\apayload\x18\x02 \x01(\fR\apayload\x12\x1c\n" +
-	"\aroom_id\x18\x03 \x01(\fH\x00R\x06roomId\x88\x01\x01\x12 \n" +
-	"\tclient_id\x18\x04 \x01(\fH\x01R\bclientId\x88\x01\x01\x12-\n" +
-	"\x10target_client_id\x18\x05 \x01(\fH\x02R\x0etargetClientId\x88\x01\x01\x128\n" +
-	"\bdelivery\x18\x06 \x01(\x0e2\x1c.xingyistarry.mp.v1.DeliveryR\bdeliveryB\n" +
+	"\x11multiplayer.proto\x12\x12xingyistarry.mp.v1\"\xb0\"\n" +
+	"\fWireEnvelope\x12%\n" +
+	"\fmessage_type\x18\x01 \x01(\rB\x02\x18\x01R\vmessageType\x12\x1c\n" +
+	"\apayload\x18\x02 \x01(\fB\x02\x18\x01R\apayload\x12\x1c\n" +
+	"\aroom_id\x18\x03 \x01(\fH\x01R\x06roomId\x88\x01\x01\x12 \n" +
+	"\tclient_id\x18\x04 \x01(\fH\x02R\bclientId\x88\x01\x01\x12-\n" +
+	"\x10target_client_id\x18\x05 \x01(\fH\x03R\x0etargetClientId\x88\x01\x01\x128\n" +
+	"\bdelivery\x18\x06 \x01(\x0e2\x1c.xingyistarry.mp.v1.DeliveryR\bdelivery\x121\n" +
+	"\x05hello\x18e \x01(\v2\x19.xingyistarry.mp.v1.HelloH\x00R\x05hello\x127\n" +
+	"\awelcome\x18f \x01(\v2\x1b.xingyistarry.mp.v1.WelcomeH\x00R\awelcome\x129\n" +
+	"\x06reject\x18g \x01(\v2\x1f.xingyistarry.mp.v1.StringValueH\x00R\x06reject\x12>\n" +
+	"\theartbeat\x18h \x01(\v2\x1e.xingyistarry.mp.v1.Int64ValueH\x00R\theartbeat\x129\n" +
+	"\n" +
+	"room_state\x18i \x01(\v2\x18.xingyistarry.mp.v1.RoomH\x00R\troomState\x12?\n" +
+	"\n" +
+	"claim_seat\x18j \x01(\v2\x1e.xingyistarry.mp.v1.Int64ValueH\x00R\tclaimSeat\x12=\n" +
+	"\tset_ready\x18k \x01(\v2\x1e.xingyistarry.mp.v1.Int64ValueH\x00R\bsetReady\x12@\n" +
+	"\vstart_match\x18l \x01(\v2\x1d.xingyistarry.mp.v1.GuidValueH\x00R\n" +
+	"startMatch\x12T\n" +
+	"\x0fcommand_request\x18m \x01(\v2).xingyistarry.mp.v1.CommandRequestMessageH\x00R\x0ecommandRequest\x12W\n" +
+	"\x10command_accepted\x18n \x01(\v2*.xingyistarry.mp.v1.CommandResponseMessageH\x00R\x0fcommandAccepted\x12W\n" +
+	"\x10command_rejected\x18o \x01(\v2*.xingyistarry.mp.v1.CommandResponseMessageH\x00R\x0fcommandRejected\x12T\n" +
+	"\x0fauthority_frame\x18p \x01(\v2).xingyistarry.mp.v1.AuthorityFrameMessageH\x00R\x0eauthorityFrame\x12I\n" +
+	"\x0fhistory_request\x18q \x01(\v2\x1e.xingyistarry.mp.v1.Int64ValueH\x00R\x0ehistoryRequest\x12K\n" +
+	"\x10history_complete\x18r \x01(\v2\x1e.xingyistarry.mp.v1.Int64ValueH\x00R\x0fhistoryComplete\x12K\n" +
+	"\x10snapshot_request\x18s \x01(\v2\x1e.xingyistarry.mp.v1.Int64ValueH\x00R\x0fsnapshotRequest\x12Z\n" +
+	"\x11snapshot_manifest\x18t \x01(\v2+.xingyistarry.mp.v1.SnapshotManifestMessageH\x00R\x10snapshotManifest\x12Q\n" +
+	"\x0esnapshot_chunk\x18u \x01(\v2(.xingyistarry.mp.v1.SnapshotChunkMessageH\x00R\rsnapshotChunk\x12L\n" +
+	"\x11snapshot_complete\x18v \x01(\v2\x1d.xingyistarry.mp.v1.GuidValueH\x00R\x10snapshotComplete\x12K\n" +
+	"\x11catch_up_complete\x18w \x01(\v2\x1d.xingyistarry.mp.v1.GuidValueH\x00R\x0fcatchUpComplete\x12F\n" +
+	"\rsession_ended\x18x \x01(\v2\x1f.xingyistarry.mp.v1.StringValueH\x00R\fsessionEnded\x12H\n" +
+	"\x12lobby_draft_change\x18y \x01(\v2\x18.xingyistarry.mp.v1.RoomH\x00R\x10lobbyDraftChange\x12P\n" +
+	"\x12participant_notice\x18z \x01(\v2\x1f.xingyistarry.mp.v1.StringValueH\x00R\x11participantNotice\x12^\n" +
+	"\x13relay_register_room\x18{ \x01(\v2,.xingyistarry.mp.v1.RelayRegisterRoomRequestH\x00R\x11relayRegisterRoom\x12X\n" +
+	"\x11relay_update_room\x18| \x01(\v2*.xingyistarry.mp.v1.RelayUpdateRoomRequestH\x00R\x0frelayUpdateRoom\x12U\n" +
+	"\x10relay_list_rooms\x18} \x01(\v2).xingyistarry.mp.v1.RelayListRoomsRequestH\x00R\x0erelayListRooms\x12T\n" +
+	"\x0frelay_room_list\x18~ \x01(\v2*.xingyistarry.mp.v1.RelayListRoomsResponseH\x00R\rrelayRoomList\x12R\n" +
+	"\x0frelay_join_room\x18\x7f \x01(\v2(.xingyistarry.mp.v1.RelayJoinRoomRequestH\x00R\rrelayJoinRoom\x12a\n" +
+	"\x16relay_control_response\x18\x80\x01 \x01(\v2(.xingyistarry.mp.v1.RelayControlResponseH\x00R\x14relayControlResponse\x12W\n" +
+	"\x13relay_close_joining\x18\x81\x01 \x01(\v2$.xingyistarry.mp.v1.RelayRoomRequestH\x00R\x11relayCloseJoining\x12Q\n" +
+	"\x10relay_leave_room\x18\x82\x01 \x01(\v2$.xingyistarry.mp.v1.RelayRoomRequestH\x00R\x0erelayLeaveRoom\x12Q\n" +
+	"\x10relay_close_room\x18\x83\x01 \x01(\v2$.xingyistarry.mp.v1.RelayRoomRequestH\x00R\x0erelayCloseRoom\x12R\n" +
+	"\x11relay_peer_joined\x18\x84\x01 \x01(\v2#.xingyistarry.mp.v1.RelayPeerNoticeH\x00R\x0frelayPeerJoined\x12N\n" +
+	"\x0frelay_peer_left\x18\x85\x01 \x01(\v2#.xingyistarry.mp.v1.RelayPeerNoticeH\x00R\rrelayPeerLeft\x12C\n" +
+	"\frelease_seat\x18\x86\x01 \x01(\v2\x1d.xingyistarry.mp.v1.GuidValueH\x00R\vreleaseSeat\x12U\n" +
+	"\x12join_match_request\x18\x87\x01 \x01(\v2$.xingyistarry.mp.v1.JoinMatchRequestH\x00R\x10joinMatchRequest\x12_\n" +
+	"\x13join_match_accepted\x18\x88\x01 \x01(\v2,.xingyistarry.mp.v1.JoinMatchAcceptedMessageH\x00R\x11joinMatchAccepted\x12R\n" +
+	"\x0eresume_session\x18\x89\x01 \x01(\v2(.xingyistarry.mp.v1.ResumeSessionRequestH\x00R\rresumeSession\x12d\n" +
+	"\x17resume_session_accepted\x18\x8a\x01 \x01(\v2).xingyistarry.mp.v1.ResumeSessionAcceptedH\x00R\x15resumeSessionAccepted\x12Z\n" +
+	"\x17resume_session_rejected\x18\x8b\x01 \x01(\v2\x1f.xingyistarry.mp.v1.StringValueH\x00R\x15resumeSessionRejected\x12E\n" +
+	"\rleave_session\x18\x8c\x01 \x01(\v2\x1d.xingyistarry.mp.v1.GuidValueH\x00R\fleaveSession\x12Y\n" +
+	"\x11relay_resume_room\x18\x8d\x01 \x01(\v2*.xingyistarry.mp.v1.RelayResumeRoomRequestH\x00R\x0frelayResumeRoom\x12G\n" +
+	"\x0ematch_starting\x18\x8e\x01 \x01(\v2\x1d.xingyistarry.mp.v1.GuidValueH\x00R\rmatchStarting\x12C\n" +
+	"\tchat_send\x18\x8f\x01 \x01(\v2#.xingyistarry.mp.v1.ChatSendMessageH\x00R\bchatSend\x12F\n" +
+	"\n" +
+	"chat_event\x18\x90\x01 \x01(\v2$.xingyistarry.mp.v1.ChatEventMessageH\x00R\tchatEvent\x12C\n" +
+	"\tping_send\x18\x91\x01 \x01(\v2#.xingyistarry.mp.v1.PingSendMessageH\x00R\bpingSend\x12F\n" +
+	"\n" +
+	"ping_event\x18\x92\x01 \x01(\v2$.xingyistarry.mp.v1.PingEventMessageH\x00R\tpingEvent\x12_\n" +
+	"\x13social_sync_request\x18\x93\x01 \x01(\v2,.xingyistarry.mp.v1.SocialSyncRequestMessageH\x00R\x11socialSyncRequest\x12Y\n" +
+	"\x11social_sync_begin\x18\x94\x01 \x01(\v2*.xingyistarry.mp.v1.SocialSyncBeginMessageH\x00R\x0fsocialSyncBegin\x12Y\n" +
+	"\x11social_sync_chunk\x18\x95\x01 \x01(\v2*.xingyistarry.mp.v1.SocialSyncChunkMessageH\x00R\x0fsocialSyncChunk\x12b\n" +
+	"\x14social_sync_complete\x18\x96\x01 \x01(\v2-.xingyistarry.mp.v1.SocialSyncCompleteMessageH\x00R\x12socialSyncComplete\x12R\n" +
+	"\x11relay_room_closed\x18\x97\x01 \x01(\v2#.xingyistarry.mp.v1.RelayPeerNoticeH\x00R\x0frelayRoomClosedB\x06\n" +
+	"\x04bodyB\n" +
 	"\n" +
 	"\b_room_idB\f\n" +
 	"\n" +
@@ -4187,40 +9360,66 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\x10max_participants\x18\x0f \x01(\x05R\x0fmaxParticipants\x12C\n" +
 	"\fparticipants\x18\x10 \x03(\v2\x1f.xingyistarry.mp.v1.ParticipantR\fparticipants\x121\n" +
 	"\x14participant_revision\x18\x11 \x01(\rR\x13participantRevisionB\v\n" +
-	"\t_match_id\"\x89\x05\n" +
-	"\x12GameCommandMessage\x12\x12\n" +
-	"\x04kind\x18\x01 \x01(\rR\x04kind\x12\x19\n" +
-	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
-	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
-	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12$\n" +
-	"\x0eunit_target_xs\x18\x05 \x03(\x11R\funitTargetXs\x12$\n" +
-	"\x0eunit_target_ys\x18\x06 \x03(\x11R\funitTargetYs\x12'\n" +
-	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1b\n" +
-	"\taction_id\x18\b \x01(\tR\bactionId\x12\x1f\n" +
-	"\vtemplate_id\x18\t \x01(\tR\n" +
-	"templateId\x12*\n" +
+	"\t_match_id\"\xd7\x11\n" +
+	"\x12GameCommandMessage\x12\x16\n" +
+	"\x04kind\x18\x01 \x01(\rB\x02\x18\x01R\x04kind\x12\x1d\n" +
+	"\bunit_ids\x18\x02 \x03(\x03B\x02\x18\x01R\aunitIds\x12\x1d\n" +
+	"\btarget_x\x18\x03 \x01(\x11B\x02\x18\x01R\atargetX\x12\x1d\n" +
+	"\btarget_y\x18\x04 \x01(\x11B\x02\x18\x01R\atargetY\x12(\n" +
+	"\x0eunit_target_xs\x18\x05 \x03(\x11B\x02\x18\x01R\funitTargetXs\x12(\n" +
+	"\x0eunit_target_ys\x18\x06 \x03(\x11B\x02\x18\x01R\funitTargetYs\x12+\n" +
+	"\x0faction_category\x18\a \x01(\x05B\x02\x18\x01R\x0eactionCategory\x12\x1f\n" +
+	"\taction_id\x18\b \x01(\tB\x02\x18\x01R\bactionId\x12#\n" +
+	"\vtemplate_id\x18\t \x01(\tB\x02\x18\x01R\n" +
+	"templateId\x12.\n" +
 	"\x11passenger_unit_id\x18\n" +
-	" \x01(\x03R\x0fpassengerUnitId\x120\n" +
-	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\x12,\n" +
-	"\x12debug_player_index\x18\f \x01(\x05R\x10debugPlayerIndex\x12*\n" +
-	"\x11debug_metal_delta\x18\r \x01(\x11R\x0fdebugMetalDelta\x12*\n" +
-	"\x11debug_power_delta\x18\x0e \x01(\x11R\x0fdebugPowerDelta\x12$\n" +
-	"\x0eai_action_type\x18\x0f \x01(\x05R\faiActionType\x12Q\n" +
-	"\x10resolved_actions\x18\x10 \x03(\v2&.xingyistarry.mp.v1.ResolvedUnitActionR\x0fresolvedActions\"\xd1\x02\n" +
+	" \x01(\x03B\x02\x18\x01R\x0fpassengerUnitId\x124\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bB\x02\x18\x01R\x12desiredToggleState\x120\n" +
+	"\x12debug_player_index\x18\f \x01(\x05B\x02\x18\x01R\x10debugPlayerIndex\x12.\n" +
+	"\x11debug_metal_delta\x18\r \x01(\x11B\x02\x18\x01R\x0fdebugMetalDelta\x12.\n" +
+	"\x11debug_power_delta\x18\x0e \x01(\x11B\x02\x18\x01R\x0fdebugPowerDelta\x12(\n" +
+	"\x0eai_action_type\x18\x0f \x01(\x05B\x02\x18\x01R\faiActionType\x12U\n" +
+	"\x10resolved_actions\x18\x10 \x03(\v2&.xingyistarry.mp.v1.ResolvedUnitActionB\x02\x18\x01R\x0fresolvedActions\x125\n" +
+	"\x04move\x18e \x01(\v2\x1f.xingyistarry.mp.v1.MoveCommandH\x00R\x04move\x12;\n" +
+	"\x06action\x18f \x01(\v2!.xingyistarry.mp.v1.ActionCommandH\x00R\x06action\x12W\n" +
+	"\x10equipment_action\x18g \x01(\v2*.xingyistarry.mp.v1.EquipmentActionCommandH\x00R\x0fequipmentAction\x12d\n" +
+	"\x15equipment_move_action\x18h \x01(\v2..xingyistarry.mp.v1.EquipmentMoveActionCommandH\x00R\x13equipmentMoveAction\x12R\n" +
+	"\x0fbuild_with_move\x18i \x01(\v2(.xingyistarry.mp.v1.BuildWithMoveCommandH\x00R\rbuildWithMove\x128\n" +
+	"\x05skill\x18j \x01(\v2 .xingyistarry.mp.v1.SkillCommandH\x00R\x05skill\x12B\n" +
+	"\tundo_move\x18k \x01(\v2#.xingyistarry.mp.v1.UndoMoveCommandH\x00R\bundoMove\x12?\n" +
+	"\bend_turn\x18l \x01(\v2\".xingyistarry.mp.v1.EndTurnCommandH\x00R\aendTurn\x12U\n" +
+	"\x10auto_guide_start\x18m \x01(\v2).xingyistarry.mp.v1.AutoGuideStartCommandH\x00R\x0eautoGuideStart\x12^\n" +
+	"\x13debug_add_resources\x18o \x01(\v2,.xingyistarry.mp.v1.DebugAddResourcesCommandH\x00R\x11debugAddResources\x12U\n" +
+	"\x10debug_fill_skill\x18p \x01(\v2).xingyistarry.mp.v1.DebugFillSkillCommandH\x00R\x0edebugFillSkill\x12O\n" +
+	"\x0eai_unit_action\x18q \x01(\v2'.xingyistarry.mp.v1.AiUnitActionCommandH\x00R\faiUnitAction\x12?\n" +
+	"\bai_skill\x18r \x01(\v2\".xingyistarry.mp.v1.AiSkillCommandH\x00R\aaiSkill\x12K\n" +
+	"\fturn_advance\x18s \x01(\v2&.xingyistarry.mp.v1.TurnAdvanceCommandH\x00R\vturnAdvance\x12D\n" +
+	"\tsurrender\x18t \x01(\v2$.xingyistarry.mp.v1.SurrenderCommandH\x00R\tsurrender\x12Q\n" +
+	"\x0etoggle_standby\x18u \x01(\v2(.xingyistarry.mp.v1.ToggleStandbyCommandH\x00R\rtoggleStandby\x12K\n" +
+	"\ftoggle_sleep\x18v \x01(\v2&.xingyistarry.mp.v1.ToggleSleepCommandH\x00R\vtoggleSleep\x125\n" +
+	"\x04stay\x18w \x01(\v2\x1f.xingyistarry.mp.v1.StayCommandH\x00R\x04stay\x12N\n" +
+	"\rself_destruct\x18x \x01(\v2'.xingyistarry.mp.v1.SelfDestructCommandH\x00R\fselfDestruct\x12d\n" +
+	"\x15resolved_unit_actions\x18y \x01(\v2..xingyistarry.mp.v1.ResolvedUnitActionsCommandH\x00R\x13resolvedUnitActionsB\x06\n" +
+	"\x04body\"\xeb\x04\n" +
 	"\x12ResolvedUnitAction\x12\x17\n" +
-	"\aunit_id\x18\x01 \x01(\x03R\x06unitId\x12\x1f\n" +
-	"\vaction_type\x18\x02 \x01(\x05R\n" +
-	"actionType\x12\x15\n" +
-	"\x06move_x\x18\x03 \x01(\x11R\x05moveX\x12\x15\n" +
-	"\x06move_y\x18\x04 \x01(\x11R\x05moveY\x12\x19\n" +
-	"\btarget_x\x18\x05 \x01(\x11R\atargetX\x12\x19\n" +
-	"\btarget_y\x18\x06 \x01(\x11R\atargetY\x12'\n" +
-	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1f\n" +
-	"\vtemplate_id\x18\b \x01(\tR\n" +
-	"templateId\x12*\n" +
-	"\x11passenger_unit_id\x18\t \x01(\x03R\x0fpassengerUnitId\x12'\n" +
+	"\aunit_id\x18\x01 \x01(\x03R\x06unitId\x12#\n" +
+	"\vaction_type\x18\x02 \x01(\x05B\x02\x18\x01R\n" +
+	"actionType\x12\x19\n" +
+	"\x06move_x\x18\x03 \x01(\x11B\x02\x18\x01R\x05moveX\x12\x19\n" +
+	"\x06move_y\x18\x04 \x01(\x11B\x02\x18\x01R\x05moveY\x12\x1d\n" +
+	"\btarget_x\x18\x05 \x01(\x11B\x02\x18\x01R\atargetX\x12\x1d\n" +
+	"\btarget_y\x18\x06 \x01(\x11B\x02\x18\x01R\atargetY\x12+\n" +
+	"\x0faction_category\x18\a \x01(\x05B\x02\x18\x01R\x0eactionCategory\x12#\n" +
+	"\vtemplate_id\x18\b \x01(\tB\x02\x18\x01R\n" +
+	"templateId\x12.\n" +
+	"\x11passenger_unit_id\x18\t \x01(\x03B\x02\x18\x01R\x0fpassengerUnitId\x12'\n" +
 	"\x0fskip_animations\x18\n" +
-	" \x01(\bR\x0eskipAnimations\"\xe2\x01\n" +
+	" \x01(\bR\x0eskipAnimations\x126\n" +
+	"\x04move\x18d \x01(\v2 .xingyistarry.mp.v1.ResolvedMoveH\x00R\x04move\x12<\n" +
+	"\x06action\x18e \x01(\v2\".xingyistarry.mp.v1.ResolvedActionH\x00R\x06action\x12<\n" +
+	"\x06create\x18f \x01(\v2\".xingyistarry.mp.v1.ResolvedCreateH\x00R\x06create\x12<\n" +
+	"\x06unload\x18g \x01(\v2\".xingyistarry.mp.v1.ResolvedUnloadH\x00R\x06unloadB\x06\n" +
+	"\x04body\"\xe2\x01\n" +
 	"\x15CommandRequestMessage\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x02 \x01(\x04R\trequestId\x12\x17\n" +
@@ -4384,21 +9583,25 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\n" +
 	"request_id\x18\x01 \x01(\x04R\trequestId\x12,\n" +
 	"\x12authority_frame_id\x18\x02 \x01(\x03R\x10authorityFrameId\x12\x16\n" +
-	"\x06reason\x18\x03 \x01(\tR\x06reason\"\xb7\x01\n" +
+	"\x06reason\x18\x03 \x01(\tR\x06reason\"\x86\x02\n" +
 	"\x13RandomRecordMessage\x12\x1b\n" +
 	"\tcall_site\x18\x01 \x01(\tR\bcallSite\x12\x18\n" +
-	"\aordinal\x18\x02 \x01(\x05R\aordinal\x12\x1d\n" +
+	"\aordinal\x18\x02 \x01(\x05R\aordinal\x12!\n" +
 	"\n" +
-	"value_kind\x18\x03 \x01(\rR\tvalueKind\x12#\n" +
-	"\rinteger_value\x18\x04 \x01(\x03R\fintegerValue\x12%\n" +
-	"\x0efloating_value\x18\x05 \x01(\x01R\rfloatingValue\"\x9c\x02\n" +
+	"value_kind\x18\x03 \x01(\rB\x02\x18\x01R\tvalueKind\x12'\n" +
+	"\rinteger_value\x18\x04 \x01(\x03B\x02\x18\x01R\fintegerValue\x12)\n" +
+	"\x0efloating_value\x18\x05 \x01(\x01B\x02\x18\x01R\rfloatingValue\x12\x1a\n" +
+	"\ainteger\x18\x06 \x01(\x03H\x00R\ainteger\x12\x1c\n" +
+	"\bfloating\x18\a \x01(\x01H\x00R\bfloatingB\a\n" +
+	"\x05value\"\xe7\x02\n" +
 	"\n" +
 	"Resolution\x12!\n" +
-	"\foperation_id\x18\x01 \x01(\fR\voperationId\x12\x19\n" +
-	"\bstage_id\x18\x02 \x01(\x05R\astageId\x12-\n" +
-	"\x12settlement_ordinal\x18\x03 \x01(\x05R\x11settlementOrdinal\x12N\n" +
-	"\x0erandom_records\x18\x04 \x03(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\rrandomRecords\x12Q\n" +
-	"\x11attack_settlement\x18\x05 \x01(\v2$.xingyistarry.mp.v1.AttackSettlementR\x10attackSettlement\"\xf8\x02\n" +
+	"\foperation_id\x18\x01 \x01(\fR\voperationId\x12\x1d\n" +
+	"\bstage_id\x18\x02 \x01(\x05B\x02\x18\x01R\astageId\x121\n" +
+	"\x12settlement_ordinal\x18\x03 \x01(\x05B\x02\x18\x01R\x11settlementOrdinal\x12R\n" +
+	"\x0erandom_records\x18\x04 \x03(\v2'.xingyistarry.mp.v1.RandomRecordMessageB\x02\x18\x01R\rrandomRecords\x12U\n" +
+	"\x11attack_settlement\x18\x05 \x01(\v2$.xingyistarry.mp.v1.AttackSettlementB\x02\x18\x01R\x10attackSettlement\x129\n" +
+	"\x05event\x18d \x01(\v2#.xingyistarry.mp.v1.SettlementEventR\x05event\"\xfc\x02\n" +
 	"\x10AttackSettlement\x12=\n" +
 	"\x04kind\x18\x01 \x01(\x0e2).xingyistarry.mp.v1.AttackSettlement.KindR\x04kind\x12\x19\n" +
 	"\bbatch_id\x18\x02 \x01(\x05R\abatchId\x12\x17\n" +
@@ -4415,28 +9618,40 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\rBATCH_STARTED\x10\x01\x12\b\n" +
 	"\x04CELL\x10\x02\x12\t\n" +
 	"\x05DEATH\x10\x03\x12\x0f\n" +
-	"\vBATCH_ENDED\x10\x04\"\xee\x01\n" +
+	"\vBATCH_ENDED\x10\x04:\x02\x18\x01\"\xf2\x01\n" +
 	"\x0eOperationBegin\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\fR\voperationId\x12\x17\n" +
 	"\aseat_id\x18\x02 \x01(\fR\x06seatId\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x03 \x01(\x04R\trequestId\x12\x14\n" +
 	"\x05round\x18\x04 \x01(\x05R\x05round\x12@\n" +
-	"\acommand\x18\x05 \x01(\v2&.xingyistarry.mp.v1.GameCommandMessageR\acommand\x12)\n" +
-	"\x10live_settlements\x18\x06 \x01(\bR\x0fliveSettlements\"1\n" +
+	"\acommand\x18\x05 \x01(\v2&.xingyistarry.mp.v1.GameCommandMessageR\acommand\x12-\n" +
+	"\x10live_settlements\x18\x06 \x01(\bB\x02\x18\x01R\x0fliveSettlements\"1\n" +
 	"\fOperationEnd\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\fR\voperationId\"L\n" +
 	"\x0fOperationFailed\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\fR\voperationId\x12\x16\n" +
-	"\x06reason\x18\x02 \x01(\tR\x06reason\"\xbf\x01\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\"\xdd\x05\n" +
 	"\x15AuthorityFrameMessage\x12\x19\n" +
 	"\bmatch_id\x18\x01 \x01(\fR\amatchId\x12\x19\n" +
 	"\bframe_id\x18\x02 \x01(\x03R\aframeId\x12#\n" +
-	"\rprevious_hash\x18\x03 \x01(\fR\fpreviousHash\x12\x1d\n" +
+	"\rprevious_hash\x18\x03 \x01(\fR\fpreviousHash\x12!\n" +
 	"\n" +
-	"frame_type\x18\x04 \x01(\rR\tframeType\x12\x18\n" +
-	"\apayload\x18\x05 \x01(\fR\apayload\x12\x12\n" +
-	"\x04hash\x18\x06 \x01(\fR\x04hash\"\xc0\x01\n" +
+	"frame_type\x18\x04 \x01(\rB\x02\x18\x01R\tframeType\x12\x1c\n" +
+	"\apayload\x18\x05 \x01(\fB\x02\x18\x01R\apayload\x12\x12\n" +
+	"\x04hash\x18\x06 \x01(\fR\x04hash\x12M\n" +
+	"\x0foperation_begin\x18e \x01(\v2\".xingyistarry.mp.v1.OperationBeginH\x00R\x0eoperationBegin\x12@\n" +
+	"\n" +
+	"resolution\x18f \x01(\v2\x1e.xingyistarry.mp.v1.ResolutionH\x00R\n" +
+	"resolution\x12G\n" +
+	"\roperation_end\x18g \x01(\v2 .xingyistarry.mp.v1.OperationEndH\x00R\foperationEnd\x12G\n" +
+	"\n" +
+	"turn_phase\x18h \x01(\v2&.xingyistarry.mp.v1.AuthorityTurnPhaseH\x00R\tturnPhase\x12K\n" +
+	"\fseat_changed\x18i \x01(\v2&.xingyistarry.mp.v1.SeatControlChangedH\x00R\vseatChanged\x12J\n" +
+	"\vmatch_ended\x18j \x01(\v2'.xingyistarry.mp.v1.AuthorityMatchEndedH\x00R\n" +
+	"matchEnded\x12P\n" +
+	"\x10operation_failed\x18k \x01(\v2#.xingyistarry.mp.v1.OperationFailedH\x00R\x0foperationFailedB\x06\n" +
+	"\x04body\"\xc4\x01\n" +
 	"\x12AuthorityHashInput\x12\x16\n" +
 	"\x06domain\x18\x01 \x01(\tR\x06domain\x12\x19\n" +
 	"\bmatch_id\x18\x02 \x01(\fR\amatchId\x12\x19\n" +
@@ -4444,7 +9659,7 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\rprevious_hash\x18\x04 \x01(\fR\fpreviousHash\x12\x1d\n" +
 	"\n" +
 	"frame_type\x18\x05 \x01(\rR\tframeType\x12\x18\n" +
-	"\apayload\x18\x06 \x01(\fR\apayload\"\x80\x02\n" +
+	"\apayload\x18\x06 \x01(\fR\apayload:\x02\x18\x01\"\x80\x02\n" +
 	"\x17SnapshotManifestMessage\x12\x1f\n" +
 	"\vsnapshot_id\x18\x01 \x01(\fR\n" +
 	"snapshotId\x12\x19\n" +
@@ -4460,7 +9675,303 @@ const file_multiplayer_proto_rawDesc = "" +
 	"\vsnapshot_id\x18\x01 \x01(\fR\n" +
 	"snapshotId\x12\x14\n" +
 	"\x05index\x18\x02 \x01(\x05R\x05index\x12\x12\n" +
-	"\x04data\x18\x03 \x01(\fR\x04data*H\n" +
+	"\x04data\x18\x03 \x01(\fR\x04data\"\xdc\x01\n" +
+	"\vMoveCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12$\n" +
+	"\x0eunit_target_xs\x18\x05 \x03(\x11R\funitTargetXs\x12$\n" +
+	"\x0eunit_target_ys\x18\x06 \x03(\x11R\funitTargetYs\x120\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\"\xd4\x02\n" +
+	"\rActionCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12$\n" +
+	"\x0eunit_target_xs\x18\x05 \x03(\x11R\funitTargetXs\x12$\n" +
+	"\x0eunit_target_ys\x18\x06 \x03(\x11R\funitTargetYs\x12'\n" +
+	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1f\n" +
+	"\vtemplate_id\x18\t \x01(\tR\n" +
+	"templateId\x12*\n" +
+	"\x11passenger_unit_id\x18\n" +
+	" \x01(\x03R\x0fpassengerUnitId\x120\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\"\xd0\x01\n" +
+	"\x16EquipmentActionCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1b\n" +
+	"\taction_id\x18\b \x01(\tR\bactionId\x12\x1f\n" +
+	"\vtemplate_id\x18\t \x01(\tR\n" +
+	"templateId\"\xd4\x01\n" +
+	"\x1aEquipmentMoveActionCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1b\n" +
+	"\taction_id\x18\b \x01(\tR\bactionId\x12\x1f\n" +
+	"\vtemplate_id\x18\t \x01(\tR\n" +
+	"templateId\"\xb1\x01\n" +
+	"\x14BuildWithMoveCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1f\n" +
+	"\vtemplate_id\x18\t \x01(\tR\n" +
+	"templateId\"D\n" +
+	"\fSkillCommand\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\"\x11\n" +
+	"\x0fUndoMoveCommand\"\x10\n" +
+	"\x0eEndTurnCommand\"2\n" +
+	"\x15AutoGuideStartCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\"\xa0\x01\n" +
+	"\x18DebugAddResourcesCommand\x12,\n" +
+	"\x12debug_player_index\x18\f \x01(\x05R\x10debugPlayerIndex\x12*\n" +
+	"\x11debug_metal_delta\x18\r \x01(\x11R\x0fdebugMetalDelta\x12*\n" +
+	"\x11debug_power_delta\x18\x0e \x01(\x11R\x0fdebugPowerDelta\"E\n" +
+	"\x15DebugFillSkillCommand\x12,\n" +
+	"\x12debug_player_index\x18\f \x01(\x05R\x10debugPlayerIndex\"\x80\x03\n" +
+	"\x13AiUnitActionCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12$\n" +
+	"\x0eunit_target_xs\x18\x05 \x03(\x11R\funitTargetXs\x12$\n" +
+	"\x0eunit_target_ys\x18\x06 \x03(\x11R\funitTargetYs\x12'\n" +
+	"\x0faction_category\x18\a \x01(\x05R\x0eactionCategory\x12\x1f\n" +
+	"\vtemplate_id\x18\t \x01(\tR\n" +
+	"templateId\x12*\n" +
+	"\x11passenger_unit_id\x18\n" +
+	" \x01(\x03R\x0fpassengerUnitId\x120\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\x12$\n" +
+	"\x0eai_action_type\x18\x0f \x01(\x05R\faiActionType\"x\n" +
+	"\x0eAiSkillCommand\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x120\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\"\x14\n" +
+	"\x12TurnAdvanceCommand\"-\n" +
+	"\x10SurrenderCommand\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\"c\n" +
+	"\x14ToggleStandbyCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x120\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\"a\n" +
+	"\x12ToggleSleepCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x120\n" +
+	"\x14desired_toggle_state\x18\v \x01(\bR\x12desiredToggleState\"(\n" +
+	"\vStayCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\"0\n" +
+	"\x13SelfDestructCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\"\x8a\x01\n" +
+	"\x1aResolvedUnitActionsCommand\x12\x19\n" +
+	"\bunit_ids\x18\x02 \x03(\x03R\aunitIds\x12Q\n" +
+	"\x10resolved_actions\x18\x10 \x03(\v2&.xingyistarry.mp.v1.ResolvedUnitActionR\x0fresolvedActions\"U\n" +
+	"\x10RandomRecordList\x12A\n" +
+	"\arecords\x18\x01 \x03(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\arecords\"i\n" +
+	"\x10UnitRandomResult\x12\x17\n" +
+	"\aunit_id\x18\x01 \x01(\x03R\x06unitId\x12<\n" +
+	"\x06values\x18\x02 \x01(\v2$.xingyistarry.mp.v1.RandomRecordListR\x06values\"l\n" +
+	"\x10TileRandomResult\x12\f\n" +
+	"\x01x\x18\x01 \x01(\x11R\x01x\x12\f\n" +
+	"\x01y\x18\x02 \x01(\x11R\x01y\x12<\n" +
+	"\x06values\x18\x03 \x01(\v2$.xingyistarry.mp.v1.RandomRecordListR\x06values\"\xe9\x03\n" +
+	"\fRandomResult\x12H\n" +
+	"\vdamage_roll\x18\x01 \x01(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\n" +
+	"damageRoll\x12R\n" +
+	"\x10damage_variation\x18\x02 \x01(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\x0fdamageVariation\x12S\n" +
+	"\x11death_wreck_scale\x18\x03 \x01(\v2'.xingyistarry.mp.v1.RandomRecordMessageR\x0fdeathWreckScale\x12<\n" +
+	"\x06wrecks\x18\x04 \x03(\v2$.xingyistarry.mp.v1.TileRandomResultR\x06wrecks\x12U\n" +
+	"\x13commander_positions\x18\x05 \x03(\v2$.xingyistarry.mp.v1.UnitRandomResultR\x12commanderPositions\x12Q\n" +
+	"\x11experience_shares\x18\x06 \x03(\v2$.xingyistarry.mp.v1.UnitRandomResultR\x10experienceShares\"\xb9\r\n" +
+	"\x0fSettlementEvent\x12$\n" +
+	"\x0esource_unit_id\x18\x01 \x01(\x03R\fsourceUnitId\x12$\n" +
+	"\x0etarget_unit_id\x18\x02 \x01(\x03R\ftargetUnitId\x12E\n" +
+	"\rrandom_result\x18\x03 \x01(\v2 .xingyistarry.mp.v1.RandomResultR\frandomResult\x12?\n" +
+	"\bchildren\x18\x04 \x03(\v2#.xingyistarry.mp.v1.SettlementEventR\bchildren\x12!\n" +
+	"\fplayer_index\x18\x05 \x01(\x05R\vplayerIndex\x12O\n" +
+	"\x0eattack_started\x18e \x01(\v2&.xingyistarry.mp.v1.AttackStartedEventH\x00R\rattackStarted\x12F\n" +
+	"\vattack_cell\x18f \x01(\v2#.xingyistarry.mp.v1.AttackCellEventH\x00R\n" +
+	"attackCell\x12R\n" +
+	"\x0fattack_finished\x18g \x01(\v2'.xingyistarry.mp.v1.AttackFinishedEventH\x00R\x0eattackFinished\x129\n" +
+	"\x06damage\x18h \x01(\v2\x1f.xingyistarry.mp.v1.DamageEventH\x00R\x06damage\x12L\n" +
+	"\rdeath_started\x18i \x01(\v2%.xingyistarry.mp.v1.DeathStartedEventH\x00R\fdeathStarted\x12R\n" +
+	"\x0fdeath_committed\x18j \x01(\v2'.xingyistarry.mp.v1.DeathCommittedEventH\x00R\x0edeathCommitted\x12R\n" +
+	"\x0fplayer_defeated\x18k \x01(\v2'.xingyistarry.mp.v1.PlayerDefeatedEventH\x00R\x0eplayerDefeated\x12X\n" +
+	"\x11cleanup_completed\x18l \x01(\v2).xingyistarry.mp.v1.CleanupCompletedEventH\x00R\x10cleanupCompleted\x129\n" +
+	"\x06effect\x18m \x01(\v2\x1f.xingyistarry.mp.v1.EffectEventH\x00R\x06effect\x126\n" +
+	"\x05spawn\x18n \x01(\v2\x1e.xingyistarry.mp.v1.SpawnEventH\x00R\x05spawn\x123\n" +
+	"\x04heal\x18o \x01(\v2\x1d.xingyistarry.mp.v1.HealEventH\x00R\x04heal\x12?\n" +
+	"\bresource\x18p \x01(\v2!.xingyistarry.mp.v1.ResourceEventH\x00R\bresource\x12[\n" +
+	"\x12commander_position\x18q \x01(\v2*.xingyistarry.mp.v1.CommanderPositionEventH\x00R\x11commanderPosition\x12L\n" +
+	"\rforced_attack\x18s \x01(\v2%.xingyistarry.mp.v1.ForcedAttackEventH\x00R\fforcedAttack\x126\n" +
+	"\x05pulse\x18t \x01(\v2\x1e.xingyistarry.mp.v1.PulseEventH\x00R\x05pulse\x126\n" +
+	"\x05wreck\x18u \x01(\v2\x1e.xingyistarry.mp.v1.WreckEventH\x00R\x05wreck\x129\n" +
+	"\x06shield\x18v \x01(\v2\x1f.xingyistarry.mp.v1.ShieldEventH\x00R\x06shield\x12R\n" +
+	"\x0feffect_mutation\x18w \x01(\v2'.xingyistarry.mp.v1.EffectMutationEventH\x00R\x0eeffectMutation\x12E\n" +
+	"\n" +
+	"experience\x18x \x01(\v2#.xingyistarry.mp.v1.ExperienceEventH\x00R\n" +
+	"experience\x12O\n" +
+	"\x0eskill_finished\x18y \x01(\v2&.xingyistarry.mp.v1.SkillFinishedEventH\x00R\rskillFinishedB\x06\n" +
+	"\x04bodyJ\x04\br\x10s\"\x8e\x01\n" +
+	"\x12AttackStartedEvent\x12\x1f\n" +
+	"\vaction_name\x18\x01 \x01(\tR\n" +
+	"actionName\x12\x19\n" +
+	"\btarget_x\x18\x02 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x03 \x01(\x11R\atargetY\x12!\n" +
+	"\fglobal_phase\x18\x04 \x01(\bR\vglobalPhase\"\xa6\x02\n" +
+	"\x0fAttackCellEvent\x12\x1f\n" +
+	"\vaction_name\x18\x01 \x01(\tR\n" +
+	"actionName\x12\x19\n" +
+	"\btarget_x\x18\x02 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x03 \x01(\x11R\atargetY\x12\x1e\n" +
+	"\borigin_x\x18\x04 \x01(\x11H\x00R\aoriginX\x88\x01\x01\x12\x1e\n" +
+	"\borigin_y\x18\x05 \x01(\x11H\x01R\aoriginY\x88\x01\x01\x12\x17\n" +
+	"\x04data\x18\x06 \x01(\x02H\x02R\x04data\x88\x01\x01\x12\x1f\n" +
+	"\vaction_type\x18\a \x01(\tR\n" +
+	"actionType\x12\x1f\n" +
+	"\vskill_index\x18\b \x01(\x05R\n" +
+	"skillIndexB\v\n" +
+	"\t_origin_xB\v\n" +
+	"\t_origin_yB\a\n" +
+	"\x05_data\"d\n" +
+	"\x13AttackFinishedEvent\x12\x1f\n" +
+	"\vaction_name\x18\x01 \x01(\tR\n" +
+	"actionName\x12,\n" +
+	"\x12check_after_action\x18\x02 \x01(\bR\x10checkAfterAction\"\x8b\x02\n" +
+	"\vDamageEvent\x12\x1b\n" +
+	"\x06damage\x18\x01 \x01(\x02H\x00R\x06damage\x88\x01\x01\x12\x1f\n" +
+	"\vaction_name\x18\x02 \x01(\tR\n" +
+	"actionName\x12\x1e\n" +
+	"\bcenter_x\x18\x03 \x01(\x11H\x01R\acenterX\x88\x01\x01\x12\x1e\n" +
+	"\bcenter_y\x18\x04 \x01(\x11H\x02R\acenterY\x88\x01\x01\x12#\n" +
+	"\ruse_predamage\x18\x05 \x01(\bR\fusePredamage\x12\x1b\n" +
+	"\tdo_random\x18\x06 \x01(\bR\bdoRandom\x12\x17\n" +
+	"\ano_kill\x18\a \x01(\bR\x06noKillB\t\n" +
+	"\a_damageB\v\n" +
+	"\t_center_xB\v\n" +
+	"\t_center_y\"\xf5\x01\n" +
+	"\x11DeathStartedEvent\x12\x16\n" +
+	"\x06reason\x18\x01 \x01(\x05R\x06reason\x12\x1b\n" +
+	"\x06damage\x18\x02 \x01(\x02H\x00R\x06damage\x88\x01\x01\x12\x1f\n" +
+	"\vaction_name\x18\x03 \x01(\tR\n" +
+	"actionName\x12%\n" +
+	"\x0egenerate_wreck\x18\x04 \x01(\bR\rgenerateWreck\x12\x1e\n" +
+	"\bcenter_x\x18\x05 \x01(\x11H\x01R\acenterX\x88\x01\x01\x12\x1e\n" +
+	"\bcenter_y\x18\x06 \x01(\x11H\x02R\acenterY\x88\x01\x01B\t\n" +
+	"\a_damageB\v\n" +
+	"\t_center_xB\v\n" +
+	"\t_center_y\"\x9c\x01\n" +
+	"\x13DeathCommittedEvent\x12\x16\n" +
+	"\x06reason\x18\x01 \x01(\x05R\x06reason\x12#\n" +
+	"\rkiller_player\x18\x02 \x01(\x05R\fkillerPlayer\x12!\n" +
+	"\fdescend_only\x18\x03 \x01(\bR\vdescendOnly\x12%\n" +
+	"\x0ecallbacks_only\x18\x04 \x01(\bR\rcallbacksOnly\"8\n" +
+	"\x13PlayerDefeatedEvent\x12!\n" +
+	"\fplayer_index\x18\x01 \x01(\x05R\vplayerIndex\":\n" +
+	"\x15CleanupCompletedEvent\x12!\n" +
+	"\fplayer_index\x18\x01 \x01(\x05R\vplayerIndex\"\xe5\x02\n" +
+	"\vEffectEvent\x12\x1f\n" +
+	"\veffect_name\x18\x01 \x01(\tR\n" +
+	"effectName\x12!\n" +
+	"\feffect_index\x18\x02 \x01(\x05R\veffectIndex\x12\x1a\n" +
+	"\bcallback\x18\x03 \x01(\tR\bcallback\x12\"\n" +
+	"\rother_unit_id\x18\x04 \x01(\x03R\votherUnitId\x12\x1b\n" +
+	"\x06damage\x18\x05 \x01(\x02H\x00R\x06damage\x88\x01\x01\x12\x16\n" +
+	"\x06killed\x18\x06 \x01(\bR\x06killed\x12\x16\n" +
+	"\x06reason\x18\a \x01(\x05R\x06reason\x12\x19\n" +
+	"\x05value\x18\b \x01(\x02H\x01R\x05value\x88\x01\x01\x12\x18\n" +
+	"\apreview\x18\t \x01(\bR\apreview\x12\x1f\n" +
+	"\veffect_type\x18\n" +
+	" \x01(\tR\n" +
+	"effectType\x12\f\n" +
+	"\x01x\x18\v \x01(\x11R\x01x\x12\f\n" +
+	"\x01y\x18\f \x01(\x11R\x01yB\t\n" +
+	"\a_damageB\b\n" +
+	"\x06_value\"\xc7\x02\n" +
+	"\n" +
+	"SpawnEvent\x12\x1f\n" +
+	"\vtemplate_id\x18\x01 \x01(\tR\n" +
+	"templateId\x12\f\n" +
+	"\x01x\x18\x02 \x01(\x11R\x01x\x12\f\n" +
+	"\x01y\x18\x03 \x01(\x11R\x01y\x12!\n" +
+	"\fplayer_index\x18\x04 \x01(\x05R\vplayerIndex\x12\x1a\n" +
+	"\bbuilding\x18\x05 \x01(\bR\bbuilding\x12\x18\n" +
+	"\aspawned\x18\x06 \x01(\bR\aspawned\x12#\n" +
+	"\rcreate_reason\x18\a \x01(\x05R\fcreateReason\x12)\n" +
+	"\x10trigger_passives\x18\b \x01(\bR\x0ftriggerPassives\x12!\n" +
+	"\fhas_position\x18\t \x01(\bR\vhasPosition\x12\x14\n" +
+	"\x05moved\x18\n" +
+	" \x01(\bR\x05moved\x12\x1a\n" +
+	"\bactioned\x18\v \x01(\bR\bactioned\"3\n" +
+	"\tHealEvent\x12\x1b\n" +
+	"\x06amount\x18\x01 \x01(\x02H\x00R\x06amount\x88\x01\x01B\t\n" +
+	"\a_amount\"v\n" +
+	"\rResourceEvent\x12!\n" +
+	"\fplayer_index\x18\x01 \x01(\x05R\vplayerIndex\x12\x16\n" +
+	"\x06reason\x18\x02 \x01(\x05R\x06reason\x12\x14\n" +
+	"\x05metal\x18\x03 \x01(\x11R\x05metal\x12\x14\n" +
+	"\x05power\x18\x04 \x01(\x11R\x05power\";\n" +
+	"\x16CommanderPositionEvent\x12!\n" +
+	"\fplayer_index\x18\x01 \x01(\x05R\vplayerIndex\"r\n" +
+	"\x11ForcedAttackEvent\x12'\n" +
+	"\x0faction_category\x18\x01 \x01(\x05R\x0eactionCategory\x12\x19\n" +
+	"\btarget_x\x18\x02 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x03 \x01(\x11R\atargetY\"/\n" +
+	"\n" +
+	"PulseEvent\x12!\n" +
+	"\feffect_index\x18\x01 \x01(\x05R\veffectIndex\"_\n" +
+	"\n" +
+	"WreckEvent\x12\f\n" +
+	"\x01x\x18\x01 \x01(\x11R\x01x\x12\f\n" +
+	"\x01y\x18\x02 \x01(\x11R\x01y\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x05R\x06amount\x12\x1d\n" +
+	"\n" +
+	"use_random\x18\x04 \x01(\bR\tuseRandom\"?\n" +
+	"\vShieldEvent\x12\x16\n" +
+	"\x06damage\x18\x01 \x01(\x05R\x06damage\x12\x18\n" +
+	"\apreview\x18\x02 \x01(\bR\apreview\"\xd2\x01\n" +
+	"\x13EffectMutationEvent\x12\x1f\n" +
+	"\veffect_name\x18\x01 \x01(\tR\n" +
+	"effectName\x12\x14\n" +
+	"\x05layer\x18\x02 \x01(\x05R\x05layer\x12$\n" +
+	"\x0ecaster_unit_id\x18\x03 \x01(\x03R\fcasterUnitId\x12#\n" +
+	"\rcaster_player\x18\x04 \x01(\x05R\fcasterPlayer\x12\x16\n" +
+	"\x06remove\x18\x05 \x01(\bR\x06remove\x12!\n" +
+	"\feffect_index\x18\x06 \x01(\x05R\veffectIndex\"{\n" +
+	"\x0fExperienceEvent\x12\x1b\n" +
+	"\x06amount\x18\x01 \x01(\x02H\x00R\x06amount\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"use_filter\x18\x02 \x01(\bR\tuseFilter\x12!\n" +
+	"\fbase_percent\x18\x03 \x01(\bR\vbasePercentB\t\n" +
+	"\a_amount\"7\n" +
+	"\x12SkillFinishedEvent\x12!\n" +
+	"\fplayer_index\x18\x01 \x01(\x05R\vplayerIndex\"*\n" +
+	"\fResolvedMove\x12\f\n" +
+	"\x01x\x18\x01 \x01(\x11R\x01x\x12\f\n" +
+	"\x01y\x18\x02 \x01(\x11R\x01y\"\x9d\x01\n" +
+	"\x0eResolvedAction\x12\x15\n" +
+	"\x06move_x\x18\x01 \x01(\x11R\x05moveX\x12\x15\n" +
+	"\x06move_y\x18\x02 \x01(\x11R\x05moveY\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\x05 \x01(\x05R\x0eactionCategory\"\xbe\x01\n" +
+	"\x0eResolvedCreate\x12\x15\n" +
+	"\x06move_x\x18\x01 \x01(\x11R\x05moveX\x12\x15\n" +
+	"\x06move_y\x18\x02 \x01(\x11R\x05moveY\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\x05 \x01(\x05R\x0eactionCategory\x12\x1f\n" +
+	"\vtemplate_id\x18\x06 \x01(\tR\n" +
+	"templateId\"\xc9\x01\n" +
+	"\x0eResolvedUnload\x12\x15\n" +
+	"\x06move_x\x18\x01 \x01(\x11R\x05moveX\x12\x15\n" +
+	"\x06move_y\x18\x02 \x01(\x11R\x05moveY\x12\x19\n" +
+	"\btarget_x\x18\x03 \x01(\x11R\atargetX\x12\x19\n" +
+	"\btarget_y\x18\x04 \x01(\x11R\atargetY\x12'\n" +
+	"\x0faction_category\x18\x05 \x01(\x05R\x0eactionCategory\x12*\n" +
+	"\x11passenger_unit_id\x18\x06 \x01(\x03R\x0fpassengerUnitId\"*\n" +
+	"\x12AuthorityTurnPhase\x12\x14\n" +
+	"\x05phase\x18\x01 \x01(\x05R\x05phase\":\n" +
+	"\x13AuthorityMatchEnded\x12#\n" +
+	"\rlocal_victory\x18\x01 \x01(\bR\flocalVictory*H\n" +
 	"\bDelivery\x12\x11\n" +
 	"\rRELAY_CONTROL\x10\x00\x12\v\n" +
 	"\aTO_HOST\x10\x01\x12\r\n" +
@@ -4508,89 +10019,255 @@ func file_multiplayer_proto_rawDescGZIP() []byte {
 }
 
 var file_multiplayer_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
-var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
+var file_multiplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 97)
 var file_multiplayer_proto_goTypes = []any{
-	(Delivery)(0),                     // 0: xingyistarry.mp.v1.Delivery
-	(WelcomeMode)(0),                  // 1: xingyistarry.mp.v1.WelcomeMode
-	(ParticipantAdmission)(0),         // 2: xingyistarry.mp.v1.ParticipantAdmission
-	(RelayRoomStatus)(0),              // 3: xingyistarry.mp.v1.RelayRoomStatus
-	(ChatChannel)(0),                  // 4: xingyistarry.mp.v1.ChatChannel
-	(ChatKind)(0),                     // 5: xingyistarry.mp.v1.ChatKind
-	(SystemEventKind)(0),              // 6: xingyistarry.mp.v1.SystemEventKind
-	(AttackSettlement_Kind)(0),        // 7: xingyistarry.mp.v1.AttackSettlement.Kind
-	(*WireEnvelope)(nil),              // 8: xingyistarry.mp.v1.WireEnvelope
-	(*GuidValue)(nil),                 // 9: xingyistarry.mp.v1.GuidValue
-	(*Int64Value)(nil),                // 10: xingyistarry.mp.v1.Int64Value
-	(*StringValue)(nil),               // 11: xingyistarry.mp.v1.StringValue
-	(*Hello)(nil),                     // 12: xingyistarry.mp.v1.Hello
-	(*Welcome)(nil),                   // 13: xingyistarry.mp.v1.Welcome
-	(*Participant)(nil),               // 14: xingyistarry.mp.v1.Participant
-	(*Seat)(nil),                      // 15: xingyistarry.mp.v1.Seat
-	(*Room)(nil),                      // 16: xingyistarry.mp.v1.Room
-	(*GameCommandMessage)(nil),        // 17: xingyistarry.mp.v1.GameCommandMessage
-	(*ResolvedUnitAction)(nil),        // 18: xingyistarry.mp.v1.ResolvedUnitAction
-	(*CommandRequestMessage)(nil),     // 19: xingyistarry.mp.v1.CommandRequestMessage
-	(*RelayRoomInfo)(nil),             // 20: xingyistarry.mp.v1.RelayRoomInfo
-	(*RelayRegisterRoomRequest)(nil),  // 21: xingyistarry.mp.v1.RelayRegisterRoomRequest
-	(*RelayUpdateRoomRequest)(nil),    // 22: xingyistarry.mp.v1.RelayUpdateRoomRequest
-	(*RelayListRoomsRequest)(nil),     // 23: xingyistarry.mp.v1.RelayListRoomsRequest
-	(*RelayListRoomsResponse)(nil),    // 24: xingyistarry.mp.v1.RelayListRoomsResponse
-	(*RelayJoinRoomRequest)(nil),      // 25: xingyistarry.mp.v1.RelayJoinRoomRequest
-	(*RelayResumeRoomRequest)(nil),    // 26: xingyistarry.mp.v1.RelayResumeRoomRequest
-	(*RelayControlResponse)(nil),      // 27: xingyistarry.mp.v1.RelayControlResponse
-	(*RelayRoomRequest)(nil),          // 28: xingyistarry.mp.v1.RelayRoomRequest
-	(*RelayPeerNotice)(nil),           // 29: xingyistarry.mp.v1.RelayPeerNotice
-	(*JoinMatchRequest)(nil),          // 30: xingyistarry.mp.v1.JoinMatchRequest
-	(*JoinMatchAcceptedMessage)(nil),  // 31: xingyistarry.mp.v1.JoinMatchAcceptedMessage
-	(*ChatSendMessage)(nil),           // 32: xingyistarry.mp.v1.ChatSendMessage
-	(*ChatEventMessage)(nil),          // 33: xingyistarry.mp.v1.ChatEventMessage
-	(*PingSendMessage)(nil),           // 34: xingyistarry.mp.v1.PingSendMessage
-	(*PingEventMessage)(nil),          // 35: xingyistarry.mp.v1.PingEventMessage
-	(*SocialSyncRequestMessage)(nil),  // 36: xingyistarry.mp.v1.SocialSyncRequestMessage
-	(*SocialSyncBeginMessage)(nil),    // 37: xingyistarry.mp.v1.SocialSyncBeginMessage
-	(*SocialSyncChunkMessage)(nil),    // 38: xingyistarry.mp.v1.SocialSyncChunkMessage
-	(*SocialSyncCompleteMessage)(nil), // 39: xingyistarry.mp.v1.SocialSyncCompleteMessage
-	(*ResumeSessionRequest)(nil),      // 40: xingyistarry.mp.v1.ResumeSessionRequest
-	(*ResumeSessionAccepted)(nil),     // 41: xingyistarry.mp.v1.ResumeSessionAccepted
-	(*SeatControlChanged)(nil),        // 42: xingyistarry.mp.v1.SeatControlChanged
-	(*CommandResponseMessage)(nil),    // 43: xingyistarry.mp.v1.CommandResponseMessage
-	(*RandomRecordMessage)(nil),       // 44: xingyistarry.mp.v1.RandomRecordMessage
-	(*Resolution)(nil),                // 45: xingyistarry.mp.v1.Resolution
-	(*AttackSettlement)(nil),          // 46: xingyistarry.mp.v1.AttackSettlement
-	(*OperationBegin)(nil),            // 47: xingyistarry.mp.v1.OperationBegin
-	(*OperationEnd)(nil),              // 48: xingyistarry.mp.v1.OperationEnd
-	(*OperationFailed)(nil),           // 49: xingyistarry.mp.v1.OperationFailed
-	(*AuthorityFrameMessage)(nil),     // 50: xingyistarry.mp.v1.AuthorityFrameMessage
-	(*AuthorityHashInput)(nil),        // 51: xingyistarry.mp.v1.AuthorityHashInput
-	(*SnapshotManifestMessage)(nil),   // 52: xingyistarry.mp.v1.SnapshotManifestMessage
-	(*SnapshotChunkMessage)(nil),      // 53: xingyistarry.mp.v1.SnapshotChunkMessage
+	(Delivery)(0),                      // 0: xingyistarry.mp.v1.Delivery
+	(WelcomeMode)(0),                   // 1: xingyistarry.mp.v1.WelcomeMode
+	(ParticipantAdmission)(0),          // 2: xingyistarry.mp.v1.ParticipantAdmission
+	(RelayRoomStatus)(0),               // 3: xingyistarry.mp.v1.RelayRoomStatus
+	(ChatChannel)(0),                   // 4: xingyistarry.mp.v1.ChatChannel
+	(ChatKind)(0),                      // 5: xingyistarry.mp.v1.ChatKind
+	(SystemEventKind)(0),               // 6: xingyistarry.mp.v1.SystemEventKind
+	(AttackSettlement_Kind)(0),         // 7: xingyistarry.mp.v1.AttackSettlement.Kind
+	(*WireEnvelope)(nil),               // 8: xingyistarry.mp.v1.WireEnvelope
+	(*GuidValue)(nil),                  // 9: xingyistarry.mp.v1.GuidValue
+	(*Int64Value)(nil),                 // 10: xingyistarry.mp.v1.Int64Value
+	(*StringValue)(nil),                // 11: xingyistarry.mp.v1.StringValue
+	(*Hello)(nil),                      // 12: xingyistarry.mp.v1.Hello
+	(*Welcome)(nil),                    // 13: xingyistarry.mp.v1.Welcome
+	(*Participant)(nil),                // 14: xingyistarry.mp.v1.Participant
+	(*Seat)(nil),                       // 15: xingyistarry.mp.v1.Seat
+	(*Room)(nil),                       // 16: xingyistarry.mp.v1.Room
+	(*GameCommandMessage)(nil),         // 17: xingyistarry.mp.v1.GameCommandMessage
+	(*ResolvedUnitAction)(nil),         // 18: xingyistarry.mp.v1.ResolvedUnitAction
+	(*CommandRequestMessage)(nil),      // 19: xingyistarry.mp.v1.CommandRequestMessage
+	(*RelayRoomInfo)(nil),              // 20: xingyistarry.mp.v1.RelayRoomInfo
+	(*RelayRegisterRoomRequest)(nil),   // 21: xingyistarry.mp.v1.RelayRegisterRoomRequest
+	(*RelayUpdateRoomRequest)(nil),     // 22: xingyistarry.mp.v1.RelayUpdateRoomRequest
+	(*RelayListRoomsRequest)(nil),      // 23: xingyistarry.mp.v1.RelayListRoomsRequest
+	(*RelayListRoomsResponse)(nil),     // 24: xingyistarry.mp.v1.RelayListRoomsResponse
+	(*RelayJoinRoomRequest)(nil),       // 25: xingyistarry.mp.v1.RelayJoinRoomRequest
+	(*RelayResumeRoomRequest)(nil),     // 26: xingyistarry.mp.v1.RelayResumeRoomRequest
+	(*RelayControlResponse)(nil),       // 27: xingyistarry.mp.v1.RelayControlResponse
+	(*RelayRoomRequest)(nil),           // 28: xingyistarry.mp.v1.RelayRoomRequest
+	(*RelayPeerNotice)(nil),            // 29: xingyistarry.mp.v1.RelayPeerNotice
+	(*JoinMatchRequest)(nil),           // 30: xingyistarry.mp.v1.JoinMatchRequest
+	(*JoinMatchAcceptedMessage)(nil),   // 31: xingyistarry.mp.v1.JoinMatchAcceptedMessage
+	(*ChatSendMessage)(nil),            // 32: xingyistarry.mp.v1.ChatSendMessage
+	(*ChatEventMessage)(nil),           // 33: xingyistarry.mp.v1.ChatEventMessage
+	(*PingSendMessage)(nil),            // 34: xingyistarry.mp.v1.PingSendMessage
+	(*PingEventMessage)(nil),           // 35: xingyistarry.mp.v1.PingEventMessage
+	(*SocialSyncRequestMessage)(nil),   // 36: xingyistarry.mp.v1.SocialSyncRequestMessage
+	(*SocialSyncBeginMessage)(nil),     // 37: xingyistarry.mp.v1.SocialSyncBeginMessage
+	(*SocialSyncChunkMessage)(nil),     // 38: xingyistarry.mp.v1.SocialSyncChunkMessage
+	(*SocialSyncCompleteMessage)(nil),  // 39: xingyistarry.mp.v1.SocialSyncCompleteMessage
+	(*ResumeSessionRequest)(nil),       // 40: xingyistarry.mp.v1.ResumeSessionRequest
+	(*ResumeSessionAccepted)(nil),      // 41: xingyistarry.mp.v1.ResumeSessionAccepted
+	(*SeatControlChanged)(nil),         // 42: xingyistarry.mp.v1.SeatControlChanged
+	(*CommandResponseMessage)(nil),     // 43: xingyistarry.mp.v1.CommandResponseMessage
+	(*RandomRecordMessage)(nil),        // 44: xingyistarry.mp.v1.RandomRecordMessage
+	(*Resolution)(nil),                 // 45: xingyistarry.mp.v1.Resolution
+	(*AttackSettlement)(nil),           // 46: xingyistarry.mp.v1.AttackSettlement
+	(*OperationBegin)(nil),             // 47: xingyistarry.mp.v1.OperationBegin
+	(*OperationEnd)(nil),               // 48: xingyistarry.mp.v1.OperationEnd
+	(*OperationFailed)(nil),            // 49: xingyistarry.mp.v1.OperationFailed
+	(*AuthorityFrameMessage)(nil),      // 50: xingyistarry.mp.v1.AuthorityFrameMessage
+	(*AuthorityHashInput)(nil),         // 51: xingyistarry.mp.v1.AuthorityHashInput
+	(*SnapshotManifestMessage)(nil),    // 52: xingyistarry.mp.v1.SnapshotManifestMessage
+	(*SnapshotChunkMessage)(nil),       // 53: xingyistarry.mp.v1.SnapshotChunkMessage
+	(*MoveCommand)(nil),                // 54: xingyistarry.mp.v1.MoveCommand
+	(*ActionCommand)(nil),              // 55: xingyistarry.mp.v1.ActionCommand
+	(*EquipmentActionCommand)(nil),     // 56: xingyistarry.mp.v1.EquipmentActionCommand
+	(*EquipmentMoveActionCommand)(nil), // 57: xingyistarry.mp.v1.EquipmentMoveActionCommand
+	(*BuildWithMoveCommand)(nil),       // 58: xingyistarry.mp.v1.BuildWithMoveCommand
+	(*SkillCommand)(nil),               // 59: xingyistarry.mp.v1.SkillCommand
+	(*UndoMoveCommand)(nil),            // 60: xingyistarry.mp.v1.UndoMoveCommand
+	(*EndTurnCommand)(nil),             // 61: xingyistarry.mp.v1.EndTurnCommand
+	(*AutoGuideStartCommand)(nil),      // 62: xingyistarry.mp.v1.AutoGuideStartCommand
+	(*DebugAddResourcesCommand)(nil),   // 63: xingyistarry.mp.v1.DebugAddResourcesCommand
+	(*DebugFillSkillCommand)(nil),      // 64: xingyistarry.mp.v1.DebugFillSkillCommand
+	(*AiUnitActionCommand)(nil),        // 65: xingyistarry.mp.v1.AiUnitActionCommand
+	(*AiSkillCommand)(nil),             // 66: xingyistarry.mp.v1.AiSkillCommand
+	(*TurnAdvanceCommand)(nil),         // 67: xingyistarry.mp.v1.TurnAdvanceCommand
+	(*SurrenderCommand)(nil),           // 68: xingyistarry.mp.v1.SurrenderCommand
+	(*ToggleStandbyCommand)(nil),       // 69: xingyistarry.mp.v1.ToggleStandbyCommand
+	(*ToggleSleepCommand)(nil),         // 70: xingyistarry.mp.v1.ToggleSleepCommand
+	(*StayCommand)(nil),                // 71: xingyistarry.mp.v1.StayCommand
+	(*SelfDestructCommand)(nil),        // 72: xingyistarry.mp.v1.SelfDestructCommand
+	(*ResolvedUnitActionsCommand)(nil), // 73: xingyistarry.mp.v1.ResolvedUnitActionsCommand
+	(*RandomRecordList)(nil),           // 74: xingyistarry.mp.v1.RandomRecordList
+	(*UnitRandomResult)(nil),           // 75: xingyistarry.mp.v1.UnitRandomResult
+	(*TileRandomResult)(nil),           // 76: xingyistarry.mp.v1.TileRandomResult
+	(*RandomResult)(nil),               // 77: xingyistarry.mp.v1.RandomResult
+	(*SettlementEvent)(nil),            // 78: xingyistarry.mp.v1.SettlementEvent
+	(*AttackStartedEvent)(nil),         // 79: xingyistarry.mp.v1.AttackStartedEvent
+	(*AttackCellEvent)(nil),            // 80: xingyistarry.mp.v1.AttackCellEvent
+	(*AttackFinishedEvent)(nil),        // 81: xingyistarry.mp.v1.AttackFinishedEvent
+	(*DamageEvent)(nil),                // 82: xingyistarry.mp.v1.DamageEvent
+	(*DeathStartedEvent)(nil),          // 83: xingyistarry.mp.v1.DeathStartedEvent
+	(*DeathCommittedEvent)(nil),        // 84: xingyistarry.mp.v1.DeathCommittedEvent
+	(*PlayerDefeatedEvent)(nil),        // 85: xingyistarry.mp.v1.PlayerDefeatedEvent
+	(*CleanupCompletedEvent)(nil),      // 86: xingyistarry.mp.v1.CleanupCompletedEvent
+	(*EffectEvent)(nil),                // 87: xingyistarry.mp.v1.EffectEvent
+	(*SpawnEvent)(nil),                 // 88: xingyistarry.mp.v1.SpawnEvent
+	(*HealEvent)(nil),                  // 89: xingyistarry.mp.v1.HealEvent
+	(*ResourceEvent)(nil),              // 90: xingyistarry.mp.v1.ResourceEvent
+	(*CommanderPositionEvent)(nil),     // 91: xingyistarry.mp.v1.CommanderPositionEvent
+	(*ForcedAttackEvent)(nil),          // 92: xingyistarry.mp.v1.ForcedAttackEvent
+	(*PulseEvent)(nil),                 // 93: xingyistarry.mp.v1.PulseEvent
+	(*WreckEvent)(nil),                 // 94: xingyistarry.mp.v1.WreckEvent
+	(*ShieldEvent)(nil),                // 95: xingyistarry.mp.v1.ShieldEvent
+	(*EffectMutationEvent)(nil),        // 96: xingyistarry.mp.v1.EffectMutationEvent
+	(*ExperienceEvent)(nil),            // 97: xingyistarry.mp.v1.ExperienceEvent
+	(*SkillFinishedEvent)(nil),         // 98: xingyistarry.mp.v1.SkillFinishedEvent
+	(*ResolvedMove)(nil),               // 99: xingyistarry.mp.v1.ResolvedMove
+	(*ResolvedAction)(nil),             // 100: xingyistarry.mp.v1.ResolvedAction
+	(*ResolvedCreate)(nil),             // 101: xingyistarry.mp.v1.ResolvedCreate
+	(*ResolvedUnload)(nil),             // 102: xingyistarry.mp.v1.ResolvedUnload
+	(*AuthorityTurnPhase)(nil),         // 103: xingyistarry.mp.v1.AuthorityTurnPhase
+	(*AuthorityMatchEnded)(nil),        // 104: xingyistarry.mp.v1.AuthorityMatchEnded
 }
 var file_multiplayer_proto_depIdxs = []int32{
-	0,  // 0: xingyistarry.mp.v1.WireEnvelope.delivery:type_name -> xingyistarry.mp.v1.Delivery
-	1,  // 1: xingyistarry.mp.v1.Welcome.mode:type_name -> xingyistarry.mp.v1.WelcomeMode
-	2,  // 2: xingyistarry.mp.v1.Participant.admission:type_name -> xingyistarry.mp.v1.ParticipantAdmission
-	15, // 3: xingyistarry.mp.v1.Room.seats:type_name -> xingyistarry.mp.v1.Seat
-	14, // 4: xingyistarry.mp.v1.Room.participants:type_name -> xingyistarry.mp.v1.Participant
-	18, // 5: xingyistarry.mp.v1.GameCommandMessage.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
-	17, // 6: xingyistarry.mp.v1.CommandRequestMessage.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
-	3,  // 7: xingyistarry.mp.v1.RelayRoomInfo.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
-	3,  // 8: xingyistarry.mp.v1.RelayUpdateRoomRequest.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
-	20, // 9: xingyistarry.mp.v1.RelayListRoomsResponse.rooms:type_name -> xingyistarry.mp.v1.RelayRoomInfo
-	4,  // 10: xingyistarry.mp.v1.ChatSendMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
-	4,  // 11: xingyistarry.mp.v1.ChatEventMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
-	5,  // 12: xingyistarry.mp.v1.ChatEventMessage.kind:type_name -> xingyistarry.mp.v1.ChatKind
-	6,  // 13: xingyistarry.mp.v1.ChatEventMessage.system_kind:type_name -> xingyistarry.mp.v1.SystemEventKind
-	14, // 14: xingyistarry.mp.v1.SocialSyncBeginMessage.participants:type_name -> xingyistarry.mp.v1.Participant
-	33, // 15: xingyistarry.mp.v1.SocialSyncChunkMessage.messages:type_name -> xingyistarry.mp.v1.ChatEventMessage
-	44, // 16: xingyistarry.mp.v1.Resolution.random_records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
-	46, // 17: xingyistarry.mp.v1.Resolution.attack_settlement:type_name -> xingyistarry.mp.v1.AttackSettlement
-	7,  // 18: xingyistarry.mp.v1.AttackSettlement.kind:type_name -> xingyistarry.mp.v1.AttackSettlement.Kind
-	17, // 19: xingyistarry.mp.v1.OperationBegin.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	0,   // 0: xingyistarry.mp.v1.WireEnvelope.delivery:type_name -> xingyistarry.mp.v1.Delivery
+	12,  // 1: xingyistarry.mp.v1.WireEnvelope.hello:type_name -> xingyistarry.mp.v1.Hello
+	13,  // 2: xingyistarry.mp.v1.WireEnvelope.welcome:type_name -> xingyistarry.mp.v1.Welcome
+	11,  // 3: xingyistarry.mp.v1.WireEnvelope.reject:type_name -> xingyistarry.mp.v1.StringValue
+	10,  // 4: xingyistarry.mp.v1.WireEnvelope.heartbeat:type_name -> xingyistarry.mp.v1.Int64Value
+	16,  // 5: xingyistarry.mp.v1.WireEnvelope.room_state:type_name -> xingyistarry.mp.v1.Room
+	10,  // 6: xingyistarry.mp.v1.WireEnvelope.claim_seat:type_name -> xingyistarry.mp.v1.Int64Value
+	10,  // 7: xingyistarry.mp.v1.WireEnvelope.set_ready:type_name -> xingyistarry.mp.v1.Int64Value
+	9,   // 8: xingyistarry.mp.v1.WireEnvelope.start_match:type_name -> xingyistarry.mp.v1.GuidValue
+	19,  // 9: xingyistarry.mp.v1.WireEnvelope.command_request:type_name -> xingyistarry.mp.v1.CommandRequestMessage
+	43,  // 10: xingyistarry.mp.v1.WireEnvelope.command_accepted:type_name -> xingyistarry.mp.v1.CommandResponseMessage
+	43,  // 11: xingyistarry.mp.v1.WireEnvelope.command_rejected:type_name -> xingyistarry.mp.v1.CommandResponseMessage
+	50,  // 12: xingyistarry.mp.v1.WireEnvelope.authority_frame:type_name -> xingyistarry.mp.v1.AuthorityFrameMessage
+	10,  // 13: xingyistarry.mp.v1.WireEnvelope.history_request:type_name -> xingyistarry.mp.v1.Int64Value
+	10,  // 14: xingyistarry.mp.v1.WireEnvelope.history_complete:type_name -> xingyistarry.mp.v1.Int64Value
+	10,  // 15: xingyistarry.mp.v1.WireEnvelope.snapshot_request:type_name -> xingyistarry.mp.v1.Int64Value
+	52,  // 16: xingyistarry.mp.v1.WireEnvelope.snapshot_manifest:type_name -> xingyistarry.mp.v1.SnapshotManifestMessage
+	53,  // 17: xingyistarry.mp.v1.WireEnvelope.snapshot_chunk:type_name -> xingyistarry.mp.v1.SnapshotChunkMessage
+	9,   // 18: xingyistarry.mp.v1.WireEnvelope.snapshot_complete:type_name -> xingyistarry.mp.v1.GuidValue
+	9,   // 19: xingyistarry.mp.v1.WireEnvelope.catch_up_complete:type_name -> xingyistarry.mp.v1.GuidValue
+	11,  // 20: xingyistarry.mp.v1.WireEnvelope.session_ended:type_name -> xingyistarry.mp.v1.StringValue
+	16,  // 21: xingyistarry.mp.v1.WireEnvelope.lobby_draft_change:type_name -> xingyistarry.mp.v1.Room
+	11,  // 22: xingyistarry.mp.v1.WireEnvelope.participant_notice:type_name -> xingyistarry.mp.v1.StringValue
+	21,  // 23: xingyistarry.mp.v1.WireEnvelope.relay_register_room:type_name -> xingyistarry.mp.v1.RelayRegisterRoomRequest
+	22,  // 24: xingyistarry.mp.v1.WireEnvelope.relay_update_room:type_name -> xingyistarry.mp.v1.RelayUpdateRoomRequest
+	23,  // 25: xingyistarry.mp.v1.WireEnvelope.relay_list_rooms:type_name -> xingyistarry.mp.v1.RelayListRoomsRequest
+	24,  // 26: xingyistarry.mp.v1.WireEnvelope.relay_room_list:type_name -> xingyistarry.mp.v1.RelayListRoomsResponse
+	25,  // 27: xingyistarry.mp.v1.WireEnvelope.relay_join_room:type_name -> xingyistarry.mp.v1.RelayJoinRoomRequest
+	27,  // 28: xingyistarry.mp.v1.WireEnvelope.relay_control_response:type_name -> xingyistarry.mp.v1.RelayControlResponse
+	28,  // 29: xingyistarry.mp.v1.WireEnvelope.relay_close_joining:type_name -> xingyistarry.mp.v1.RelayRoomRequest
+	28,  // 30: xingyistarry.mp.v1.WireEnvelope.relay_leave_room:type_name -> xingyistarry.mp.v1.RelayRoomRequest
+	28,  // 31: xingyistarry.mp.v1.WireEnvelope.relay_close_room:type_name -> xingyistarry.mp.v1.RelayRoomRequest
+	29,  // 32: xingyistarry.mp.v1.WireEnvelope.relay_peer_joined:type_name -> xingyistarry.mp.v1.RelayPeerNotice
+	29,  // 33: xingyistarry.mp.v1.WireEnvelope.relay_peer_left:type_name -> xingyistarry.mp.v1.RelayPeerNotice
+	9,   // 34: xingyistarry.mp.v1.WireEnvelope.release_seat:type_name -> xingyistarry.mp.v1.GuidValue
+	30,  // 35: xingyistarry.mp.v1.WireEnvelope.join_match_request:type_name -> xingyistarry.mp.v1.JoinMatchRequest
+	31,  // 36: xingyistarry.mp.v1.WireEnvelope.join_match_accepted:type_name -> xingyistarry.mp.v1.JoinMatchAcceptedMessage
+	40,  // 37: xingyistarry.mp.v1.WireEnvelope.resume_session:type_name -> xingyistarry.mp.v1.ResumeSessionRequest
+	41,  // 38: xingyistarry.mp.v1.WireEnvelope.resume_session_accepted:type_name -> xingyistarry.mp.v1.ResumeSessionAccepted
+	11,  // 39: xingyistarry.mp.v1.WireEnvelope.resume_session_rejected:type_name -> xingyistarry.mp.v1.StringValue
+	9,   // 40: xingyistarry.mp.v1.WireEnvelope.leave_session:type_name -> xingyistarry.mp.v1.GuidValue
+	26,  // 41: xingyistarry.mp.v1.WireEnvelope.relay_resume_room:type_name -> xingyistarry.mp.v1.RelayResumeRoomRequest
+	9,   // 42: xingyistarry.mp.v1.WireEnvelope.match_starting:type_name -> xingyistarry.mp.v1.GuidValue
+	32,  // 43: xingyistarry.mp.v1.WireEnvelope.chat_send:type_name -> xingyistarry.mp.v1.ChatSendMessage
+	33,  // 44: xingyistarry.mp.v1.WireEnvelope.chat_event:type_name -> xingyistarry.mp.v1.ChatEventMessage
+	34,  // 45: xingyistarry.mp.v1.WireEnvelope.ping_send:type_name -> xingyistarry.mp.v1.PingSendMessage
+	35,  // 46: xingyistarry.mp.v1.WireEnvelope.ping_event:type_name -> xingyistarry.mp.v1.PingEventMessage
+	36,  // 47: xingyistarry.mp.v1.WireEnvelope.social_sync_request:type_name -> xingyistarry.mp.v1.SocialSyncRequestMessage
+	37,  // 48: xingyistarry.mp.v1.WireEnvelope.social_sync_begin:type_name -> xingyistarry.mp.v1.SocialSyncBeginMessage
+	38,  // 49: xingyistarry.mp.v1.WireEnvelope.social_sync_chunk:type_name -> xingyistarry.mp.v1.SocialSyncChunkMessage
+	39,  // 50: xingyistarry.mp.v1.WireEnvelope.social_sync_complete:type_name -> xingyistarry.mp.v1.SocialSyncCompleteMessage
+	29,  // 51: xingyistarry.mp.v1.WireEnvelope.relay_room_closed:type_name -> xingyistarry.mp.v1.RelayPeerNotice
+	1,   // 52: xingyistarry.mp.v1.Welcome.mode:type_name -> xingyistarry.mp.v1.WelcomeMode
+	2,   // 53: xingyistarry.mp.v1.Participant.admission:type_name -> xingyistarry.mp.v1.ParticipantAdmission
+	15,  // 54: xingyistarry.mp.v1.Room.seats:type_name -> xingyistarry.mp.v1.Seat
+	14,  // 55: xingyistarry.mp.v1.Room.participants:type_name -> xingyistarry.mp.v1.Participant
+	18,  // 56: xingyistarry.mp.v1.GameCommandMessage.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
+	54,  // 57: xingyistarry.mp.v1.GameCommandMessage.move:type_name -> xingyistarry.mp.v1.MoveCommand
+	55,  // 58: xingyistarry.mp.v1.GameCommandMessage.action:type_name -> xingyistarry.mp.v1.ActionCommand
+	56,  // 59: xingyistarry.mp.v1.GameCommandMessage.equipment_action:type_name -> xingyistarry.mp.v1.EquipmentActionCommand
+	57,  // 60: xingyistarry.mp.v1.GameCommandMessage.equipment_move_action:type_name -> xingyistarry.mp.v1.EquipmentMoveActionCommand
+	58,  // 61: xingyistarry.mp.v1.GameCommandMessage.build_with_move:type_name -> xingyistarry.mp.v1.BuildWithMoveCommand
+	59,  // 62: xingyistarry.mp.v1.GameCommandMessage.skill:type_name -> xingyistarry.mp.v1.SkillCommand
+	60,  // 63: xingyistarry.mp.v1.GameCommandMessage.undo_move:type_name -> xingyistarry.mp.v1.UndoMoveCommand
+	61,  // 64: xingyistarry.mp.v1.GameCommandMessage.end_turn:type_name -> xingyistarry.mp.v1.EndTurnCommand
+	62,  // 65: xingyistarry.mp.v1.GameCommandMessage.auto_guide_start:type_name -> xingyistarry.mp.v1.AutoGuideStartCommand
+	63,  // 66: xingyistarry.mp.v1.GameCommandMessage.debug_add_resources:type_name -> xingyistarry.mp.v1.DebugAddResourcesCommand
+	64,  // 67: xingyistarry.mp.v1.GameCommandMessage.debug_fill_skill:type_name -> xingyistarry.mp.v1.DebugFillSkillCommand
+	65,  // 68: xingyistarry.mp.v1.GameCommandMessage.ai_unit_action:type_name -> xingyistarry.mp.v1.AiUnitActionCommand
+	66,  // 69: xingyistarry.mp.v1.GameCommandMessage.ai_skill:type_name -> xingyistarry.mp.v1.AiSkillCommand
+	67,  // 70: xingyistarry.mp.v1.GameCommandMessage.turn_advance:type_name -> xingyistarry.mp.v1.TurnAdvanceCommand
+	68,  // 71: xingyistarry.mp.v1.GameCommandMessage.surrender:type_name -> xingyistarry.mp.v1.SurrenderCommand
+	69,  // 72: xingyistarry.mp.v1.GameCommandMessage.toggle_standby:type_name -> xingyistarry.mp.v1.ToggleStandbyCommand
+	70,  // 73: xingyistarry.mp.v1.GameCommandMessage.toggle_sleep:type_name -> xingyistarry.mp.v1.ToggleSleepCommand
+	71,  // 74: xingyistarry.mp.v1.GameCommandMessage.stay:type_name -> xingyistarry.mp.v1.StayCommand
+	72,  // 75: xingyistarry.mp.v1.GameCommandMessage.self_destruct:type_name -> xingyistarry.mp.v1.SelfDestructCommand
+	73,  // 76: xingyistarry.mp.v1.GameCommandMessage.resolved_unit_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitActionsCommand
+	99,  // 77: xingyistarry.mp.v1.ResolvedUnitAction.move:type_name -> xingyistarry.mp.v1.ResolvedMove
+	100, // 78: xingyistarry.mp.v1.ResolvedUnitAction.action:type_name -> xingyistarry.mp.v1.ResolvedAction
+	101, // 79: xingyistarry.mp.v1.ResolvedUnitAction.create:type_name -> xingyistarry.mp.v1.ResolvedCreate
+	102, // 80: xingyistarry.mp.v1.ResolvedUnitAction.unload:type_name -> xingyistarry.mp.v1.ResolvedUnload
+	17,  // 81: xingyistarry.mp.v1.CommandRequestMessage.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
+	3,   // 82: xingyistarry.mp.v1.RelayRoomInfo.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
+	3,   // 83: xingyistarry.mp.v1.RelayUpdateRoomRequest.status:type_name -> xingyistarry.mp.v1.RelayRoomStatus
+	20,  // 84: xingyistarry.mp.v1.RelayListRoomsResponse.rooms:type_name -> xingyistarry.mp.v1.RelayRoomInfo
+	4,   // 85: xingyistarry.mp.v1.ChatSendMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
+	4,   // 86: xingyistarry.mp.v1.ChatEventMessage.channel:type_name -> xingyistarry.mp.v1.ChatChannel
+	5,   // 87: xingyistarry.mp.v1.ChatEventMessage.kind:type_name -> xingyistarry.mp.v1.ChatKind
+	6,   // 88: xingyistarry.mp.v1.ChatEventMessage.system_kind:type_name -> xingyistarry.mp.v1.SystemEventKind
+	14,  // 89: xingyistarry.mp.v1.SocialSyncBeginMessage.participants:type_name -> xingyistarry.mp.v1.Participant
+	33,  // 90: xingyistarry.mp.v1.SocialSyncChunkMessage.messages:type_name -> xingyistarry.mp.v1.ChatEventMessage
+	44,  // 91: xingyistarry.mp.v1.Resolution.random_records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	46,  // 92: xingyistarry.mp.v1.Resolution.attack_settlement:type_name -> xingyistarry.mp.v1.AttackSettlement
+	78,  // 93: xingyistarry.mp.v1.Resolution.event:type_name -> xingyistarry.mp.v1.SettlementEvent
+	7,   // 94: xingyistarry.mp.v1.AttackSettlement.kind:type_name -> xingyistarry.mp.v1.AttackSettlement.Kind
+	17,  // 95: xingyistarry.mp.v1.OperationBegin.command:type_name -> xingyistarry.mp.v1.GameCommandMessage
+	47,  // 96: xingyistarry.mp.v1.AuthorityFrameMessage.operation_begin:type_name -> xingyistarry.mp.v1.OperationBegin
+	45,  // 97: xingyistarry.mp.v1.AuthorityFrameMessage.resolution:type_name -> xingyistarry.mp.v1.Resolution
+	48,  // 98: xingyistarry.mp.v1.AuthorityFrameMessage.operation_end:type_name -> xingyistarry.mp.v1.OperationEnd
+	103, // 99: xingyistarry.mp.v1.AuthorityFrameMessage.turn_phase:type_name -> xingyistarry.mp.v1.AuthorityTurnPhase
+	42,  // 100: xingyistarry.mp.v1.AuthorityFrameMessage.seat_changed:type_name -> xingyistarry.mp.v1.SeatControlChanged
+	104, // 101: xingyistarry.mp.v1.AuthorityFrameMessage.match_ended:type_name -> xingyistarry.mp.v1.AuthorityMatchEnded
+	49,  // 102: xingyistarry.mp.v1.AuthorityFrameMessage.operation_failed:type_name -> xingyistarry.mp.v1.OperationFailed
+	18,  // 103: xingyistarry.mp.v1.ResolvedUnitActionsCommand.resolved_actions:type_name -> xingyistarry.mp.v1.ResolvedUnitAction
+	44,  // 104: xingyistarry.mp.v1.RandomRecordList.records:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	74,  // 105: xingyistarry.mp.v1.UnitRandomResult.values:type_name -> xingyistarry.mp.v1.RandomRecordList
+	74,  // 106: xingyistarry.mp.v1.TileRandomResult.values:type_name -> xingyistarry.mp.v1.RandomRecordList
+	44,  // 107: xingyistarry.mp.v1.RandomResult.damage_roll:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	44,  // 108: xingyistarry.mp.v1.RandomResult.damage_variation:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	44,  // 109: xingyistarry.mp.v1.RandomResult.death_wreck_scale:type_name -> xingyistarry.mp.v1.RandomRecordMessage
+	76,  // 110: xingyistarry.mp.v1.RandomResult.wrecks:type_name -> xingyistarry.mp.v1.TileRandomResult
+	75,  // 111: xingyistarry.mp.v1.RandomResult.commander_positions:type_name -> xingyistarry.mp.v1.UnitRandomResult
+	75,  // 112: xingyistarry.mp.v1.RandomResult.experience_shares:type_name -> xingyistarry.mp.v1.UnitRandomResult
+	77,  // 113: xingyistarry.mp.v1.SettlementEvent.random_result:type_name -> xingyistarry.mp.v1.RandomResult
+	78,  // 114: xingyistarry.mp.v1.SettlementEvent.children:type_name -> xingyistarry.mp.v1.SettlementEvent
+	79,  // 115: xingyistarry.mp.v1.SettlementEvent.attack_started:type_name -> xingyistarry.mp.v1.AttackStartedEvent
+	80,  // 116: xingyistarry.mp.v1.SettlementEvent.attack_cell:type_name -> xingyistarry.mp.v1.AttackCellEvent
+	81,  // 117: xingyistarry.mp.v1.SettlementEvent.attack_finished:type_name -> xingyistarry.mp.v1.AttackFinishedEvent
+	82,  // 118: xingyistarry.mp.v1.SettlementEvent.damage:type_name -> xingyistarry.mp.v1.DamageEvent
+	83,  // 119: xingyistarry.mp.v1.SettlementEvent.death_started:type_name -> xingyistarry.mp.v1.DeathStartedEvent
+	84,  // 120: xingyistarry.mp.v1.SettlementEvent.death_committed:type_name -> xingyistarry.mp.v1.DeathCommittedEvent
+	85,  // 121: xingyistarry.mp.v1.SettlementEvent.player_defeated:type_name -> xingyistarry.mp.v1.PlayerDefeatedEvent
+	86,  // 122: xingyistarry.mp.v1.SettlementEvent.cleanup_completed:type_name -> xingyistarry.mp.v1.CleanupCompletedEvent
+	87,  // 123: xingyistarry.mp.v1.SettlementEvent.effect:type_name -> xingyistarry.mp.v1.EffectEvent
+	88,  // 124: xingyistarry.mp.v1.SettlementEvent.spawn:type_name -> xingyistarry.mp.v1.SpawnEvent
+	89,  // 125: xingyistarry.mp.v1.SettlementEvent.heal:type_name -> xingyistarry.mp.v1.HealEvent
+	90,  // 126: xingyistarry.mp.v1.SettlementEvent.resource:type_name -> xingyistarry.mp.v1.ResourceEvent
+	91,  // 127: xingyistarry.mp.v1.SettlementEvent.commander_position:type_name -> xingyistarry.mp.v1.CommanderPositionEvent
+	92,  // 128: xingyistarry.mp.v1.SettlementEvent.forced_attack:type_name -> xingyistarry.mp.v1.ForcedAttackEvent
+	93,  // 129: xingyistarry.mp.v1.SettlementEvent.pulse:type_name -> xingyistarry.mp.v1.PulseEvent
+	94,  // 130: xingyistarry.mp.v1.SettlementEvent.wreck:type_name -> xingyistarry.mp.v1.WreckEvent
+	95,  // 131: xingyistarry.mp.v1.SettlementEvent.shield:type_name -> xingyistarry.mp.v1.ShieldEvent
+	96,  // 132: xingyistarry.mp.v1.SettlementEvent.effect_mutation:type_name -> xingyistarry.mp.v1.EffectMutationEvent
+	97,  // 133: xingyistarry.mp.v1.SettlementEvent.experience:type_name -> xingyistarry.mp.v1.ExperienceEvent
+	98,  // 134: xingyistarry.mp.v1.SettlementEvent.skill_finished:type_name -> xingyistarry.mp.v1.SkillFinishedEvent
+	135, // [135:135] is the sub-list for method output_type
+	135, // [135:135] is the sub-list for method input_type
+	135, // [135:135] is the sub-list for extension type_name
+	135, // [135:135] is the sub-list for extension extendee
+	0,   // [0:135] is the sub-list for field type_name
 }
 
 func init() { file_multiplayer_proto_init() }
@@ -4598,23 +10275,144 @@ func file_multiplayer_proto_init() {
 	if File_multiplayer_proto != nil {
 		return
 	}
-	file_multiplayer_proto_msgTypes[0].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[0].OneofWrappers = []any{
+		(*WireEnvelope_Hello)(nil),
+		(*WireEnvelope_Welcome)(nil),
+		(*WireEnvelope_Reject)(nil),
+		(*WireEnvelope_Heartbeat)(nil),
+		(*WireEnvelope_RoomState)(nil),
+		(*WireEnvelope_ClaimSeat)(nil),
+		(*WireEnvelope_SetReady)(nil),
+		(*WireEnvelope_StartMatch)(nil),
+		(*WireEnvelope_CommandRequest)(nil),
+		(*WireEnvelope_CommandAccepted)(nil),
+		(*WireEnvelope_CommandRejected)(nil),
+		(*WireEnvelope_AuthorityFrame)(nil),
+		(*WireEnvelope_HistoryRequest)(nil),
+		(*WireEnvelope_HistoryComplete)(nil),
+		(*WireEnvelope_SnapshotRequest)(nil),
+		(*WireEnvelope_SnapshotManifest)(nil),
+		(*WireEnvelope_SnapshotChunk)(nil),
+		(*WireEnvelope_SnapshotComplete)(nil),
+		(*WireEnvelope_CatchUpComplete)(nil),
+		(*WireEnvelope_SessionEnded)(nil),
+		(*WireEnvelope_LobbyDraftChange)(nil),
+		(*WireEnvelope_ParticipantNotice)(nil),
+		(*WireEnvelope_RelayRegisterRoom)(nil),
+		(*WireEnvelope_RelayUpdateRoom)(nil),
+		(*WireEnvelope_RelayListRooms)(nil),
+		(*WireEnvelope_RelayRoomList)(nil),
+		(*WireEnvelope_RelayJoinRoom)(nil),
+		(*WireEnvelope_RelayControlResponse)(nil),
+		(*WireEnvelope_RelayCloseJoining)(nil),
+		(*WireEnvelope_RelayLeaveRoom)(nil),
+		(*WireEnvelope_RelayCloseRoom)(nil),
+		(*WireEnvelope_RelayPeerJoined)(nil),
+		(*WireEnvelope_RelayPeerLeft)(nil),
+		(*WireEnvelope_ReleaseSeat)(nil),
+		(*WireEnvelope_JoinMatchRequest)(nil),
+		(*WireEnvelope_JoinMatchAccepted)(nil),
+		(*WireEnvelope_ResumeSession)(nil),
+		(*WireEnvelope_ResumeSessionAccepted)(nil),
+		(*WireEnvelope_ResumeSessionRejected)(nil),
+		(*WireEnvelope_LeaveSession)(nil),
+		(*WireEnvelope_RelayResumeRoom)(nil),
+		(*WireEnvelope_MatchStarting)(nil),
+		(*WireEnvelope_ChatSend)(nil),
+		(*WireEnvelope_ChatEvent)(nil),
+		(*WireEnvelope_PingSend)(nil),
+		(*WireEnvelope_PingEvent)(nil),
+		(*WireEnvelope_SocialSyncRequest)(nil),
+		(*WireEnvelope_SocialSyncBegin)(nil),
+		(*WireEnvelope_SocialSyncChunk)(nil),
+		(*WireEnvelope_SocialSyncComplete)(nil),
+		(*WireEnvelope_RelayRoomClosed)(nil),
+	}
 	file_multiplayer_proto_msgTypes[5].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[6].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[7].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[8].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[9].OneofWrappers = []any{
+		(*GameCommandMessage_Move)(nil),
+		(*GameCommandMessage_Action)(nil),
+		(*GameCommandMessage_EquipmentAction)(nil),
+		(*GameCommandMessage_EquipmentMoveAction)(nil),
+		(*GameCommandMessage_BuildWithMove)(nil),
+		(*GameCommandMessage_Skill)(nil),
+		(*GameCommandMessage_UndoMove)(nil),
+		(*GameCommandMessage_EndTurn)(nil),
+		(*GameCommandMessage_AutoGuideStart)(nil),
+		(*GameCommandMessage_DebugAddResources)(nil),
+		(*GameCommandMessage_DebugFillSkill)(nil),
+		(*GameCommandMessage_AiUnitAction)(nil),
+		(*GameCommandMessage_AiSkill)(nil),
+		(*GameCommandMessage_TurnAdvance)(nil),
+		(*GameCommandMessage_Surrender)(nil),
+		(*GameCommandMessage_ToggleStandby)(nil),
+		(*GameCommandMessage_ToggleSleep)(nil),
+		(*GameCommandMessage_Stay)(nil),
+		(*GameCommandMessage_SelfDestruct)(nil),
+		(*GameCommandMessage_ResolvedUnitActions)(nil),
+	}
+	file_multiplayer_proto_msgTypes[10].OneofWrappers = []any{
+		(*ResolvedUnitAction_Move)(nil),
+		(*ResolvedUnitAction_Action)(nil),
+		(*ResolvedUnitAction_Create)(nil),
+		(*ResolvedUnitAction_Unload)(nil),
+	}
 	file_multiplayer_proto_msgTypes[14].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[19].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[22].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[23].OneofWrappers = []any{}
 	file_multiplayer_proto_msgTypes[25].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[36].OneofWrappers = []any{
+		(*RandomRecordMessage_Integer)(nil),
+		(*RandomRecordMessage_Floating)(nil),
+	}
+	file_multiplayer_proto_msgTypes[42].OneofWrappers = []any{
+		(*AuthorityFrameMessage_OperationBegin)(nil),
+		(*AuthorityFrameMessage_Resolution)(nil),
+		(*AuthorityFrameMessage_OperationEnd)(nil),
+		(*AuthorityFrameMessage_TurnPhase)(nil),
+		(*AuthorityFrameMessage_SeatChanged)(nil),
+		(*AuthorityFrameMessage_MatchEnded)(nil),
+		(*AuthorityFrameMessage_OperationFailed)(nil),
+	}
+	file_multiplayer_proto_msgTypes[70].OneofWrappers = []any{
+		(*SettlementEvent_AttackStarted)(nil),
+		(*SettlementEvent_AttackCell)(nil),
+		(*SettlementEvent_AttackFinished)(nil),
+		(*SettlementEvent_Damage)(nil),
+		(*SettlementEvent_DeathStarted)(nil),
+		(*SettlementEvent_DeathCommitted)(nil),
+		(*SettlementEvent_PlayerDefeated)(nil),
+		(*SettlementEvent_CleanupCompleted)(nil),
+		(*SettlementEvent_Effect)(nil),
+		(*SettlementEvent_Spawn)(nil),
+		(*SettlementEvent_Heal)(nil),
+		(*SettlementEvent_Resource)(nil),
+		(*SettlementEvent_CommanderPosition)(nil),
+		(*SettlementEvent_ForcedAttack)(nil),
+		(*SettlementEvent_Pulse)(nil),
+		(*SettlementEvent_Wreck)(nil),
+		(*SettlementEvent_Shield)(nil),
+		(*SettlementEvent_EffectMutation)(nil),
+		(*SettlementEvent_Experience)(nil),
+		(*SettlementEvent_SkillFinished)(nil),
+	}
+	file_multiplayer_proto_msgTypes[72].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[74].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[75].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[79].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[81].OneofWrappers = []any{}
+	file_multiplayer_proto_msgTypes[89].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_multiplayer_proto_rawDesc), len(file_multiplayer_proto_rawDesc)),
 			NumEnums:      8,
-			NumMessages:   46,
+			NumMessages:   97,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -2,11 +2,10 @@
 
 TCP relay and public room directory for XingyiStarry MP. The relay keeps rooms in memory and forwards protobuf envelopes; it does not simulate games or retain authority logs and snapshots.
 
-Protocol v12 deliberately keeps the relay outside the game protocol. The relay
-parses only `RELAY_CONTROL` messages. Every other envelope is validated only for
-connection identity, room, and delivery direction, then forwarded with an opaque
-payload. The game protocol version lives in `Hello.protocol_version` and is
-checked by the host, not by the relay.
+The envelope has named protobuf `oneof` branches. The relay handles relay-control
+branches and validates game envelopes only for connection identity, room, and
+delivery direction. It does not interpret game rules. The game protocol version
+lives in `Hello.protocol_version` and is checked by the host, not by the relay.
 
 Playing rooms may remain joinable while they report available seats. A dropped
 client identity can be rebound to a new physical connection for 15 seconds when
@@ -23,7 +22,7 @@ go vet ./...
 The server is built from source on its target machine with `go build`. No local
 cross-build script or `dist` output is maintained.
 
-The v0.7.0 development relay uses logrus v1.10.2. It writes single-line UTC
+The relay uses logrus v1.10.2. It writes single-line UTC
 events to standard output with connection, room, client, match, and request IDs
 when available. Heartbeats and forwarded game payloads are not logged at Info;
 passwords and payload bytes are never included. Use `go test -race ./...` on a
@@ -46,6 +45,9 @@ project at `../annw-mp/src/XingyiStarry.Mp.Protocol/Protos/multiplayer.proto`
 and regenerates `internal/wire/multiplayer.pb.go`. The relay repository does not
 keep a second `.proto` copy. Generated Go code is committed so a standalone
 server clone does not need the plugin repository or `protoc` to build.
+The plugin tool `tools/generate_authority_hash.py` regenerates both explicit field
+hash encoders. Shared vectors in `internal/wire/testdata/hash-v21.json` check
+compatibility with C#; the relay does not validate gameplay hashes when routing.
 
 ## Run
 

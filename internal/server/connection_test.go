@@ -14,8 +14,8 @@ func TestOutboundQueueCarriesEnvelopeAndAppliesBackpressure(t *testing.T) {
 	config := DefaultConfig()
 	config.WriteQueueMessages = 1
 	connection := newConnection(New(config, NewLogger(testDiscard{})), left)
-	first := &wire.WireEnvelope{MessageType: 101}
-	second := &wire.WireEnvelope{MessageType: 102}
+	first := &wire.WireEnvelope{Body: &wire.WireEnvelope_Heartbeat{Heartbeat: &wire.Int64Value{Value: 101}}}
+	second := &wire.WireEnvelope{Body: &wire.WireEnvelope_Heartbeat{Heartbeat: &wire.Int64Value{Value: 102}}}
 	connection.enqueue(first)
 	if cap(connection.send) != 1 || len(connection.send) != 1 {
 		t.Fatalf("unexpected bounded queue state: cap=%d len=%d", cap(connection.send), len(connection.send))
@@ -48,14 +48,14 @@ func TestDrainAndCloseWritesFinalEnvelopeBeforeClosing(t *testing.T) {
 	peer := newConnection(server, left)
 	server.conns[peer] = struct{}{}
 	peer.start()
-	final := &wire.WireEnvelope{MessageType: 777, Delivery: wire.Delivery_RELAY_CONTROL}
+	final := &wire.WireEnvelope{Body: &wire.WireEnvelope_RelayControlResponse{RelayControlResponse: &wire.RelayControlResponse{RequestId: 777}}, Delivery: wire.Delivery_RELAY_CONTROL}
 	peer.drainAndClose(final, disconnectExplicitLeave)
 	got, err := readEnvelope(right, config.MaxPacketBytes)
 	if err != nil {
 		t.Fatalf("read final envelope: %v", err)
 	}
-	if got.MessageType != final.MessageType {
-		t.Fatalf("unexpected final envelope: %d", got.MessageType)
+	if envelopeType(got) != envelopeType(final) {
+		t.Fatalf("unexpected final envelope: %d", envelopeType(got))
 	}
 	peer.wait()
 	if connectionState(peer.state.Load()) != connectionClosed {
